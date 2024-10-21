@@ -2,7 +2,7 @@
   <div>
     <NuxtRouteAnnouncer />
     <h2>
-    asasasasas
+    ABROBRINHA
     </h2>
     <NuxtWelcome />
   </div>
