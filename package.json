@@ -12,6 +12,7 @@
   "dependencies": {
     "nuxt": "^3.13.2",
     "nuxt-sass-resources-loader": "^2.0.5",
+    "pg": "^8.13.1",
     "vue": "latest",
     "vue-router": "latest"
   }
