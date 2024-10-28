@@ -1,24 +1,40 @@
-// database.js
+// server/plugins/database.js
 import pkg from 'pg';
 const { Pool } = pkg;
 
-export default async function connectDatabase() {
+export default function () {
   const pool = new Pool({
     user: 'postgres',
-    host: '',
+    host: 'fretai-dev.cd608okioi2v.sa-east-1.rds.amazonaws.com',
     database: 'postgres',
-    password: '',
+    password: 'RvDhpqjy5g0uYTj454Do',
     port: 5432,
     ssl: {
-      rejectUnauthorized: false, // Ignora a verificação do certificado
-    }
+      rejectUnauthorized: false,
+    },
   });
 
-  try {
-    const client = await pool.connect();
-    console.log('Conexão com o banco de dados bem-sucedida!');
-    client.release(); // Liberar o cliente de volta para o pool
-  } catch (error) {
-    console.error('Erro ao conectar ao banco de dados:', error.message);
+  // Função auxiliar para obter as tabelas do banco de dados
+  async function getTables() {
+    try {
+      const client = await pool.connect();
+      const res = await client.query(`
+        SELECT table_name 
+        FROM information_schema.tables
+        WHERE table_schema = 'public'
+        ORDER BY table_name;
+      `);
+      client.release();
+      return res.rows.map(row => row.table_name);
+    } catch (error) {
+      console.error('Erro ao obter tabelas:', error.message);
+      return [];
+    }
   }
+
+  // Retorna o pool e as funções auxiliares para uso em outros arquivos
+  return {
+    pool,
+    getTables,
+  };
 }
