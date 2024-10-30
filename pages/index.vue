@@ -1,25 +1,22 @@
-<!-- pages/index.vue -->
 <template>
   <div class="app-container">
     <div class="logo-container">
-     <img src="~/public/images/iconeImage.png" alt="Van Logo" class="van-icon">
+      <img src="~/public/images/iconeImage.png" alt="Van Logo" class="van-icon">
     </div>
 
     <div class="button-group">
-      <button @click="goToLogin" class="btn-motorista">Sou Motorista</button>
-      <button @click="goToLogin" class="btn-passageiro">Sou Passageiro</button>
+      <button @click="toggleModal" class="btn-motorista">Sou Motorista</button>
+      <button @click="toggleModal" class="btn-passageiro">Sou Passageiro</button>
     </div>
+
+    <Modal v-if="showModal" :visible="showModal" @close="toggleModal" />
   </div>
 </template>
 
 <script setup lang="ts">
-import { useRouter } from 'vue-router'
+import { useIndex } from '@/composables/index'
+import Modal from '@/components/Modal.vue'
 import '@/assets/css/cssInicial.css'
 
-const router = useRouter()
-
-function goToLogin() {
-  router.push('/login')
-}
+const { showModal, toggleModal } = useIndex()
 </script>
-

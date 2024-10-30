@@ -7,12 +7,17 @@
     padding: 20px;
     gap: 2rem;
   }
+
+  * {
+    margin: 0;
+  }
   
   .logo-container {
     display: flex;
     flex-direction: column;
     align-items: center;
     gap: 0.5rem;
+    padding-top: 35px;
   }
   
   .bus-icon {
@@ -43,6 +48,12 @@
     outline: none;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
   }
+
+  .confirmation-message {
+    margin-top: 15px;
+    color: green;
+    font-weight: bold;
+  }
   
   input::placeholder {
     color: #666;
@@ -62,7 +73,7 @@
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
     width: 100%; 
   }
-  
+
   .cadastrar-btn:hover {
     transform: translateY(-2px); 
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);

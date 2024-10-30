@@ -14,7 +14,6 @@ export default function () {
     },
   });
 
-  // Função auxiliar para obter as tabelas do banco de dados
   async function getTables() {
     try {
       const client = await pool.connect();
@@ -32,7 +31,21 @@ export default function () {
     }
   }
 
-  // Retorna o pool e as funções auxiliares para uso em outros arquivos
+  async function updatePassword(userId, newPassword) {
+    try {
+      const client = await pool.connect();
+      const res = await client.query(
+        `UPDATE users SET senha = $1, primeiro_login = FALSE WHERE id = $2`,
+        [newPassword, userId]
+      );
+      client.release();
+      return res.rowCount > 0;
+    } catch (error) {
+      console.error('Erro ao atualizar senha:', error.message);
+      return false;
+    }
+  }
+
   return {
     pool,
     getTables,
