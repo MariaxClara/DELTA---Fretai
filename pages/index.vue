@@ -1,3 +1,4 @@
+<!-- pages/index.vue -->
 <template>
   <div class="app-container">
     <div class="logo-container">
