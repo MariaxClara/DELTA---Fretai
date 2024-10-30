@@ -5,9 +5,9 @@ const { Pool } = pkg;
 export default function () {
   const pool = new Pool({
     user: 'postgres',
-    host: 'fretai-dev.cd608okioi2v.sa-east-1.rds.amazonaws.com',
+    host: '',
     database: 'postgres',
-    password: 'RvDhpqjy5g0uYTj454Do',
+    password: '',
     port: 5432,
     ssl: {
       rejectUnauthorized: false,
