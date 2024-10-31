@@ -1,11 +1,11 @@
 // server/api/login.ts
 import express, { Request, Response } from 'express'
-import { loginUser } from '../plugins/database'
+import database from '../plugins/database'
 
 const router = express.Router()
 
 interface LoginRequestBody {
-  email: string
+  email: string,
   password: string
 }
 
@@ -13,6 +13,7 @@ router.post('/login', async (req: Request, res: Response) => {
   const { email, password } = req.body as LoginRequestBody
 
   try {
+    const { loginUser } = database()
     const user = await loginUser(email, password)
 
     if (user) {

@@ -7,13 +7,13 @@
     <form class="login-form" @submit.prevent="handleSubmit">
       <input 
         type="text"
-        v-model="formData.nome"
+        v-model="formData.email"
         placeholder="Email"
         required
       >
       <input 
         type="text"
-        v-model="formData.sobrenome"
+        v-model="formData.password"
         placeholder="Senha"
         required
       >
@@ -23,7 +23,7 @@
     <PasswordResetModal 
       v-if="showPasswordReset"
       :visible="showPasswordReset"
-      :email="formData.nome"
+      :email="formData.email"
       @close="showPasswordReset = false"
       @passwordChanged="onPasswordChanged"
     />
@@ -31,7 +31,7 @@
 </template>
 
 <script setup lang="ts">
-import { useLogin } from '@/composables/login'
+import { useLogin } from '~/composables/login'
 import PasswordResetModal from '@/components/ResetarSenha.vue'
 import '@/assets/css/cssCadastroMotorista.css'
 

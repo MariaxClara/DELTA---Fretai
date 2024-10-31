@@ -25,5 +25,4 @@
     "@types/nodemailer": "^6.4.16",
     "better-sqlite3": "^9.6.0"
   }
-  
 }

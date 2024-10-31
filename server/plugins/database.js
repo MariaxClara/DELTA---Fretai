@@ -46,8 +46,24 @@ export default function () {
     }
   }
 
+  async function loginUser(email, password) {
+    try {
+      const client = await pool.connect();
+      const res = await client.query(
+        `SELECT id, nome, email, primeiro_login FROM users WHERE email = $1 AND senha = $2`,
+        [email, password]
+      );
+      client.release();
+      return res.rows[0];
+    } catch (error) {
+      console.error('Erro ao logar usuário:', error.message);
+      return null;
+    }
+  }
+
   return {
     pool,
     getTables,
+    loginUser,
   };
 }
