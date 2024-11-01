@@ -1,21 +1,30 @@
 <!-- pages/driverInfo.vue -->
 <template>
-  <div>
-    <h1>Informações do Motorista</h1>
-    <input v-model="email" placeholder="Digite o email do motorista" />
-    <button @click="fetchDriverInfo">Buscar</button>
+  <div class="login-container">
+    <form class="login-form" @submit.prevent="handleSubmit"> 
+      <h1 class="title">Informações do Motorista</h1>
 
-    <div v-if="driver">
-      <p><strong>Nome:</strong> {{ driver.nome }}</p>
-      <p><strong>Email:</strong> {{ driver.email }}</p>
-      <p><strong>Telefone:</strong> {{ driver.telefone }}</p>
-    </div>
-    <p v-else-if="error">{{ error }}</p>
+      <input v-model="email" 
+        placeholder="Digite o email do motorista"/>
+
+      <button @click="fetchDriverInfo" class="cadastrar-btn">Buscar</button>
+
+      <div v-if="driver" class="dados">
+        <p><strong>Nome:</strong> {{ driver.nome }}</p>
+        <p><strong>Email:</strong> {{ driver.email }}</p>
+        <p><strong>Telefone:</strong> {{ driver.telefone }}</p>
+      </div>
+      <p v-else-if="error">{{ error }}</p>
+    </form>
+  </div>
+  <div class="bottom-section">
+    
   </div>
 </template>
 
 <script setup>
 import { ref } from 'vue';
+import '~/assets/css/cssPerfilMotorista.css'
 
 const email = ref('');
 const driver = ref(null);
