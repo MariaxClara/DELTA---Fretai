@@ -1,100 +1,141 @@
 <template>
   <div id="app">
-    <div ref="mapContainer" style="width: 100%; height: 500px;"></div>
+    <!-- Barra de endereços de origem, destino e waypoints dinâmicos -->
+    <label>Origem:
+      <input type="text" v-model="originAddress" placeholder="Endereço de origem" />
+    </label>
+    <label>Destino:
+      <input type="text" v-model="destinationAddress" placeholder="Endereço de destino" />
+    </label>
+    
+    <div v-for="(waypoint, index) in waypoints" :key="index">
+      <label>Parada {{ index + 1 }}:
+        <input type="text" v-model="waypoint.address" placeholder="Endereço de parada" />
+      </label>
+      <button @click="removeWaypoint(index)">Remover</button>
+    </div>
+    
+    <button @click="addWaypoint">Adicionar Parada</button>
+    <button @click="updateRoute">Calcular Rota</button>
+
+    <div ref="mapContainer" style="width: 400px; height:550px; margin-top: 20px;"></div>
   </div>
 </template>
 
 <script>
-// import { registerPluginHooks } from '#app';
-// import axios from 'axios';
-
 export default {
+  data() {
+    return {
+      originAddress: "Jacareí, São Paulo",
+      destinationAddress: "São José dos Campos, São Paulo",
+      waypoints: [],
+      platform: null,
+      map: null,
+      ui: null,
+      searchService: null
+    };
+  },
   async mounted() {
-    try {
-      // Carrega os scripts da API da HERE usando o plugin
-      await this.$loadHereMaps();
-
-      // Inicializa o mapa após o carregamento dos scripts
-      this.initMapPlatform();
-
-      // Chama o método routingService após a inicialização do mapa
-      this.routingService();
-    } catch (error) {
-      console.error('Erro ao carregar a API HERE:', error);
-    }
+    await this.$loadHereMaps();
+    this.initMapPlatform();
   },
   methods: {
     initMapPlatform() {
-      const apiKey = 'KJ72fZC8X7n9q7BlK42O4rv6upXTF6_B9l2JNVGhcBY'; // Substitua pela sua chave de API
-
-      // Inicialize a plataforma HERE
-      this.platform = new H.service.Platform({
-        apikey: apiKey
-      });
-
-      // Configuração do mapa
+      const apiKey = 'KJ72fZC8X7n9q7BlK42O4rv6upXTF6_B9l2JNVGhcBY';
+      this.platform = new H.service.Platform({ apikey: apiKey });
       const defaultLayers = this.platform.createDefaultLayers();
-      this.map = new H.Map(
-        this.$refs.mapContainer,
-        defaultLayers.vector.normal.map,
-        {
-          zoom: 10,
-          center: { lat: -23.5505, lng: -46.6333 } // Exemplo: São Paulo, Brasil
-        }
-      );
-
-      // Adiciona controle de interação e UI
+      this.map = new H.Map(this.$refs.mapContainer, defaultLayers.vector.normal.map, { zoom: 10, center: { lat: -23.5505, lng: -46.6333 } });
       this.ui = H.ui.UI.createDefault(this.map, defaultLayers);
       const mapEvents = new H.mapevents.MapEvents(this.map);
       new H.mapevents.Behavior(mapEvents);
       
+      this.searchService = this.platform.getSearchService();
     },
 
-    routingService() {
-      const origin = { lat: -23.5505, lng: -46.6333 }; // São Paulo, Brasil
-      const destination = { lat: -23.1791, lng:  -45.8872 }; // SJC, Brasil
-
-      const waypoints = [ 
-        {lat: -23.4126, lng: -46.0411 }, //Guararema 
-          {lat: -23.3055, lng: -45.967 }, //Jacareí
-      ];
-
-      const waypointMarkers = waypoints.map(waypoint => {
-        const marker = new H.map.Marker(waypoint);
-        this.map.addObject(marker);
-        return marker;
+    geocodeAddress(address) {
+      return new Promise((resolve, reject) => {
+        this.searchService.geocode({ q: address }, (result) => {
+          const location = result.items[0]?.position;
+          if (location) resolve({ lat: location.lat, lng: location.lng });
+          else reject(new Error(`Endereço não encontrado: ${address}`));
+        }, (error) => reject(error));
       });
+    },
 
-      //plotar o ponto origin
-      const startMarker = new H.map.Marker(origin);
-      this.map.addObject(startMarker);
+    addWaypoint() {
+      this.waypoints.push({ address: "" });
+    },
 
-      //plotar o ponto destination
-      const endMarker = new H.map.Marker(destination);
-      this.map.addObject(endMarker);
+    removeWaypoint(index) {
+      this.waypoints.splice(index, 1);
+      this.updateRoute(); // Recalcula a rota automaticamente após remover o waypoint
+    },
 
+    async updateRoute() {
+    try {
+      // Geocodificar origem, destino e waypoints
+      const origin = await this.geocodeAddress(this.originAddress);
+      const destination = await this.geocodeAddress(this.destinationAddress);
       
-      const routeRequestParams = {
-        routingMode: 'fast',
-        transportMode: 'car',
-        origin: `${origin.lat},${origin.lng}`,
-        destination: `${destination.lat},${destination.lng}`,
-        alternatives: 1, // Tenta buscar rotas alternativas otimizadas
-        return: 'polyline',
-        via: new H.service.Url.MultiValueQueryParameter(
-        waypoints.map((wp) => `${wp.lat},${wp.lng}`)),
+      // Geocodificar cada waypoint inserido pelo usuário
+      const waypoints = await Promise.all(this.waypoints.map(wp => this.geocodeAddress(wp.address)));
+
+      // Parâmetros para o roteamento
+      const routingParameters = {
+        routingMode: "fast",
+        transportMode: "car",
+        return: "polyline"
       };
 
-      const onResult = (result) => {
+      // Iniciar o grupo para exibir os pontos e a rota
+      this.map.removeObjects(this.map.getObjects());
+      const group = new H.map.Group();
+
+      // Adicionar marcador de origem
+      group.addObject(new H.map.Marker(origin));
+
+      // Calcular a rota entre os pontos sequencialmente
+      let previousPoint = origin;
+      for (const waypoint of waypoints) {
+        // Adicionar marcador para cada waypoint
+        const waypointMarker = new H.map.Marker(waypoint);
+        group.addObject(waypointMarker);
+
+        // Calcular a rota para o segmento atual
+        await this.calculateSegmentRoute(previousPoint, waypoint, routingParameters, group);
+        previousPoint = waypoint;
+      }
+
+      // Calcular a última rota entre o último waypoint e o destino
+      await this.calculateSegmentRoute(previousPoint, destination, routingParameters, group);
+
+      // Adicionar marcador de destino
+      group.addObject(new H.map.Marker(destination));
+
+      // Exibir o grupo no mapa
+      this.map.addObject(group);
+      this.map.getViewModel().setLookAtData({ bounds: group.getBoundingBox() });
+
+    } catch (error) {
+      console.error('Erro ao geocodificar endereços:', error);
+    }
+  },
+
+  async calculateSegmentRoute(start, end, routingParameters, group) {
+    return new Promise((resolve, reject) => {
+      const segmentParams = {
+        ...routingParameters,
+        origin: `${start.lat},${start.lng}`,
+        destination: `${end.lat},${end.lng}`
+      };
+
+      const router = this.platform.getRoutingService(null, 8);
+      router.calculateRoute(segmentParams, (result) => {
         if (result.routes.length) {
-          const lineStrings = [];
-          result.routes[0].sections.forEach((section) => {
-            lineStrings.push(H.geo.LineString.fromFlexiblePolyline(section.polyline));
-          });
+          const lineString = H.geo.LineString.fromFlexiblePolyline(result.routes[0].sections[0].polyline);
 
-          const multiLineString = new H.geo.MultiLineString(lineStrings);
-
-          const routeBackground = new H.map.Polyline(multiLineString, {
+          // Rota com fundo azul
+          const routeBackground = new H.map.Polyline(lineString, {
             style: {
               lineWidth: 6,
               strokeColor: 'rgba(0, 128, 255, 0.7)',
@@ -103,7 +144,8 @@ export default {
             }
           });
 
-          const routeArrows = new H.map.Polyline(multiLineString, {
+          // Setas brancas na rota
+          const routeArrows = new H.map.Polyline(lineString, {
             style: {
               lineWidth: 6,
               fillColor: 'white',
@@ -114,28 +156,18 @@ export default {
             }
           });
 
-          const routeLine = new H.map.Group();
-          routeLine.addObjects([routeBackground, routeArrows]);
-
-          const group = new H.map.Group();
-          group.addObjects([routeLine, startMarker, endMarker, ...waypointMarkers]);
-
-          this.map.addObject(group);
-
-          this.map.getViewModel().setLookAtData({
-            bounds: group.getBoundingBox()
-          });
+          // Adicionar a rota segmentada ao grupo
+          group.addObjects([routeBackground, routeArrows]);
+          resolve();
+        } else {
+          reject(new Error("Nenhuma rota encontrada entre os pontos"));
         }
-      };
-
-      const router = this.platform.getRoutingService(null, 8);
-      router.calculateRoute(routeRequestParams, onResult, (error) => {
-        console.error('Erro ao calcular a rota:', error.message);
+      }, (error) => {
+        console.error('Erro ao calcular segmento da rota:', error.message);
+        reject(error);
       });
-      
-      // Evento para ajustar o mapa ao redimensionar a janela
-      window.addEventListener('resize', () => this.map.getViewPort().resize());
-    }
+    });
+  }
   }
 };
 </script>
@@ -143,9 +175,23 @@ export default {
 <style scoped>
 #app {
   display: flex;
-  justify-content: center;
+  flex-direction: column;
   align-items: center;
-  height: 100vh;
-  margin: 0;
+  padding: 20px;
+  background-color: #BAE6FD;
+}
+
+#app input {
+  margin: 5px;
+  padding: 5px;
+}
+
+#app button {
+  margin-top: 10px;
+  padding: 5px 10px;
+}
+
+#app div[ref="mapContainer"] {
+  margin-top: 20px;
 }
 </style>
