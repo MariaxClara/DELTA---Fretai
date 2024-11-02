@@ -16,7 +16,7 @@
 
     margin-top: 3%;
     padding: 2%;
-    width: 90%;
+    width: 80%;
 
     border-radius: 8%;
 
@@ -33,7 +33,7 @@
 
     margin-top: 3%;
     padding: 2%;
-    width: 95%;
+    width: 85%;
 
     border-radius: 8%;
     
@@ -62,4 +62,77 @@
     flex-direction: column;
     justify-content: center;
     align-items: center;
+    margin-top: 10%;
+}
+
+.divList {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    margin-top: 10%;
+
+    
+    font-family: "Grandstander";
+    font-weight: bold;
+}
+
+.divListTop {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+
+    padding: 1%;
+    padding-left: 8%;
+    padding-right: 8%;
+    background-color: #B9B9B9;
+    width: 64%;
+    height: 2.75em;
+
+    border: 0.15em solid #FFFFFF;
+}
+.listTop {
+    background-color: #B9B9B9;
+}
+
+.divListItens {
+    margin: 0;
+    padding: 3%;
+    width: 82%;
+}
+
+.listItens {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+
+    padding: 1%;
+    height: 2em;
+}
+
+.listImage {
+    width: 2em;
+}
+
+.listUser {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+
+    width: 70%;
+    height: 65%;
+    padding: 0.4em;
+
+    background-color: #FFFFFF;
+
+    border: 0.15em solid #000000;
+}
+
+.listUserName {
+    background-color: #FFFFFF;
+    color: #000000;
+}
+
+.listUserCheck {
+    background-color: #FFFFFF;
 }
