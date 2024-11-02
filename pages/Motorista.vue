@@ -5,7 +5,7 @@
       <h1 class="title">Informações do Motorista</h1>
 
       <input v-model="email" 
-        placeholder="Digite o email do motorista"/>
+        placeholder="Digite o e-mail do motorista"/>
 
       <button @click="fetchDriverInfo" class="cadastrar-btn">Buscar</button>
 
