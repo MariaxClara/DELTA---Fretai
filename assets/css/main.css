@@ -9,6 +9,20 @@
     color: #FFFFFF;
 }
 
+.mainInput {
+    font-family: "Grandstander";
+    font-weight: bold;
+    font-size: 1.3em;
+
+    margin-top: 3%;
+    padding: 2%;
+    width: 90%;
+
+    border-radius: 8%;
+
+    background-color: #FFFFFF;
+}
+
 .mainButton {
     background-color: #3498DB;
 
@@ -25,6 +39,15 @@
     
 }
 
+.divInput {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+
+    margin: 2%;
+}
+
 .divButton {
     display: flex;
     flex-direction: column;
@@ -32,4 +55,11 @@
     align-items: center;
 
     margin: 2%;
+}
+
+.divLogo {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
 }

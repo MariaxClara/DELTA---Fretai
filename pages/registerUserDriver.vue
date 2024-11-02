@@ -1,11 +1,15 @@
 <template>
     <div>
 
-        <img src="../public/images/iconeImage.png" alt="">
+        <div class="divLogo">
+            <img src="../public/images/iconeImage.png" alt="">
+        </div>
 
-        <h1> Página de Cadastro </h1>
+
+        <div class="divInput">
+            <input type="text" class="mainInput" placeholder="Email do participante" >
+        </div>
         
-        <input type="text" placeholder="Email do participante" >
         
         <div class="divButton">
             <button class="mainButton"> Convidar Cliente </button>
