@@ -7,8 +7,11 @@
         
         <input type="text" placeholder="Email do participante" >
         
-        <button> Convidar Cliente </button>
-        <button> Voltar </button>
+        <div class="divButton">
+            <button class="mainButton"> Convidar Cliente </button>
+            <button class="mainButton"> Voltar </button>
+        </div>
+   
 
     </div>
 </template>
