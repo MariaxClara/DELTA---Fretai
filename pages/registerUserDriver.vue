@@ -13,7 +13,11 @@
         
         <div class="divButton">
             <button class="mainButton"> Convidar Cliente </button>
-            <button class="mainButton"> Voltar </button>
+            <button class="mainButton">
+                <NuxtLink class="mainLink" to="/myUsers">
+                    Voltar
+                </NuxtLink>
+            </button>
         </div>
    
 
