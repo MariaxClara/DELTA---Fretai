@@ -5,11 +5,16 @@
       <h1 class="title">Informações do Motorista</h1>
 
       <input v-model="email" 
-        placeholder="Digite o e-mail do motorista"/>
+        placeholder="Digite o e-mail do motorista"
+      >
 
       <button @click="fetchDriverInfo" class="cadastrar-btn">Buscar</button>
 
       <div v-if="driver" class="dados">
+        <div class="photo-container">
+          <img src="~/public/images/motoristaImage.png" alt="Motorista" class="motorista-photo">
+        </div>
+
         <p><strong>Nome:</strong> {{ driver.nome }}</p>
         <p><strong>Email:</strong> {{ driver.email }}</p>
         <p><strong>Telefone:</strong> {{ driver.telefone }}</p>
