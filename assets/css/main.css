@@ -5,13 +5,16 @@
 }
 
 * {
-    background-color: #BAE6FD;
     color: #FFFFFF;
+    font-family: "Grandstander";
+    font-weight: bold;
+}
+
+body {
+    background-color: #BAE6FD;
 }
 
 .mainInput {
-    font-family: "Grandstander";
-    font-weight: bold;
     font-size: 1.3em;
     color: #000000;
 
@@ -28,8 +31,6 @@
     background-color: #3498DB;
 
     color: #FFFFFF;
-    font-family: "Grandstander";
-    font-weight: bold;
     font-size: 1.2em;
 
     margin-top: 3%;
@@ -41,7 +42,6 @@
 }
 
 .mainLink {
-    background-color: #3498DB;
     text-decoration: none;
 }
 
@@ -78,9 +78,6 @@
     align-items: center;
     margin-top: 10%;
 
-    
-    font-family: "Grandstander";
-    font-weight: bold;
 }
 
 .divListTop {
@@ -96,9 +93,6 @@
     height: 2.75em;
 
     border: 0.15em solid #FFFFFF;
-}
-.listTop {
-    background-color: #B9B9B9;
 }
 
 .divListItens {
@@ -135,10 +129,40 @@
 }
 
 .listUserName {
-    background-color: #FFFFFF;
     color: #000000;
 }
 
-.listUserCheck {
-    background-color: #FFFFFF;
+.divSucces {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    background-color: #8CB775;
+
+    width: 80%;
+    height: 90%;
+
+    border: 0.15em solid #000000;
+    border-radius: 8%;
+}
+
+
+.divError{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    
+    background-color: #B77575;
+
+    width: 80%;
+    height: 90%;
+
+    border: 0.15em solid #000000;
+    border-radius: 8%;
+}
+
+.mainDiv{
+    display: flex;
+    justify-content: center;
+    align-items: center;
 }
