@@ -1,7 +1,7 @@
 <!-- pages/driverInfo.vue -->
 <template>
   <div class="login-container">
-    <form class="login-form" @submit.prevent="handleSubmit"> 
+    <form class="login-form" @submit.prevent> 
       <h1 class="title">Informações do Motorista</h1>
 
       <input v-model="email" 
