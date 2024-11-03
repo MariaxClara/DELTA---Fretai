@@ -1,3 +1,4 @@
+import { NuxtLink } from '../.nuxt/components';
 <template>
     <div>
         <div class="divLogo">
@@ -32,7 +33,9 @@
         
         <div class="divButton">
             <button class="mainButton">
-                Adicionar Participante
+                <NuxtLink class="mainLink" to="/registerUserDriver">
+                    Adicionar Participante
+                </NuxtLink>
             </button>
             <button class="mainButton">
                 Editar Participantes

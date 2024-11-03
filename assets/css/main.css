@@ -29,7 +29,7 @@
     color: #FFFFFF;
     font-family: "Grandstander";
     font-weight: bold;
-    font-size: 1.3em;
+    font-size: 1.2em;
 
     margin-top: 3%;
     padding: 2%;
@@ -37,6 +37,11 @@
 
     border-radius: 8%;
     
+}
+
+.mainLink {
+    background-color: #3498DB;
+    text-decoration: none;
 }
 
 .divInput {
