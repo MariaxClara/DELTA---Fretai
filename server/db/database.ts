@@ -1,4 +1,4 @@
-// server/db/database.js
+// server/db/database.ts
 import pkg from 'pg';
 const { Pool } = pkg;
 
@@ -13,7 +13,13 @@ const pool = new Pool({
   },
 });
 
-async function loginUser(email, password) {
+interface User {
+  user_id: number;
+  email: string;
+  senha: string;
+}
+
+async function loginUser(email: string, password: string): Promise<User | null> {
   try {
     const client = await pool.connect();
     const res = await client.query(
@@ -21,21 +27,20 @@ async function loginUser(email, password) {
       [email, password]
     );
     client.release();
-    return res.rows[0];
-  } catch (error) {
+    return res.rows[0] || null;
+  } catch (error: any) {
     console.error('Erro ao logar usuário:', error.message);
     return null;
   }
 }
 
-// Nova função para obter as tabelas do banco de dados
-async function getTables() {
+async function getTables(): Promise<{ table_name: string }[] | null> {
   try {
     const client = await pool.connect();
     const res = await client.query(`SELECT table_name FROM information_schema.tables WHERE table_schema = 'public'`);
     client.release();
     return res.rows;
-  } catch (error) {
+  } catch (error: any) {
     console.error('Erro ao obter tabelas:', error.message);
     return null;
   }
