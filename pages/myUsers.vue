@@ -9,26 +9,19 @@ import { NuxtLink } from '../.nuxt/components';
                 <img class="listTop" src="../public/images/PeopleIcon.svg" alt="">
                 <h1 class="listTop">Participantes</h1>
             </div>
+            
             <div class="divListItens">
-                <ul> 
-                    <div class="listItens">
-                        <img class="listImage" src="../public/images/PeopleExample.svg" alt="">
-                        <div class="listUser">
-                            <p class="listUserName">Joaozinho</p>
-                            <img class="listUserName" src="" alt="">
-                        </div>
+
+                <div  v-for="user in users" :key="user.idShort" class="listItens">
+                    <img class="listImage" src="../public/images/PeopleExample.svg" alt="">
+                    <div class="listUser">
+                        <p class="listUserName">{{user.name}}</p>
+                        <img class="listUserName" src="" alt="">
                     </div>
-                </ul>
-                <ul> 
-                    <div class="listItens">
-                        <img class="listImage" src="../public/images/PeopleExample.svg" alt="">
-                        <div class="listUser">
-                            <p class="listUserName">Joaozinho</p>
-                            <img class="listUserName" src="" alt="">
-                        </div>
-                    </div>
-                </ul>
+                </div>
+
             </div>
+        
         </div>
         
         <div class="divButton">
@@ -43,4 +36,29 @@ import { NuxtLink } from '../.nuxt/components';
         </div>
     </div>
 </template>
+
+<script>
+    import { ref } from 'vue'
+    export	default {
+        async setup() {
+            let users = ref([])
+            users.value.push(
+                {
+                    idShort: 0,
+                    name: 'João da Silva',
+                }
+            )
+            users.value.push(
+                {
+                    idShort: 1,
+                    name: 'Maria das Palmas',
+                }
+            )
+
+            return {
+                users
+            }
+        }
+    }
+</script>
 
