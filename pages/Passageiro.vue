@@ -10,6 +10,10 @@
             <button type="submit" class="cadastrar-btn">Buscar</button>
   
             <div v-if="passengerInfo" class="dados">
+                <div class="photo-container">
+                    <img src="~/public/images/motoristaImage.png" alt="Passageiro" class="motorista-photo">
+                </div>
+                
                 <h2>Informações do Passageiro:</h2>
                 <p><strong>Nome:</strong> {{ passengerInfo.passageiro_nome }}</p>
                 <p><strong>Email:</strong> {{ passengerInfo.passageiro_email }}</p>
