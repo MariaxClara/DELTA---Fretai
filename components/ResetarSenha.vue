@@ -50,12 +50,16 @@ async function handlePasswordSubmit() {
       throw new Error('Erro ao atualizar a senha');
     }
 
-    console.log("Atualização de senha bem-sucedida - Front");
+    alert('Senha atualizada com sucesso');
     emit('passwordChanged');
     closeModal();
   } catch (error) {
     console.error("Erro na atualização de senha - Front", error);
-    errorMessage.value = error.message || 'Erro ao atualizar a senha';
+    if (error instanceof Error) {
+      errorMessage.value = error.message || 'Erro ao atualizar a senha';
+    } else {
+      errorMessage.value = 'Erro ao atualizar a senha';
+    }
   }
 }
 
