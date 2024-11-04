@@ -1,5 +1,7 @@
-// UseLogin.ts (composable)
+// Correções em UseLogin.ts
 import { ref } from 'vue';
+
+const newPassword = ref('');
 
 interface FormData {
   email: string;
@@ -33,15 +35,11 @@ export default function useLogin() {
     }
   };
 
-  const onPasswordChanged = () => {
-    console.log('Senha alterada com sucesso');
-  };
-
   return {
     formData,
     handleSubmit,
     showPasswordReset,
-    onPasswordChanged,
+    newPassword,
   };
 }
 

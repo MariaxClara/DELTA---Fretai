@@ -46,4 +46,40 @@ async function getTables(): Promise<{ table_name: string }[] | null> {
   }
 }
 
-export { pool, loginUser, getTables };
+
+async function updatePassword(email: string, newPassword: string): Promise<User | null> {
+  console.log("BDDD");
+  const client = await pool.connect();
+  try {
+    // Atualiza a senha do usuário no banco de dados e retorna os dados do usuário
+    const res = await client.query(
+      `UPDATE users SET senha = $1 WHERE email = $2 RETURNING user_id, email, senha`,
+      [newPassword, email]
+    );
+    console.log("fazendo consulta")
+
+
+    // Verifica se o usuário foi encontrado e a senha foi atualizada
+    if (res.rowCount === 0) {
+      console.log("Naom achou")
+      return null; // Usuário não encontrado
+    }
+
+    // Retorna o usuário atualizado, ocultando a senha para segurança
+    const { user_id: id, email: userEmail } = res.rows[0];
+    return { user_id: id, email: userEmail, senha: '' };
+
+  } catch (error) {
+    const err = error as Error;
+    console.error('Erro ao atualizar a senha:', err.message);
+    return null;
+  } finally {
+    client.release();
+  }
+}
+
+
+
+
+export { pool, loginUser, updatePassword, getTables };
+
