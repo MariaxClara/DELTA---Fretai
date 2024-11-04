@@ -1,9 +1,7 @@
 <template>
   <div>
-    <NuxtRouteAnnouncer />
-    <h2>
-    ABROBRINHA
-    </h2>
-    <NuxtWelcome />
+    <NuxtLayout>
+      <NuxtPage/>
+    </NuxtLayout>
   </div>
 </template>
