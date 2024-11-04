@@ -1,7 +1,4 @@
-// Correções em UseLogin.ts
 import { ref } from 'vue';
-
-const newPassword = ref('');
 
 interface FormData {
   email: string;
@@ -12,38 +9,16 @@ interface LoginResponse {
   status: string;
   user?: any;
   message?: string;
+  primeiro_login?: boolean;
 }
 
-export default function useLogin() {
-  const formData = ref<FormData>({
-    email: '',
-    password: '',
-  });
+const formData = ref<FormData>({
+  email: '',
+  password: '',
+});
+const newPassword = ref('');
+const showPasswordReset = ref<boolean>(false);
 
-  const showPasswordReset = ref<boolean>(false);
-
-  const handleSubmit = async () => {
-    try {
-      const response: LoginResponse = await loginUser(formData.value.email, formData.value.password);
-      if (response.status === 'success') {
-        console.log('Login bem-sucedido:', response.user);
-      } else {
-        console.log('Credenciais inválidas');
-      }
-    } catch (error: any) {
-      console.error('Erro ao fazer login:', error.message);
-    }
-  };
-
-  return {
-    formData,
-    handleSubmit,
-    showPasswordReset,
-    newPassword,
-  };
-}
-
-// Função para realizar login via API
 async function loginUser(email: string, password: string): Promise<LoginResponse> {
   const response = await fetch('/api/login_api', {
     method: 'POST',
@@ -53,4 +28,43 @@ async function loginUser(email: string, password: string): Promise<LoginResponse
     body: JSON.stringify({ email, password }),
   });
   return await response.json();
+}
+
+// Função principal de login
+async function handleSubmit() {
+  try {
+    const response: LoginResponse = await loginUser(formData.value.email, formData.value.password);
+    
+    if (response.status === 'success') {
+      console.log('Login bem-sucedido:', response.user);
+      alert('Login bem-sucedido!');
+
+      // Verifica se é o primeiro login
+      if (response.user.primeiro_login) {
+        alert('Você precisa alterar sua senha');
+        showPasswordReset.value = true; // Exibe o pop-up para alteração de senha
+      }
+    } else {
+      console.log('Credenciais inválidas');
+    }
+  } catch (error: any) {
+    console.error('Erro ao fazer login:', error.message);
+  }
+}
+
+// Função para lidar com a redefinição de senha
+async function handlePasswordReset() {
+  alert('Senha alterada com sucesso');
+  console.log("Senha alterada com sucesso");
+  showPasswordReset.value = false; // Fecha o pop-up
+}
+
+// Exporta as variáveis e funções para uso no componente
+export default function useLogin() {
+  return {
+    formData,
+    handleSubmit,
+    showPasswordReset,
+    handlePasswordReset,
+  };
 }
