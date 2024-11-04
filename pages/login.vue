@@ -1,10 +1,15 @@
+// login.vue
 <template>
   <div class="login-container">
     <div class="logo-container">
       <img src="~/public/images/iconeImage.png" alt="Van Logo" class="van-icon">
     </div>
 
-    <form class="login-form" @submit.prevent="handleSubmit">
+    <form class="login-form" @submit.prevent="handleLoginSubmit">
+      <div v-if="errorMessage" class="error-message">
+        {{ errorMessage }}
+      </div>
+      
       <input 
         type="text"
         v-model="formData.email"
@@ -27,27 +32,80 @@
       Esqueci minha senha
     </button>
 
-    <!-- Modal para redefinir senha -->
     <PasswordResetModal
-    v-if="showPasswordReset"
-    :visible="showPasswordReset"
-    :email="formData.email"
-    @close="showPasswordReset = false"
-    @passwordChanged="onPasswordChanged"
-    />  
+      v-if="showPasswordReset"
+      :visible="showPasswordReset"
+      :email="formData.email"
+      @close="showPasswordReset = false"
+      @passwordChanged="onPasswordChanged"
+    />
 
+    <!-- <p v-if="userType" class="user-type-message">
+      Tipo de usuário: {{ userType }}
+    </p> -->
   </div>
 </template>
 
 <script setup lang="ts">
-import useLogin from '@/composables/UseLogin'
-import PasswordResetModal from '@/components/ResetarSenha.vue'
-import '@/assets/css/cssCadastroMotorista.css'
+import { ref } from 'vue';
+import { useRouter } from 'vue-router';
+import useLogin from '@/composables/UseLogin';
+import PasswordResetModal from '@/components/ResetarSenha.vue';
+import '@/assets/css/cssCadastroMotorista.css';
 
-const { formData, handleSubmit, showPasswordReset, onPasswordChanged } = useLogin()
+const router = useRouter();
+
+const {
+  formData,
+  showPasswordReset,
+  loginAndDetermineUserType,
+  userType,
+  errorMessage,
+} = useLogin();
+
+const handleLoginSubmit = async () => {
+  const userTypeResult = await loginAndDetermineUserType();
+  
+  if (userTypeResult) {
+    // Handle successful login and redirect based on user type
+    switch (userTypeResult) {
+      case 'motorista':
+        console.log('Logged in as driver');
+        await router.push({ name: 'perfil_motorista' });
+        break;
+      case 'passageiro':
+        console.log('Logged in as passenger');
+        await router.push({ name: 'perfil_passageiro' });
+        break;
+      default:
+        console.log('Unknown user type');
+    }
+  } else {
+    errorMessage.value = 'Falha no login. Verifique suas credenciais.';
+  }
+};
+
+
+
+const onPasswordChanged = () => {
+  showPasswordReset.value = false;
+  // Add any additional logic needed after password change
+};
 </script>
 
 <style scoped>
+.error-message {
+  color: #dc3545;
+  margin-bottom: 1rem;
+  text-align: center;
+}
+
+.user-type-message {
+  margin-top: 1rem;
+  text-align: center;
+  color: #28a745;
+}
+
 .forgot-password-btn {
   background: none;
   border: none;
@@ -56,6 +114,7 @@ const { formData, handleSubmit, showPasswordReset, onPasswordChanged } = useLogi
   text-decoration: underline;
   margin-top: 10px;
 }
+
 .forgot-password-btn:hover {
   color: #0056b3;
 }

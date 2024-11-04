@@ -1,5 +1,5 @@
 // server/api/login_api.ts
-import { loginUser } from '../db/database';
+import { loginUser, getUserType } from '../db/database';
 import { defineEventHandler } from 'h3';
 
 interface LoginResponse {
@@ -7,6 +7,8 @@ interface LoginResponse {
   user?: any;
   message?: string;
 }
+
+
 
 export default defineEventHandler(async (event): Promise<LoginResponse> => {
   const { email, password } = await readBody(event);
@@ -24,3 +26,4 @@ export default defineEventHandler(async (event): Promise<LoginResponse> => {
     return { status: 'error', message: 'Erro no servidor' };
   }
 });
+

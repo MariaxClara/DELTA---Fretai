@@ -1,6 +1,7 @@
-// server/db/database.ts
+// database.ts
 import pkg from 'pg';
 const { Pool } = pkg;
+import {handleSubmit} from '../composables/UseLogin'
 
 const pool = new Pool({
   user: 'postgres',
@@ -46,26 +47,21 @@ async function getTables(): Promise<{ table_name: string }[] | null> {
   }
 }
 
-
 async function updatePassword(email: string, newPassword: string): Promise<User | null> {
   console.log("BDDD");
   const client = await pool.connect();
   try {
-    // Atualiza a senha do usuário no banco de dados e retorna os dados do usuário
     const res = await client.query(
       `UPDATE users SET senha = $1 WHERE email = $2 RETURNING user_id, email, senha`,
       [newPassword, email]
     );
     console.log("fazendo consulta")
 
-
-    // Verifica se o usuário foi encontrado e a senha foi atualizada
     if (res.rowCount === 0) {
       console.log("Naom achou")
-      return null; // Usuário não encontrado
+      return null;
     }
 
-    // Retorna o usuário atualizado, ocultando a senha para segurança
     const { user_id: id, email: userEmail } = res.rows[0];
     return { user_id: id, email: userEmail, senha: '' };
 
@@ -78,8 +74,44 @@ async function updatePassword(email: string, newPassword: string): Promise<User 
   }
 }
 
+type UserRole = "motorista" | "passageiro" | "desconhecido" | null;
 
+async function getUserType(user_id: number): Promise<UserRole> {
+  const client = await pool.connect();
+  try {
+    // First check passageiros table
+    const passengerRes = await client.query(
+      'SELECT 1 FROM passageiros WHERE user_id = $1',
+      [user_id]
+    );
+    
+    if (passengerRes.rowCount > 0) {
+      return "passageiro";
+    }
+    
+    // Then check motoristas table
+    const driverRes = await client.query(
+      'SELECT 1 FROM motoristas WHERE user_id = $1',
+      [user_id]
+    );
+    
+    if (driverRes.rowCount > 0) {
+      return "motorista";
+    }
+    
+    return "desconhecido";
+  } catch (error) {
+    console.error("Erro ao verificar tipo de usuário:", error);
+    return "desconhecido";
+  } finally {
+    client.release();
+  }
+}
 
+// Keep the original usertype function as it might be used elsewhere
+async function usertype(user_id: number): Promise<UserRole> {
+  console.log('função tipo usuario')
+  return null; 
+}
 
-export { pool, loginUser, updatePassword, getTables };
-
+export { pool, loginUser, updatePassword, getTables, getUserType, usertype };
