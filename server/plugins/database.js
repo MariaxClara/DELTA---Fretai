@@ -109,9 +109,42 @@ export default function () {
     }
   }
 
+  async function getImagePathByUser(email) {
+    try {
+      console.log('Buscando caminho da imagem para o email:', email);
+      // Passo 1: Buscar o user_id com base no email na tabela users
+      const userQuery = 'SELECT user_id FROM users WHERE email = $1';
+      const userResult = await pool.query(userQuery, [email]);
+  
+      if (userResult.rows.length === 0) {
+        throw new Error('Usuário não encontrado com o e-mail fornecido');
+      }
+  
+      const userId = userResult.rows[0].user_id;
+      console.log('User ID:', userId);
+      
+
+      // Passo 2: Buscar o caminho da imagem na tabela user_images com o user_id
+      const imageQuery = 'SELECT image_path FROM user_images WHERE user_id = $1';
+      const imageResult = await pool.query(imageQuery, [userId]);
+  
+      if (imageResult.rows.length > 0) {
+        return imageResult.rows[0].image_path; // Retorna o caminho da imagem
+      } else {
+        throw new Error('Imagem não encontrada para o usuário especificado');
+      }
+    } catch (error) {
+      console.error('Erro ao buscar o caminho da imagem:', error.message);
+      throw error;
+    }
+  }
+
   return {
     pool,
     getDriverInfoByEmail,
     getPassengerInfoByEmail,
+    getImagePathByUser,
   };
+
+
 }
