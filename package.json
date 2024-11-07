@@ -12,6 +12,7 @@
   "dependencies": {
     "axios": "^1.7.7",
     "nuxt": "^3.13.2",
+    "nuxt-sass-resources-loader": "^2.0.5",
     "vue": "latest",
     "vue-router": "latest"
   }

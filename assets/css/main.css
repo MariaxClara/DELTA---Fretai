@@ -1,0 +1,168 @@
+@font-face {
+    font-family: "Grandstander";
+    src: local("Grandstander"),
+    url(../Grandstander/Grandstander-VariableFont_wght.ttf) format("truetype");
+}
+
+* {
+    color: #FFFFFF;
+    font-family: "Grandstander";
+    font-weight: bold;
+}
+
+body {
+    background-color: #BAE6FD;
+}
+
+.mainInput {
+    font-size: 1.3em;
+    color: #000000;
+
+    margin-top: 3%;
+    padding: 2%;
+    width: 80%;
+
+    border-radius: 8%;
+
+    background-color: #FFFFFF;
+}
+
+.mainButton {
+    background-color: #3498DB;
+
+    color: #FFFFFF;
+    font-size: 1.2em;
+
+    margin-top: 3%;
+    padding: 2%;
+    width: 85%;
+
+    border-radius: 8%;
+    
+}
+
+.mainLink {
+    text-decoration: none;
+}
+
+.divInput {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+
+    margin: 2%;
+}
+
+.divButton {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+
+    margin: 2%;
+}
+
+.divLogo {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    margin-top: 10%;
+}
+
+.divList {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    margin-top: 10%;
+
+}
+
+.divListTop {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+
+    padding: 1%;
+    padding-left: 8%;
+    padding-right: 8%;
+    background-color: #B9B9B9;
+    width: 64%;
+    height: 2.75em;
+
+    border: 0.15em solid #FFFFFF;
+}
+
+.divListItens {
+    margin: 0;
+    padding: 3%;
+    width: 82%;
+}
+
+.listItens {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+
+    padding: 1%;
+    height: 2em;
+}
+
+.listImage {
+    width: 2em;
+}
+
+.listUser {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+
+    width: 70%;
+    height: 65%;
+    padding: 0.4em;
+
+    background-color: #FFFFFF;
+
+    border: 0.15em solid #000000;
+}
+
+.listUserName {
+    color: #000000;
+}
+
+.divSucces {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    background-color: #8CB775;
+
+    width: 80%;
+    height: 90%;
+
+    border: 0.15em solid #000000;
+    border-radius: 8%;
+}
+
+
+.divError{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    
+    background-color: #B77575;
+
+    width: 80%;
+    height: 90%;
+
+    border: 0.15em solid #000000;
+    border-radius: 8%;
+}
+
+.mainDiv{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
