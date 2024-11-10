@@ -37,7 +37,7 @@ async function loginUser(email: string, password: string): Promise<User | null> 
   try {
     const client = await pool.connect();
     const res = await client.query(
-      `SELECT user_id, email, senha FROM users WHERE email = $1 AND senha = $2`,
+      `SELECT user_id, email, senha, primeiro_login FROM users WHERE email = $1 AND senha = $2`,
       [email, password]
     );
     client.release();
