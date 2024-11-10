@@ -12,8 +12,11 @@
   "dependencies": {
     "@nuxtjs/axios": "^5.13.6",
     "@types/pg": "^8.11.10",
+    "consola": "^3.2.3",
+    "defu": "^6.1.4",
     "express": "^4.21.1",
     "nodemailer": "^6.9.16",
+    "axios": "^1.7.7",
     "nuxt": "^3.13.2",
     "nuxt-sass-resources-loader": "^2.0.5",
     "pg": "^8.13.1",
@@ -25,5 +28,4 @@
     "@types/nodemailer": "^6.4.16",
     "better-sqlite3": "^9.6.0"
   }
-  
 }
