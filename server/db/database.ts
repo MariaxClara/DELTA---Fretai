@@ -19,6 +19,20 @@ interface User {
   senha: string;
 }
 
+interface DriverInfo {
+  nome: string;
+  email: string;
+  telefone: string;
+}
+
+interface PassengerInfo {
+  passageiro_nome: string;
+  passageiro_email: string;
+  passageiro_telefone: string;
+  motorista_nome: string | null;
+  motorista_telefone: string | null;
+}
+
 async function loginUser(email: string, password: string): Promise<User | null> {
   try {
     const client = await pool.connect();
@@ -46,43 +60,118 @@ async function getTables(): Promise<{ table_name: string }[] | null> {
   }
 }
 
-
 async function updatePassword(email: string, newPassword: string): Promise<User | null> {
-  console.log("BDDD");
   const client = await pool.connect();
   try {
-    // Atualiza a senha do usuário no banco de dados e retorna os dados do usuário
     const res = await client.query(
       `UPDATE users SET senha = $1 WHERE email = $2 RETURNING user_id, email, senha`,
       [newPassword, email]
     );
-    console.log("fazendo consulta")
 
+    if (res.rowCount === 0) return null;
 
-    // Verifica se o usuário foi encontrado e a senha foi atualizada
-    if (res.rowCount === 0) {
-      console.log("Naom achou")
-      return null; // Usuário não encontrado
-    }
-
-    // Retorna o usuário atualizado, ocultando a senha para segurança
-    const { user_id: id, email: userEmail } = res.rows[0];
-    return { user_id: id, email: userEmail, senha: '' };
-
+    const { user_id, email: userEmail } = res.rows[0];
+    return { user_id, email: userEmail, senha: '' };
   } catch (error) {
-    const err = error as Error;
-    console.error('Erro ao atualizar a senha:', err.message);
+    console.error('Erro ao atualizar a senha:', (error as Error).message);
     return null;
   } finally {
     client.release();
   }
 }
 
+async function getDriverInfoByEmail(email: string): Promise<DriverInfo | null> {
+  try {
+    const client = await pool.connect();
 
+    const userRes = await client.query(`SELECT user_id, email FROM users WHERE email = $1`, [email]);
 
+    if (userRes.rows.length === 0) {
+      client.release();
+      console.log("Usuário não encontrado.");
+      return null;
+    }
 
+    const userId = userRes.rows[0].user_id;
+    const userEmail = userRes.rows[0].email;
 
+    const driverRes = await client.query(`SELECT nome, telefone FROM motoristas WHERE user_id = $1`, [userId]);
 
+    client.release();
 
-export { pool, loginUser, updatePassword, getTables };
+    if (driverRes.rows.length === 0) {
+      console.log("Motorista não encontrado.");
+      return null;
+    }
 
+    return { nome: driverRes.rows[0].nome, email: userEmail, telefone: driverRes.rows[0].telefone };
+  } catch (error) {
+    console.error('Erro ao obter informações do motorista:', (error as Error).message);
+    return null;
+  }
+}
+
+async function getPassengerInfoByEmail(email: string): Promise<PassengerInfo[] | null> {
+  try {
+    const client = await pool.connect();
+
+    const res = await client.query(`
+      SELECT 
+          p.nome AS passageiro_nome, 
+          u.email AS passageiro_email, 
+          p.telefone AS passageiro_telefone,
+          m.nome AS motorista_nome,
+          m.telefone AS motorista_telefone
+      FROM passageiros p
+      JOIN users u ON p.user_id = u.user_id
+      LEFT JOIN relacionamento_passageiro_rotas rpr ON p.passageiro_id = rpr.passageiro_id
+      LEFT JOIN rotas r ON rpr.rotas_id = r.rota_id
+      LEFT JOIN motoristas m ON r.motorista_id = m.motorista_id
+      WHERE u.email = $1
+    `, [email]);
+
+    client.release();
+
+    if (res.rows.length === 0) {
+      return null;
+    }
+
+    return res.rows.map(row => ({
+      passageiro_nome: row.passageiro_nome,
+      passageiro_email: row.passageiro_email,
+      passageiro_telefone: row.passageiro_telefone,
+      motorista_nome: row.motorista_nome,
+      motorista_telefone: row.motorista_telefone,
+    }));
+  } catch (error) {
+    console.error('Erro ao obter informações do passageiro:', (error as Error).message);
+    return null;
+  }
+}
+
+async function getImagePathByUser(email: string): Promise<string | null> {
+  try {
+    console.log('Buscando caminho da imagem para o email:', email);
+
+    const userResult = await pool.query('SELECT user_id FROM users WHERE email = $1', [email]);
+
+    if (userResult.rows.length === 0) {
+      throw new Error('Usuário não encontrado com o e-mail fornecido');
+    }
+
+    const userId = userResult.rows[0].user_id;
+
+    const imageResult = await pool.query('SELECT image_path FROM user_images WHERE user_id = $1', [userId]);
+
+    if (imageResult.rows.length > 0) {
+      return imageResult.rows[0].image_path;
+    } else {
+      throw new Error('Imagem não encontrada para o usuário especificado');
+    }
+  } catch (error) {
+    console.error('Erro ao buscar o caminho da imagem:', (error as Error).message);
+    return null;
+  }
+}
+
+export { pool, loginUser, updatePassword, getTables, getDriverInfoByEmail, getPassengerInfoByEmail, getImagePathByUser };
