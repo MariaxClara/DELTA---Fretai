@@ -1,4 +1,5 @@
 import { ref } from 'vue';
+import { loginUser } from '../server/db/database';
 
 interface FormData {
   email: string;
@@ -12,59 +13,94 @@ interface LoginResponse {
   primeiro_login?: boolean;
 }
 
-const formData = ref<FormData>({
-  email: '',
-  password: '',
-});
-const newPassword = ref('');
-const showPasswordReset = ref<boolean>(false);
+type UserRole = "motorista" | "passageiro" | "desconhecido" | null;
 
-async function loginUser(email: string, password: string): Promise<LoginResponse> {
-  const response = await fetch('/api/login_api', {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-    },
-    body: JSON.stringify({ email, password }),
+export default function useLogin() {
+  const formData = ref<FormData>({
+    email: '',
+    password: '',
   });
-  return await response.json();
-}
 
-// Função principal de login
-async function handleSubmit() {
-  try {
-    const response: LoginResponse = await loginUser(formData.value.email, formData.value.password);
-    
-    if (response.status === 'success') {
-      console.log('Login bem-sucedido:', response.user);
-      alert('Login bem-sucedido!');
+  const showPasswordReset = ref<boolean>(false);
+  const userType = ref<UserRole>("desconhecido");
+  const errorMessage = ref<string>('');
 
-      // Verifica se é o primeiro login
-      if (response.user.primeiro_login) {
-        alert('Você precisa alterar sua senha');
-        showPasswordReset.value = true; // Exibe o pop-up para alteração de senha
+  const handleSubmit = async () => {
+    try {
+      const response = await fetch('/api/login_api', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          email: formData.value.email,
+          password: formData.value.password,
+        }),
+      });
+
+      const data: LoginResponse = await response.json();
+      
+      if (data.status === 'success') {
+        console.log('Login bem-sucedido:', data.user);
+        
+        // Verifica se é o primeiro login
+        if (data.primeiro_login) {
+          alert('Você precisa alterar sua senha');
+          showPasswordReset.value = true; // Exibe o pop-up para alteração de senha
+        }
+        
+        return data.user;
+      } else {
+        errorMessage.value = 'Credenciais inválidas';
+        console.log('Credenciais inválidas');
+        return null;
+      }
+    } catch (error: any) {
+      console.error('Erro ao fazer login:', error.message);
+      errorMessage.value = 'Erro ao fazer login';
+      return null;
+    }
+  };
+
+  const loginAndDetermineUserType = async () => {
+    const user = await handleSubmit();
+    if (user && user.user_id) {
+      try {
+        const response = await fetch('/api/user-type', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({ user_id: user.user_id })
+        });
+        
+        const data = await response.json();
+        userType.value = data.userType || "desconhecido";
+        console.log(`O tipo de usuário é: ${userType.value}`);
+        return data.userType;
+      } catch (error) {
+        console.error("Erro ao determinar tipo de usuário:", error);
+        return "desconhecido";
       }
     } else {
-      console.log('Credenciais inválidas');
+      console.log("Falha no login ou erro ao obter o user_id.");
+      return "desconhecido";
     }
-  } catch (error: any) {
-    console.error('Erro ao fazer login:', error.message);
-  }
-}
+  };
 
-// Função para lidar com a redefinição de senha
-async function handlePasswordReset() {
-  alert('Senha alterada com sucesso');
-  console.log("Senha alterada com sucesso");
-  showPasswordReset.value = false; // Fecha o pop-up
-}
+  const handlePasswordReset = async () => {
+    alert('Senha alterada com sucesso');
+    console.log("Senha alterada com sucesso");
+    showPasswordReset.value = false; // Fecha o pop-up
+  };
 
-// Exporta as variáveis e funções para uso no componente
-export default function useLogin() {
   return {
     formData,
     handleSubmit,
     showPasswordReset,
+    loginAndDetermineUserType,
     handlePasswordReset,
+    userType,
+    errorMessage,
   };
 }

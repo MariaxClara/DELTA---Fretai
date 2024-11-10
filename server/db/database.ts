@@ -1,4 +1,4 @@
-// server/db/database.ts
+// database.ts
 import pkg from 'pg';
 const { Pool } = pkg;
 
