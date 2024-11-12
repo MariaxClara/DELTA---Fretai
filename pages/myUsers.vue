@@ -16,7 +16,8 @@ import { NuxtLink } from '../.nuxt/components';
                     <img class="listImage" src="../public/images/PeopleExample.svg" alt="">
                     <div class="listUser">
                         <p class="listUserName">{{user.name}}</p>
-                        <img class="listUserName" src="" alt="">
+                        <img v-if="user.paid" class="listUserName" src="../public/images/HandCoinsGreen.svg" alt="">
+                        <img v-else class="listUserName" src="../public/images/HandCoinsRed.svg" alt="">
                     </div>
                 </div>
 
@@ -41,17 +42,20 @@ import { NuxtLink } from '../.nuxt/components';
     import { ref } from 'vue'
     export	default {
         async setup() {
+            let edit = ref(false)
             let users = ref([])
             users.value.push(
                 {
                     idShort: 0,
                     name: 'João da Silva',
+                    paid: true,
                 }
             )
             users.value.push(
                 {
                     idShort: 1,
                     name: 'Maria das Palmas',
+                    paid: false,
                 }
             )
 
