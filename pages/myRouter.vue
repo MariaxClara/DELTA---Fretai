@@ -23,7 +23,7 @@
   </template>
   
   <script>
-  import maps from "./codes.js"
+  import maps from "./routes/codes.js"
   
   const { initMapPlatform, geocodeAddress, addWaypoint, removeWaypoint, updateRoute, calculateSegmentRoute } = maps()
   
@@ -59,6 +59,8 @@
   </script>
   
   <style scoped>
+  @import "./assets/css/main.css";
+
   #app {
     display: flex;
     flex-direction: column;
@@ -66,18 +68,26 @@
     padding: 20px;
     background-color: #BAE6FD;
   }
-  
+
   #app input {
     margin: 5px;
     padding: 5px;
+    
   }
-  
+
   #app button {
     margin-top: 10px;
     padding: 5px 10px;
+    background-color: #3498DB;
+    color: #FFFFFF;
   }
-  
+
+
   #app div[ref="mapContainer"] {
     margin-top: 20px;
+  }
+
+  #app ::placeholder {
+    color: #000;
   }
   </style>

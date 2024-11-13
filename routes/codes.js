@@ -1,3 +1,5 @@
+import RouteOptimizer from './optmize.js';
+
 export default function maps() {
 
   function initMapPlatform() {
@@ -47,35 +49,58 @@ export default function maps() {
         return: "polyline"
       };
 
+      // Otimizar a rota
+      const routeOptimizer = new RouteOptimizer('marcos_aquino', 'engenhari@S24');
+      const { locations, optimizedRoute } = await routeOptimizer.optimizeRoute(origin, destination, waypoints);
+
+      console.log(locations, optimizedRoute); // Debug
+      //esse dicionario combina as informações de locations com a de rotas otimizadas
+      const combinedRoute = Object.keys(optimizedRoute).map((key, index) => {
+        const optimizedStop = optimizedRoute[key];
+        const originalLocation = locations.find(location => location.name === optimizedStop.name);
+        
+        // Criar objeto combinado
+        return {
+            name: originalLocation ? originalLocation.name : `Stop ${index}`,
+            lat: originalLocation ? originalLocation.lat : null,
+            lng: originalLocation ? originalLocation.lng : null,
+            restrictions: originalLocation && originalLocation.restrictions ? originalLocation.restrictions : null,
+            arrival: optimizedStop.arrival,
+            distance: optimizedStop.distance
+        };
+      });
+
+      console.log(combinedRoute); // Debug
+
+      // Iniciar o grupo para exibir os pontos e a rota
       // Iniciar o grupo para exibir os pontos e a rota
       this.map.removeObjects(this.map.getObjects());
       const group = new H.map.Group();
 
-      // Adicionar marcador de origem
-      group.addObject(new H.map.Marker(origin));
+      for (let i = 0; i < combinedRoute.length - 1; i++) {
+          const start = { lat: combinedRoute[i].lat, lng: combinedRoute[i].lng };
+          const end = { lat: combinedRoute[i + 1].lat, lng: combinedRoute[i + 1].lng };
 
-      // Calcular a rota entre os pontos sequencialmente
-      let previousPoint = origin;
-      for (const waypoint of waypoints) {
-        // Adicionar marcador para cada waypoint
-        const waypointMarker = new H.map.Marker(waypoint);
-        group.addObject(waypointMarker);
+          // Adicionar marcador para cada ponto do combinedRoute
+          const marker = new H.map.Marker(start);
+          group.addObject(marker);
 
-        // Calcular a rota para o segmento atual
-        await this.calculateSegmentRoute(previousPoint, waypoint, routingParameters, group);
-        previousPoint = waypoint;
+          // Calcular a rota para o segmento atual
+          await this.calculateSegmentRoute(start, end, routingParameters, group);
       }
 
-      // Calcular a última rota entre o último waypoint e o destino
-      await this.calculateSegmentRoute(previousPoint, destination, routingParameters, group);
+      // Adicionar marcador para o último ponto do combinedRoute
+      const lastMarker = new H.map.Marker({ lat: combinedRoute[combinedRoute.length - 1].lat, lng: combinedRoute[combinedRoute.length - 1].lng });
+      group.addObject(lastMarker);
 
-      // Adicionar marcador de destino
-      group.addObject(new H.map.Marker(destination));
-
+      const totalDistance = combinedRoute[combinedRoute.length - 1].distance;
+      const totalDuration = combinedRoute[combinedRoute.length - 1].arrival;
+      console.log(`Distância total: ${totalDistance} km`);
+      console.log(`Duração total: ${totalDuration} min`);
+      
       // Exibir o grupo no mapa
       this.map.addObject(group);
       this.map.getViewModel().setLookAtData({ bounds: group.getBoundingBox() });
-
     } catch (error) {
       console.error('Erro ao geocodificar endereços:', error);
     }
