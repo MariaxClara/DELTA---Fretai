@@ -3,35 +3,46 @@ import RouteOptimizer from './optmize.js';
 export default function maps() {
 
   function initMapPlatform() {
-      const apiKey = 'KJ72fZC8X7n9q7BlK42O4rv6upXTF6_B9l2JNVGhcBY';
-      this.platform = new H.service.Platform({ apikey: apiKey });
-      const defaultLayers = this.platform.createDefaultLayers();
-      this.map = new H.Map(this.$refs.mapContainer, defaultLayers.vector.normal.map, { zoom: 10, center: { lat: -23.5505, lng: -46.6333 } });
-      this.ui = H.ui.UI.createDefault(this.map, defaultLayers);
-      const mapEvents = new H.mapevents.MapEvents(this.map);
-      new H.mapevents.Behavior(mapEvents);
-      
-      this.searchService = this.platform.getSearchService();
-    }
+    const apiKey = 'KJ72fZC8X7n9q7BlK42O4rv6upXTF6_B9l2JNVGhcBY';
+    this.platform = new H.service.Platform({ apikey: apiKey });
+    const defaultLayers = this.platform.createDefaultLayers();
+    this.map = new H.Map(this.$refs.mapContainer, defaultLayers.vector.normal.map, { zoom: 10, center: { lat: -23.5505, lng: -46.6333 } });
+    this.ui = H.ui.UI.createDefault(this.map, defaultLayers);
+    const mapEvents = new H.mapevents.MapEvents(this.map);
+    new H.mapevents.Behavior(mapEvents);
+    this.map.addEventListener('mapviewchange', () => {
+      if (this.currentBubble) {
+        this.currentBubble.setPosition(this.map.screenToGeo(
+          this.map.geoToScreen(this.currentBubble.getPosition())
+        ));
+      }
+    });
+    this.searchService = this.platform.getSearchService();
+
+    // Add the CSS rule to hide .H_btn elements
+    const style = document.createElement('style');
+    style.innerHTML = '.H_btn { display: none; }';
+    document.head.appendChild(style);
+  }
 
   function geocodeAddress(address) {
-      return new Promise((resolve, reject) => {
-        this.searchService.geocode({ q: address }, (result) => {
-          const location = result.items[0]?.position;
-          if (location) resolve({ lat: location.lat, lng: location.lng });
-          else reject(new Error(`Endereço não encontrado: ${address}`));
-        }, (error) => reject(error));
-      });
-    }
+    return new Promise((resolve, reject) => {
+      this.searchService.geocode({ q: address }, (result) => {
+        const location = result.items[0]?.position;
+        if (location) resolve({ lat: location.lat, lng: location.lng });
+        else reject(new Error(`Endereço não encontrado: ${address}`));
+      }, (error) => reject(error));
+    });
+  }
 
   function addWaypoint() {
-      this.waypoints.push({ address: "" });
-    }
+    this.waypoints.push({ address: "" });
+  }
 
   function removeWaypoint(index) {
-      this.waypoints.splice(index, 1);
-      this.updateRoute(); // Recalcula a rota automaticamente após remover o waypoint
-    }
+    this.waypoints.splice(index, 1);
+    this.updateRoute(); // Recalcula a rota automaticamente após remover o waypoint
+  }
 
   async function updateRoute() {
     try {
@@ -61,7 +72,7 @@ export default function maps() {
         
         // Criar objeto combinado
         return {
-            name: originalLocation ? originalLocation.name : `Stop ${index}`,
+            name: originalLocation ? originalLocation.name : `Parada ${index}`,
             lat: originalLocation ? originalLocation.lat : null,
             lng: originalLocation ? originalLocation.lng : null,
             restrictions: originalLocation && originalLocation.restrictions ? originalLocation.restrictions : null,
@@ -71,19 +82,28 @@ export default function maps() {
       });
 
       console.log(combinedRoute); // Debug
+          // Criar um novo array para armazenar os endereços na ordem de combinedRoute
+      const orderedAddresses = combinedRoute.map(stop => {
+        if (stop.name === 'Start') {
+          return this.originAddress;
+        } else if (stop.name === 'End') {
+          return this.destinationAddress;
+        } else {
+          const waypointIndex = parseInt(stop.name.split(' ')[1]) - 1;
+          return this.waypoints[waypointIndex].address;
+        }
+      });
 
-      // Iniciar o grupo para exibir os pontos e a rota
+      console.log('Ordered Addresses:', orderedAddresses); // Debug
+
       // Iniciar o grupo para exibir os pontos e a rota
       this.map.removeObjects(this.map.getObjects());
       const group = new H.map.Group();
 
+      // Adicionar marcador para o ponto de origem
       for (let i = 0; i < combinedRoute.length - 1; i++) {
           const start = { lat: combinedRoute[i].lat, lng: combinedRoute[i].lng };
           const end = { lat: combinedRoute[i + 1].lat, lng: combinedRoute[i + 1].lng };
-
-          // Adicionar marcador para cada ponto do combinedRoute
-          const marker = new H.map.Marker(start);
-          group.addObject(marker);
 
           // Calcular a rota para o segmento atual
           await this.calculateSegmentRoute(start, end, routingParameters, group);
@@ -92,6 +112,55 @@ export default function maps() {
       // Adicionar marcador para o último ponto do combinedRoute
       const lastMarker = new H.map.Marker({ lat: combinedRoute[combinedRoute.length - 1].lat, lng: combinedRoute[combinedRoute.length - 1].lng });
       group.addObject(lastMarker);
+
+      // Adicionar bubbles de informação
+      group.addEventListener('tap', function (evt) {
+        this.ui.getBubbles().forEach(bubble => this.ui.removeBubble(bubble));
+      
+        const bubbleContent = `
+          <div style="width: auto; height: auto; background-color: lightgray; color: black; padding: 10px; display: block; align-items: center; justify-content: center; position: relative;">
+            <button onclick="closeBubble()" style="position: absolute; top: 5px; right: 5px;">X</button>
+            ${evt.target.getData()}
+          </div>
+        `;
+      
+        const bubble = new H.ui.InfoBubble(evt.target.getGeometry(), {
+          content: bubbleContent
+        });
+        this.ui.addBubble(bubble);
+      
+        // Função para fechar o bubble
+        window.closeBubble = () => {
+          this.ui.removeBubble(bubble);
+        };
+      }.bind(this), false);
+
+      for (let i = 0; i < combinedRoute.length; i++) {
+        const location = combinedRoute[i];
+        const address = orderedAddresses[i];
+        
+        let prevLocation = null;
+        if (i > 0) {
+          prevLocation = combinedRoute[i - 1];
+        }
+        
+        let distanceToNext = 0;
+        let timeToNext = 0;
+        if (prevLocation) {
+          distanceToNext = (location.distance - prevLocation.distance).toFixed(2);
+          timeToNext = (location.arrival - prevLocation.arrival).toFixed(2);
+        }
+        
+        const marker = new H.map.Marker({ lat: location.lat, lng: location.lng });
+        marker.setData(`
+          <div>Endereço: ${address}</div>
+          <div>Distância total até aqui: ${location.distance.toFixed(2)} km</div>
+          <div>Tempo total até aqui: ${location.arrival.toFixed(2)} min</div>
+          <div>Distância a partir da última parada: ${distanceToNext} km</div>
+          <div>Tempo a partir da última parada: ${timeToNext} min</div>
+        `);
+        group.addObject(marker);
+      }
 
       const totalDistance = combinedRoute[combinedRoute.length - 1].distance;
       const totalDuration = combinedRoute[combinedRoute.length - 1].arrival;
@@ -156,4 +225,3 @@ export default function maps() {
 
   return {initMapPlatform, geocodeAddress, addWaypoint, removeWaypoint, updateRoute, calculateSegmentRoute};
 }
-

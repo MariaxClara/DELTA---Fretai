@@ -59,7 +59,7 @@
   </script>
   
   <style scoped>
-  @import "./assets/css/main.css";
+  /* @import "./assets/css/main.css"; */
 
   #app {
     display: flex;
@@ -72,7 +72,7 @@
   #app input {
     margin: 5px;
     padding: 5px;
-    
+    color: #000000;
   }
 
   #app button {
@@ -88,6 +88,8 @@
   }
 
   #app ::placeholder {
-    color: #000;
+    color: #000000;
   }
-  </style>
+
+ 
+</style>
