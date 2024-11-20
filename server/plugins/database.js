@@ -1,4 +1,3 @@
-// server/plugins/database.js
 import pkg from 'pg';
 const { Pool } = pkg;
 
@@ -109,6 +108,7 @@ export default function () {
     }
   }
 
+  // Função para buscar o caminho da imagem do usuário
   async function getImagePathByUser(email) {
     try {
       console.log('Buscando caminho da imagem para o email:', email);
@@ -124,6 +124,7 @@ export default function () {
       console.log('User ID:', userId);
       
 
+
       // Passo 2: Buscar o caminho da imagem na tabela user_images com o user_id
       const imageQuery = 'SELECT image_path FROM user_images WHERE user_id = $1';
       const imageResult = await pool.query(imageQuery, [userId]);
@@ -135,16 +136,73 @@ export default function () {
       }
     } catch (error) {
       console.error('Erro ao buscar o caminho da imagem:', error.message);
-      throw error;
-    }
+      throw error;
+    }
   }
+
+  // Função para buscar informações da corrida (rota) do passageiro com base no e-mail
+ // Função para buscar as informações da corrida e do motorista associado ao passageiro
+// Função para buscar as informações da corrida e do motorista associado ao passageiro
+  async function getRaceInfoByEmail(email) {
+    try {
+      const client = await pool.connect();
+      
+      // Log para verificar o email recebido
+      console.log("Buscando informações da corrida para o email:", email);
+
+      const res = await client.query(`
+        SELECT 
+            p.nome AS passageiro_nome, 
+            u.email AS passageiro_email, 
+            p.telefone AS passageiro_telefone,
+            m.nome AS motorista_nome,
+            m.telefone AS motorista_telefone,
+            r.destino,
+            r.horario,
+            r.dia_da_semana
+        FROM passageiros p
+        JOIN users u ON p.user_id = u.user_id
+        LEFT JOIN relacionamento_passageiro_rotas rpr ON p.passageiro_id = rpr.passageiro_id
+        LEFT JOIN rotas r ON rpr.rotas_id = r.rota_id
+        LEFT JOIN motoristas m ON r.motorista_id = m.motorista_id
+        WHERE u.email = $1
+      `, [email]);
+
+      client.release();
+      
+      // Log para verificar o resultado da consulta
+
+      if (res.rows.length === 0) {
+        console.log("Nenhuma corrida encontrada para o passageiro com o email:", email);
+        return { error: "Nenhuma corrida encontrada para o passageiro." };  // Retorna um erro se não houver resultados
+      }
+
+      // Retorna as informações de todas as corridas associadas ao passageiro
+      const raceInfo = res.rows.map(row => ({
+        passageiro_nome: row.passageiro_nome,
+        passageiro_email: row.passageiro_email,
+        passageiro_telefone: row.passageiro_telefone,
+        motorista_nome: row.motorista_nome,
+        motorista_telefone: row.motorista_telefone,
+        destino: row.destino,
+        horario: row.horario,
+        dia_da_semana: row.dia_da_semana,
+      }));
+
+      // Se houver corridas, retornamos as informações
+      return raceInfo;
+    } catch (error) {
+      console.error('Erro ao buscar informações da corrida:', error.message);
+      return { error: `Erro ao buscar informações da corrida: ${error.message}` };  // Retorna o erro
+    }
+  }
+
 
   return {
     pool,
     getDriverInfoByEmail,
     getPassengerInfoByEmail,
     getImagePathByUser,
+    getRaceInfoByEmail, // Expondo a função de busca de corrida
   };
-
-
 }

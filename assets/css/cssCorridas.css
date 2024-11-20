@@ -1,0 +1,89 @@
+/* corridas.css */
+
+/* Contêiner principal */
+.corridas-container {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: flex-start; /* Alinha os elementos ao topo */
+    min-height: 100vh;
+    background-color: #BAE6FD;
+    gap: 2rem; /* Espaçamento entre o formulário e as informações */
+    padding: 20px;
+}
+
+/* Formulário centralizado */
+.formulario {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+    max-width: 320px;
+}
+
+.login-form {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    max-width: 320px; /* Define uma largura máxima */
+    gap: 1rem; /* Espaçamento entre os itens */
+    font-family: Verdana, Geneva, Tahoma, sans-serif;
+    margin: auto; /* Centraliza horizontalmente */
+}
+
+
+/* Informações da corrida à esquerda */
+.dados-container {
+    flex: 1; /* Ocupa o espaço restante */
+    display: flex;
+    justify-content: flex-start; /* Alinha as informações à esquerda */
+    margin-top: 300px; 
+}
+
+.dados {
+    background-color: white;
+    padding: 20px;
+    border-radius: 15px; /* Bordas arredondadas */
+    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2); /* Sombras para destaque */
+    color: #333;
+    max-width: 400px; /* Largura fixa */
+    width: 100%;
+}
+
+.dados h2 {
+    text-align: center;
+    margin-bottom: 10px;
+    font-size: 1.5rem;
+}
+
+.dados p {
+    margin: 8px 0;
+}
+
+/* Estilo do botão */
+.cadastrar-btn {
+    margin-top: 1rem;
+    padding: 15px 30px;
+    border: none;
+    border-radius: 25px;
+    background-color: white;
+    color: #007bff;
+    font-size: 18px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    width: 100%;
+}
+
+.cadastrar-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    background-color: #007bff;
+    color: white;
+}
+
+.cadastrar-btn:active {
+    transform: translateY(1px);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
