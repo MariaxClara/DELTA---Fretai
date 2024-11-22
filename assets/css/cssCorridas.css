@@ -3,12 +3,12 @@
 /* Contêiner principal */
 .corridas-container {
     display: flex;
-    flex-direction: row;
+    flex-direction: column;
     justify-content: center;
-    align-items: flex-start; /* Alinha os elementos ao topo */
+    align-items: center; /* Alinha os elementos ao topo */
     min-height: 100vh;
     background-color: #BAE6FD;
-    gap: 2rem; /* Espaçamento entre o formulário e as informações */
+    gap: 0; /* Espaçamento entre o formulário e as informações */
     padding: 20px;
 }
 
@@ -34,10 +34,10 @@
 
 /* Informações da corrida à esquerda */
 .dados-container {
-    flex: 1; /* Ocupa o espaço restante */
+    /* flex: 1; Ocupa o espaço restante */
     display: flex;
     justify-content: flex-start; /* Alinha as informações à esquerda */
-    margin-top: 300px; 
+    margin-top: 40px; 
 }
 
 .dados {
