@@ -139,11 +139,40 @@ export default function () {
     }
   }
 
+  async function updatePassword(email, newPassword) {
+    console.log("Iniciando atualização de senha no banco de dados...");
+    const client = await pool.connect();
+    try {
+      const res = await client.query(
+        `UPDATE users SET senha = $1 WHERE email = $2 RETURNING user_id, email`,
+        [newPassword, email]
+      );
+  
+      console.log("Consulta executada...");
+  
+      if (res.rowCount === 0) {
+        console.log("Usuário não encontrado.");
+        return null;
+      }
+  
+      const { user_id: id, email: userEmail } = res.rows[0];
+      console.log("Senha atualizada com sucesso!");
+      return { user_id: id, email: userEmail };
+  
+    } catch (error) {
+      console.error('Erro ao atualizar a senha:', error.message);
+      return null;
+    } finally {
+      client.release();
+    }
+  }
+
   return {
     pool,
     getDriverInfoByEmail,
     getPassengerInfoByEmail,
     getImagePathByUser,
+    updatePassword,
   };
 
 
