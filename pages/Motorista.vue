@@ -1,10 +1,10 @@
-<!-- pages/driverInfo.vue -->
 <template>
   <div class="login-container">
     <form class="login-form" @submit.prevent="fetchDriverInfo"> 
       <h1 class="title">Informações do Motorista</h1>
 
-      <input v-model="email" 
+      <input 
+        v-model="email" 
         placeholder="Digite o e-mail do motorista"
       >
 
@@ -18,6 +18,9 @@
         <p><strong>Nome:</strong> {{ driver.nome }}</p>
         <p><strong>Email:</strong> {{ driver.email }}</p>
         <p><strong>Telefone:</strong> {{ driver.telefone }}</p>
+
+        <!-- Botão de troca de senha -->
+        <button @click="goToTrocaSenha" class="trocar-senha-btn">Trocar Senha</button>
       </div>
       <p v-else-if="error">{{ error }}</p>
     </form>
@@ -27,12 +30,15 @@
 
 <script setup>
 import { ref } from 'vue';
+import { useRouter } from 'vue-router';
 import '~/assets/css/cssPerfilMotorista.css';
 
 const email = ref('');
 const driver = ref(null);
 const driverImagePath = ref(''); // Caminho da imagem do motorista
 const error = ref(null);
+
+const router = useRouter();
 
 async function fetchDriverInfo() {
   try {
@@ -74,5 +80,12 @@ async function fetchDriverImagePath() {
     console.error("Erro ao buscar o caminho da imagem:", err.message);
     driverImagePath.value = '/images/user.png'; // Define um valor padrão se houver erro
   }
+}
+
+function goToTrocaSenha() {
+  router.push({ 
+    path: '/trocaSenha', 
+    query: { email: driver.value.email, flag: 1 } 
+  });
 }
 </script>
