@@ -60,7 +60,7 @@
 }
 
 /* Estilo do botão */
-.cadastrar-btn {
+.buscar-btn {
     margin-top: 1rem;
     padding: 15px 30px;
     border: none;
@@ -75,14 +75,42 @@
     width: 100%;
 }
 
-.cadastrar-btn:hover {
+.buscar-btn:hover {
     transform: translateY(-2px);
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
     background-color: #007bff;
     color: white;
 }
 
-.cadastrar-btn:active {
+.buscar-btn:active {
+    transform: translateY(1px);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.cancelar-btn {
+    margin-top: 3px;
+    margin-bottom: 3px;
+    padding: 15px 30px;
+    border: none;
+    border-radius: 25px;
+    background-color: rgb(255, 0, 0);
+    color: #fff;
+    font-size: 18px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    width: 100%;
+}
+
+.cancelar-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    background-color: #ff6c6c;
+    color: white;
+}
+
+.cancelar-btn:active {
     transform: translateY(1px);
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }

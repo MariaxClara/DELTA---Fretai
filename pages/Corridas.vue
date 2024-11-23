@@ -5,7 +5,7 @@
             <form class="login-form" @submit.prevent="fetchRaceInfo">
                 <h1 class="title">Informações da Corrida</h1>
                 <input v-model="email" placeholder="Digite o e-mail do passageiro" />
-                <button type="submit" class="cadastrar-btn">Buscar</button>
+                <button type="submit" class="buscar-btn">Buscar</button>
             </form>
         </div>
 
@@ -21,6 +21,7 @@
                     <p><strong>Destino:</strong> {{ corrida.destino }}</p>
                     <p><strong>Horário:</strong> {{ corrida.horario }}</p>
                     <p><strong>Dia da Semana:</strong> {{ corrida.dia_da_semana }}</p>
+                    <button type="button" class="cancelar-btn" @click="openPopup(index)"> Cancelar corrida </button>
                     <hr />
                 </div>
             </div>
@@ -33,6 +34,16 @@
             <!-- Exibição de erros -->
             <p v-else-if="error" class="error">{{ error }}</p>
         </div>
+
+        <!-- pop-up cancelamento -->
+         <div v-if="showPopup" class="popup-overlay" @click.self="closePopup">
+            <div class="popup">
+                <h2>Cancelar Corrida</h2>
+                <p>Tem certeza que deseja cancelar a corrida?</p>
+                <button @click="cancelRace" class="cancelar-btn">Sim</button>
+                <button @click="closePopup" class="fechar-btn">Não</button>
+            </div>
+         </div>
     </div>
 </template>
 
@@ -75,4 +86,7 @@ async function fetchRaceInfo() {
         corridaInfo.value = null; // Limpa as informações da corrida caso ocorra um erro
     }
 }
+
+
+
 </script>
