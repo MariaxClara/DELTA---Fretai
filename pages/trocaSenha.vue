@@ -55,7 +55,7 @@ async function submitForm() {
   }
 
   try {
-    const response = await fetch('/api/TrocaSenhaMotorista', {
+    const response = await fetch('/api/trocaSenha', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ email: email.value, newPassword: novaSenha.value }), // Corrigido aqui
@@ -71,9 +71,7 @@ async function submitForm() {
 
     erro.value = '';
     successMessage.value = 'Senha atualizada com sucesso!';
-    setTimeout(() => {
-      router.push('/'); // Redireciona para a página inicial ou outra página desejada após sucesso
-    }, 2000);
+    
   } catch (err) {
     erro.value = 'Erro de conexão com o servidor.';
     successMessage.value = '';
