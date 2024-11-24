@@ -219,4 +219,29 @@ async function getUsersByDriverID(id: number):  Promise<PassengerInfoForDriver[]
   }
 }
 
-export { pool, loginUser, updatePassword, getTables, getDriverInfoByEmail, getPassengerInfoByEmail, getImagePathByUser, getUsersByDriverID };
+async function updatePay(email: string, paid: number): Promise<User | null> {
+  const client = await pool.connect();
+  try {
+    const res = await client.query(
+      `
+      UPDATE passageiros p
+      SET pago = $1
+      FROM users u
+      where u.user_id = p.user_id
+      AND u.email = $2
+      `,
+      [paid, email]
+    );
+
+    if (res.rowCount === 0) return null;
+    return res.rows[0];
+
+  } catch (error) {
+    console.error('Erro ao atualizar a senha:', (error as Error).message);
+    return null;
+  } finally {
+    client.release();
+  }
+}
+
+export { pool, loginUser, updatePassword, getTables, getDriverInfoByEmail, getPassengerInfoByEmail, getImagePathByUser, getUsersByDriverID, updatePay };
