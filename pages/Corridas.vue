@@ -21,7 +21,9 @@
             <p><strong>Destino:</strong> {{ corrida.destino }}</p>
             <p><strong>Horário:</strong> {{ corrida.horario }}</p>
             <p><strong>Dia da Semana:</strong> {{ corrida.dia_da_semana }}</p>
-            <button type="button" class="cancelar-btn" @click="openPopup(index)">Cancelar corrida</button>
+            <p><strong>Status corrida:</strong> {{ corrida.status_corrida }}</p>
+            <p><strong>Id rota:</strong> {{ corrida.rota_id }}</p>
+            <button type="button" class="cancelar-btn" @click="showPopupWithType(index, corrida.status_corrida)">Cancelar corrida</button>
             <hr />
           </div>
         </div>
@@ -35,85 +37,102 @@
         <p v-else-if="error" class="error">{{ error }}</p>
       </div>
   
-      <!-- Pop-up cancelamento -->
-      <div v-if="showPopup" class="popup-overlay" @click.self="closePopup">
+      <!-- Pop-ups dinâmicos -->
+
+        <div v-if="showPopup" class="popup-overlay" @click.self="closePopup">
         <div class="popup">
-          <h2>Cancelar Corrida</h2>
-          <p>Tem certeza que deseja cancelar a corrida?</p>
-          <button @click="cancelRace" class="confirmar-btn">Sim</button>
-          <button @click="closePopup" class="fechar-btn">Não</button>
+            <template v-if="popupType === 0">
+              <h2>Cancelar Corrida</h2>
+              <p>Tem certeza que deseja cancelar a corrida?</p>
+              <button @click="cancelRace" class="confirmar-btn">Sim</button>
+              <button @click="closePopup" class="fechar-btn">Não</button>
+            </template>
+            <template v-else-if="popupType === 1">
+                <h2>Aviso</h2>
+                <p>Não é possível cancelar a corrida. A viagem já foi iniciada pelo motorista.</p>
+            </template>
+            <template v-else-if="popupType === 2">
+                <h2>Aviso</h2>
+                <p>Essa corrida já foi finalizada!</p>
+            </template>
         </div>
       </div>
     </div>
   </template>
   
+  <script setup>
+  import { ref } from 'vue';
+  import '~/assets/css/cssCorridas.css'; // Importando o CSS para este componente
+  
+  // Dados reativos
+  const email = ref('');
+  const corridaInfo = ref(null);
+  const error = ref(null);
+  const showPopup = ref(false);
+  const popupType = ref(null); // Tipo de pop-up a ser exibido
+  const selectedRaceIndex = ref(null); // Para armazenar a corrida selecionada
+  
 
-
-<script setup>
-import { ref } from 'vue';
-import '~/assets/css/cssCorridas.css'; // Importando o CSS para este componente
-
-// Dados reativos
-const email = ref('');
-const corridaInfo = ref(null);
-const error = ref(null);
-const showPopup = ref(false);
-const selectedRaceIndex = ref(null); // Para armazenar a corrida selecionada
-
-// Função para buscar as informações da corrida
-async function fetchRaceInfo() {
+  popupType.value = 0; // Define o tipo do pop-up
+  // Função para buscar as informações da corrida
+  async function fetchRaceInfo() {
     try {
-        const response = await fetch(`/api/raceInfo?email=${email.value}`);
-        const data = await response.json();
-
-        if (data.statusCode !== 200) {
-            error.value = data.body.error || 'Erro desconhecido';
-            return;
-        }
-
-        // Verificar e processar os dados recebidos
-        if (data.body.length > 0) {
-            corridaInfo.value = data.body.map(item => ({
-                motorista_nome: item.motorista_nome,
-                motorista_telefone: item.motorista_telefone,
-                passageiro_nome: item.passageiro_nome,
-                passageiro_telefone: item.passageiro_telefone,
-                destino: item.destino,
-                horario: item.horario,
-                dia_da_semana: item.dia_da_semana,
-            }));
-        } else {
-            corridaInfo.value = []; // Nenhuma corrida encontrada
-        }
-        error.value = null; // Limpa qualquer erro anterior
+      const response = await fetch(`/api/raceInfo?email=${email.value}`);
+      const data = await response.json();
+  
+      if (data.statusCode !== 200) {
+        error.value = data.body.error || 'Erro desconhecido';
+        return;
+      }
+  
+      // Verificar e processar os dados recebidos
+      if (data.body.length > 0) {
+        corridaInfo.value = data.body.map(item => ({
+          motorista_nome: item.motorista_nome,
+          motorista_telefone: item.motorista_telefone,
+          passageiro_nome: item.passageiro_nome,
+          passageiro_telefone: item.passageiro_telefone,
+          destino: item.destino,
+          horario: item.horario,
+          dia_da_semana: item.dia_da_semana,
+          rota_id: item.rota_id,
+          status_corrida: item.status_corrida,
+        }));
+      } else {
+        corridaInfo.value = []; // Nenhuma corrida encontrada
+      }
+      error.value = null; // Limpa qualquer erro anterior
     } catch (err) {
-        error.value = err.message;
-        corridaInfo.value = []; // Limpa as informações da corrida caso ocorra um erro
+      error.value = err.message;
+      corridaInfo.value = []; // Limpa as informações da corrida caso ocorra um erro
     }
-}
-
-// Abrir o pop-up ao clicar em "Cancelar Corrida"
-function openPopup(index) {
-    selectedRaceIndex.value = index; // Define o índice da corrida a ser cancelada
+  }
+  
+  // Exibir o pop-up com um tipo específico
+  function showPopupWithType(index, type) {
+    selectedRaceIndex.value = index; // Define o índice da corrida
+    popupType.value = type; // Define o tipo do pop-up
     showPopup.value = true; // Exibe o pop-up
-}
-
-// Fechar o pop-up
-function closePopup() {
+  }
+  
+  // Fechar o pop-up
+  function closePopup() {
     showPopup.value = false;
+    popupType.value = null; // Reseta o tipo do pop-up
     selectedRaceIndex.value = null; // Reseta o índice selecionado
-}
-
-// Cancelar corrida selecionada
-function cancelRace() {
+  }
+  
+  // Cancelar corrida selecionada
+  function cancelRace() {
     if (selectedRaceIndex.value !== null && corridaInfo.value[selectedRaceIndex.value]) {
-        // Remove a corrida do array
-        corridaInfo.value.splice(selectedRaceIndex.value, 1);
-        // Opcional: Enviar requisição para o backend informando o cancelamento
-        console.log(`Corrida de índice ${selectedRaceIndex.value} cancelada`);
+      // Remove a corrida do array
+      corridaInfo.value.splice(selectedRaceIndex.value, 1);
+      // Opcional: Enviar requisição para o backend informando o cancelamento
+      console.log(`Corrida de índice ${selectedRaceIndex.value} cancelada`);
     }
-
-    // Fecha o pop-up após cancelar
-    closePopup();
-}
-</script>
+  
+    // Atualiza o tipo do pop-up para confirmação
+    popupType.value = 2; // Exibe o pop-up de confirmação
+  }
+  </script>
+  

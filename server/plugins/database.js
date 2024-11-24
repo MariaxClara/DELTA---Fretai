@@ -143,59 +143,88 @@ export default function () {
   // Função para buscar informações da corrida (rota) do passageiro com base no e-mail
  // Função para buscar as informações da corrida e do motorista associado ao passageiro
 // Função para buscar as informações da corrida e do motorista associado ao passageiro
-  async function getRaceInfoByEmail(email) {
-    try {
-      const client = await pool.connect();
-      
-      // Log para verificar o email recebido
-      console.log("Buscando informações da corrida para o email:", email);
+async function getRaceInfoByEmail(email) {
+  try {
+    const client = await pool.connect();
+    
+    // Log para verificar o email recebido
+    console.log("Buscando informações da corrida para o email:", email);
 
-      const res = await client.query(`
-        SELECT 
-            p.nome AS passageiro_nome, 
-            u.email AS passageiro_email, 
-            p.telefone AS passageiro_telefone,
-            m.nome AS motorista_nome,
-            m.telefone AS motorista_telefone,
-            r.destino,
-            r.horario,
-            r.dia_da_semana
-        FROM passageiros p
-        JOIN users u ON p.user_id = u.user_id
-        LEFT JOIN relacionamento_passageiro_rotas rpr ON p.passageiro_id = rpr.passageiro_id
-        LEFT JOIN rotas r ON rpr.rotas_id = r.rota_id
-        LEFT JOIN motoristas m ON r.motorista_id = m.motorista_id
-        WHERE u.email = $1
-      `, [email]);
+    // Primeira consulta: busca informações da corrida e o ID da rota
+    const raceRes = await client.query(`
+      SELECT 
+          p.nome AS passageiro_nome, 
+          u.email AS passageiro_email, 
+          p.telefone AS passageiro_telefone,
+          m.nome AS motorista_nome,
+          m.telefone AS motorista_telefone,
+          r.rota_id,                 -- Obtendo o ID da rota
+          r.destino,
+          r.horario,
+          r.dia_da_semana
+      FROM passageiros p
+      JOIN users u ON p.user_id = u.user_id
+      LEFT JOIN relacionamento_passageiro_rotas rpr ON p.passageiro_id = rpr.passageiro_id
+      LEFT JOIN rotas r ON rpr.rotas_id = r.rota_id
+      LEFT JOIN motoristas m ON r.motorista_id = m.motorista_id
+      WHERE u.email = $1
+    `, [email]);
 
+    if (raceRes.rows.length === 0) {
+      console.log("Nenhuma corrida encontrada para o passageiro com o email:", email);
       client.release();
-      
-      // Log para verificar o resultado da consulta
-
-      if (res.rows.length === 0) {
-        console.log("Nenhuma corrida encontrada para o passageiro com o email:", email);
-        return { error: "Nenhuma corrida encontrada para o passageiro." };  // Retorna um erro se não houver resultados
-      }
-
-      // Retorna as informações de todas as corridas associadas ao passageiro
-      const raceInfo = res.rows.map(row => ({
-        passageiro_nome: row.passageiro_nome,
-        passageiro_email: row.passageiro_email,
-        passageiro_telefone: row.passageiro_telefone,
-        motorista_nome: row.motorista_nome,
-        motorista_telefone: row.motorista_telefone,
-        destino: row.destino,
-        horario: row.horario,
-        dia_da_semana: row.dia_da_semana,
-      }));
-
-      // Se houver corridas, retornamos as informações
-      return raceInfo;
-    } catch (error) {
-      console.error('Erro ao buscar informações da corrida:', error.message);
-      return { error: `Erro ao buscar informações da corrida: ${error.message}` };  // Retorna o erro
+      return { error: "Nenhuma corrida encontrada para o passageiro." };  // Retorna um erro se não houver resultados
     }
+
+    // Mapeia as informações de cada corrida encontrada
+    const raceInfo = raceRes.rows.map(row => ({
+      passageiro_nome: row.passageiro_nome,
+      passageiro_email: row.passageiro_email,
+      passageiro_telefone: row.passageiro_telefone,
+      motorista_nome: row.motorista_nome,
+      motorista_telefone: row.motorista_telefone,
+      rota_id: row.rota_id,
+      destino: row.destino,
+      horario: row.horario,
+      dia_da_semana: row.dia_da_semana,
+      status_corrida: null  // Inicializa com null, a ser preenchido posteriormente
+    }));
+
+    // Segunda consulta: busca o status mais recente para cada rota encontrada
+    for (let race of raceInfo) {
+      const statusRes = await client.query(`
+        SELECT 
+            status 
+        FROM 
+            status_viagem 
+        WHERE 
+            rota_id = $1
+        ORDER BY 
+            created_at DESC
+        LIMIT 1
+      `, [race.rota_id]);
+
+      // Verifica se encontrou o status da rota e atualiza o status_corrida
+      if (statusRes.rows.length > 0) {
+        race.status_corrida = statusRes.rows[0].status;
+      } else {
+        race.status_corrida = "Status não encontrado";
+      }
+    }
+
+    client.release();
+    
+    // Loga as informações da corrida com o status no console
+    console.log("Informações da corrida com status:", raceInfo);
+
+    // Retorna as informações completas das corridas, incluindo o status
+    return raceInfo;
+
+  } catch (error) {
+    console.error('Erro ao buscar informações da corrida:', error.message);
+    return { error: `Erro ao buscar informações da corrida: ${error.message}` };  // Retorna o erro
   }
+}
 
 
   return {
