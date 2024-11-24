@@ -159,11 +159,9 @@ async function checkRaceStatus(index) {
         if (statusData == -1) {
             console.log(`A corrida com rota_id ${corrida.rota_id} já está cancelada.`);
             corridaInfo.value[index].isCanceled = true; // Atualiza o estado da corrida
-            corridaInfo.value[index].status_corrida = -1; // Altera o status no objeto
         } else {
             console.log(`A corrida com rota_id ${corrida.rota_id} não está cancelada.`);
             corridaInfo.value[index].isCanceled = false;
-            corridaInfo.value[index].status_corrida = 0;
         }
     } catch (error) {
         console.error("Erro ao verificar o status da corrida:", error);
