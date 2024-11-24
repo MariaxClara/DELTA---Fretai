@@ -37,11 +37,13 @@
 <script>
 
     import { ref } from 'vue'
+    import { sendWelcomeEmail } from '../composables/sendEmail'
 
     export default {
 
         async setup() {
 
+            const driverName = ref('João Motorista Legal');
             const errorInvite = ref(false);
             const sucessInvite = ref(false);
             const errorMessage = ref('');
@@ -71,6 +73,7 @@
                             errorInvite.value = true;
                         } else {
                             sucessInvite.value = true;
+                            sendWelcomeEmail(userEmail.value, driverName, 'https://www.google.com/')
                             addUser(userEmail.value);
                         }
                     } else {
