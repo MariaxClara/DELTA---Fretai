@@ -72,6 +72,7 @@ export default function () {
       const res = await client.query(`
         SELECT 
             p.nome AS passageiro_nome, 
+            p.passageiro_id AS passageiro_id,
             u.email AS passageiro_email, 
             p.telefone AS passageiro_telefone,
             m.nome AS motorista_nome,
@@ -95,6 +96,7 @@ export default function () {
       // Retorna apenas as informações necessárias
       const passengerInfo = res.rows.map(row => ({
         passageiro_nome: row.passageiro_nome,
+        passageiro_id: row.passageiro_id,
         passageiro_email: row.passageiro_email,
         passageiro_telefone: row.passageiro_telefone,
         motorista_nome: row.motorista_nome,
@@ -154,6 +156,8 @@ async function getRaceInfoByEmail(email) {
     const raceRes = await client.query(`
       SELECT 
           p.nome AS passageiro_nome, 
+          p.passageiro_id AS passageiro_id,
+          p.user_id AS user_id,
           u.email AS passageiro_email, 
           p.telefone AS passageiro_telefone,
           m.nome AS motorista_nome,
@@ -179,6 +183,7 @@ async function getRaceInfoByEmail(email) {
     // Mapeia as informações de cada corrida encontrada
     const raceInfo = raceRes.rows.map(row => ({
       passageiro_nome: row.passageiro_nome,
+      passageiro_id: row.passageiro_id,
       passageiro_email: row.passageiro_email,
       passageiro_telefone: row.passageiro_telefone,
       motorista_nome: row.motorista_nome,
@@ -187,6 +192,7 @@ async function getRaceInfoByEmail(email) {
       destino: row.destino,
       horario: row.horario,
       dia_da_semana: row.dia_da_semana,
+      user_id: row.user_id,
       status_corrida: null  // Inicializa com null, a ser preenchido posteriormente
     }));
 
@@ -215,7 +221,7 @@ async function getRaceInfoByEmail(email) {
     client.release();
     
     // Loga as informações da corrida com o status no console
-    console.log("Informações da corrida com status:", raceInfo);
+    // /console.log("Informações da corrida com status:", raceInfo);
 
     // Retorna as informações completas das corridas, incluindo o status
     return raceInfo;
@@ -226,12 +232,35 @@ async function getRaceInfoByEmail(email) {
   }
 }
 
+function changeRaceStatus(rota_id, passageiro_id ,status) {
+  return new Promise(async (resolve, reject) => {
+    try {
+      const client = await pool.connect();
+
+      // Insere o novo status na tabela status_viagem
+      const query = `
+        INSERT INTO log_passageiro_rotas (rota_id, passageiro_id, status) 
+        VALUES ($1,$2,$3)
+      `;
+      await client.query(query, [rota_id,passageiro_id,status]);
+
+      client.release();
+      resolve("Status da corrida atualizado com sucesso!");
+    } catch (error) {
+      console.error("Erro ao atualizar o status da corrida database:", error.message);
+      reject(`Erro ao atualizar o status da corrida database: ${error.message}`);
+    }
+  });
+}
+
 
   return {
     pool,
     getDriverInfoByEmail,
     getPassengerInfoByEmail,
     getImagePathByUser,
-    getRaceInfoByEmail, // Expondo a função de busca de corrida
+    getRaceInfoByEmail,
+    changeRaceStatus,
+     // Expondo a função de busca de corrida
   };
 }
