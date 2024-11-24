@@ -12,11 +12,18 @@ import { NuxtLink } from '../.nuxt/components';
             
             <div class="divListItens">
 
-                <div  v-for="user in users" :key="user.idShort" class="listItens">
+                <div v-for="user in users" :key="user.idShort" class="listItens">
                     <img class="listImage" src="../public/images/PeopleExample.svg" alt="">
                     <div class="listUser">
                         <p class="listUserName">{{user.name}}</p>
-                        <img class="listUserName" src="" alt="">
+                        <div v-if="!edit">
+                            <img v-if="user.paid" class="listUserName" src="../public/images/HandCoinsGreen.svg" alt="">
+                            <img v-else class="listUserName" src="../public/images/HandCoinsRed.svg" alt="">    
+                        </div>
+                        <div v-else>
+                            <img  v-if="user.paid" @click="()=> {user.paid=!user.paid; user.update = 1}" src="../public/images/CheckFat.svg" alt="">
+                            <img v-else @click="()=> {user.paid=!user.paid; user.update = 1}" src="../public/images/Selection.svg" alt="">
+                        </div>
                     </div>
                 </div>
 
@@ -24,39 +31,87 @@ import { NuxtLink } from '../.nuxt/components';
         
         </div>
         
-        <div class="divButton">
+        <div v-if="!edit" class="divButton">
             <button class="mainButton">
                 <NuxtLink class="mainLink" to="/registerUserDriver">
                     Adicionar Participante
                 </NuxtLink>
             </button>
-            <button class="mainButton">
+            <button @click="()=> edit=!edit" class="mainButton">
                 Editar Participantes
+            </button>
+        </div>
+
+        <div v-else class="divButton">
+            <button @click="updateUsers" class="mainButton">
+                Salvar
             </button>
         </div>
     </div>
 </template>
 
 <script>
-    import { ref } from 'vue'
+    import { ref, onMounted } from 'vue'
+    import axios from 'axios'
     export	default {
         async setup() {
+            let edit = ref(false)
             let users = ref([])
+            let driverName = ref('Lucas')
+            let messageError = ref('')
+
+            async function takeUsers () {
+                let response = { data: {} }
+      
+                try {
+                    response = await axios.get(`driverInfo/${driverName.value}`)
+                    console.log(response)
+                } catch (error) {
+                    messageError.value = 'Parece que nosso servidor está em manutenção!'
+                    console.log(messageError)
+                }
+
+            }
+            async function updateUsers() {
+                edit.value=!edit.value
+                try {
+                    for (user in users.value) {
+                        if(user.update){
+                            response = await axios.post(`updateUser/${user}`)
+                            console.log(response)
+                        }
+                        user.update = 0
+                    }
+                } catch (error) {
+                    messageError.value = 'Parece que nosso servidor está em manutenção, não foi possível salvar as modificações!'
+                    console.log(messageError)
+                }
+            }
             users.value.push(
                 {
                     idShort: 0,
                     name: 'João da Silva',
+                    paid: true,
+                   updtae: false,
                 }
             )
             users.value.push(
                 {
                     idShort: 1,
                     name: 'Maria das Palmas',
+                    paid: false,
+                   updtae: false,
                 }
             )
 
+            onMounted(() => {
+                takeUsers()
+            })
+
             return {
-                users
+                edit,
+                users,
+                updateUsers
             }
         }
     }
