@@ -21,8 +21,8 @@ import { NuxtLink } from '../.nuxt/components';
                             <img v-else class="listUserName" src="../public/images/HandCoinsRed.svg" alt="">    
                         </div>
                         <div v-else>
-                            <img  v-if="user.paid" @click="()=> user.paid=!user.paid" src="../public/images/CheckFat.svg" alt="">
-                            <img v-else @click="()=> user.paid=!user.paid" src="../public/images/Selection.svg" alt="">
+                            <img  v-if="user.paid" @click="()=> {user.paid=!user.paid; user.update = 1}" src="../public/images/CheckFat.svg" alt="">
+                            <img v-else @click="()=> {user.paid=!user.paid; user.update = 1}" src="../public/images/Selection.svg" alt="">
                         </div>
                     </div>
                 </div>
@@ -43,7 +43,7 @@ import { NuxtLink } from '../.nuxt/components';
         </div>
 
         <div v-else class="divButton">
-            <button @click="()=> edit=!edit" class="mainButton">
+            <button @click="updateUsers" class="mainButton">
                 Salvar
             </button>
         </div>
@@ -72,20 +72,37 @@ import { NuxtLink } from '../.nuxt/components';
                 }
 
             }
-            // users.value.push(
-            //     {
-            //         idShort: 0,
-            //         name: 'João da Silva',
-            //         paid: true,
-            //     }
-            // )
-            // users.value.push(
-            //     {
-            //         idShort: 1,
-            //         name: 'Maria das Palmas',
-            //         paid: false,
-            //     }
-            // )
+            async function updateUsers() {
+                edit.value=!edit.value
+                try {
+                    for (user in users.value) {
+                        if(user.update){
+                            response = await axios.post(`updateUser/${user}`)
+                            console.log(response)
+                        }
+                        user.update = 0
+                    }
+                } catch (error) {
+                    messageError.value = 'Parece que nosso servidor está em manutenção, não foi possível salvar as modificações!'
+                    console.log(messageError)
+                }
+            }
+            users.value.push(
+                {
+                    idShort: 0,
+                    name: 'João da Silva',
+                    paid: true,
+                   updtae: false,
+                }
+            )
+            users.value.push(
+                {
+                    idShort: 1,
+                    name: 'Maria das Palmas',
+                    paid: false,
+                   updtae: false,
+                }
+            )
 
             onMounted(() => {
                 takeUsers()
@@ -93,7 +110,8 @@ import { NuxtLink } from '../.nuxt/components';
 
             return {
                 edit,
-                users
+                users,
+                updateUsers
             }
         }
     }
