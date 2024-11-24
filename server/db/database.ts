@@ -237,7 +237,7 @@ async function updatePay(email: string, paid: number): Promise<User | null> {
     return res.rows[0];
 
   } catch (error) {
-    console.error('Erro ao atualizar a senha:', (error as Error).message);
+    console.error('Erro ao atualizar a confirmação de pagamento:', (error as Error).message);
     return null;
   } finally {
     client.release();
