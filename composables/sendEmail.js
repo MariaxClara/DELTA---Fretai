@@ -5,16 +5,21 @@ const resend = new Resend('re_CosjbNBs_HKdVjzQmFCv3Ps2Q1r2ntmqP');
 
 export async function sendWelcomeEmail(userTo, driverName, linkInvite) {
   try {
+    console.log("Enviando email")
     const data = await resend.emails.send({
       from: 'fretaiunifesp@gmail.com',
       to: userTo,
       subject: 'Bem vindo ao Fretai!',
       text: 'Seja muito bem vindo ao Fretai. Você foi convidado para entrar no grupo do '+driverName +', acesse já pelo link: '+linkInvite,
+      mode: 'no-cors'
     });
-
+    console.log("Email enviado: ")
+    console.log(data)
     return data;
   } catch (error) {
 
+    console.log("Parece que não conseguimos enviar o email: ")
+    console.log(error)
     return { error };
   
   }
