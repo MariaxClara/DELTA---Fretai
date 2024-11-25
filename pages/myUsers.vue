@@ -52,21 +52,26 @@ import { NuxtLink } from '../.nuxt/components';
 
 <script>
     import { ref, onMounted } from 'vue'
-    import axios from 'axios'
     export	default {
         async setup() {
             let edit = ref(false)
             let users = ref([])
-            let driverName = ref('Lucas')
+            let driverId = ref(1)
             let messageError = ref('')
 
             async function takeUsers () {
-                let response = { data: {} }
-      
                 try {
-                    response = await axios.get(`driverInfo/${driverName.value}`)
+                    const response = await fetch('/api/driverUsers', {
+                        method: 'GET',
+                        headers: {
+                        'Content-Type': 'application/json'
+                        },
+                        body: {id: driverId.value}
+                    })
                     console.log(response)
+
                 } catch (error) {
+
                     messageError.value = 'Parece que nosso servidor está em manutenção!'
                     console.log(messageError)
                 }
@@ -76,11 +81,20 @@ import { NuxtLink } from '../.nuxt/components';
                 edit.value=!edit.value
                 try {
                     for (user in users.value) {
-                        if(user.update){
-                            response = await axios.post(`updateUser/${user}`)
+                        try {
+                            const response = await fetch('/api/updateUserPay', {
+                                method: 'POST',
+                                headers: {
+                                'Content-Type': 'application/json'
+                                },
+                                body: {
+                                    email: user.email,
+                                    paid: user.paid
+                                }
+                            })
                             console.log(response)
                         }
-                        user.update = 0
+                            
                     }
                 } catch (error) {
                     messageError.value = 'Parece que nosso servidor está em manutenção, não foi possível salvar as modificações!'
@@ -91,16 +105,14 @@ import { NuxtLink } from '../.nuxt/components';
                 {
                     idShort: 0,
                     name: 'João da Silva',
-                    paid: true,
-                   updtae: false,
+                    paid: 1,
                 }
             )
             users.value.push(
                 {
                     idShort: 1,
                     name: 'Maria das Palmas',
-                    paid: false,
-                   updtae: false,
+                    paid: 0,
                 }
             )
 

@@ -43,7 +43,7 @@
 
         async setup() {
 
-            const driverName = ref('João Motorista Legal');
+            const driverId = ref(1);
             const errorInvite = ref(false);
             const sucessInvite = ref(false);
             const errorMessage = ref('');
@@ -58,10 +58,17 @@
             async function addUser(email) {
                 // Adicionar no banco
                 try {
-                    response = await axios.post(`addEmailUser/${email}`)
-                    console.log(response)    
-                    userEmails.value.push(email)
-
+                    const response = await fetch('/api/updateUserPay', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: {
+                            email: email,
+                            id: driverId.value
+                        }
+                    })
+                    console.log(response)
                 } catch (error) {
                     messageError.value = 'Parece que nosso servidor está em manutenção, não foi possível convidar o usuário!'
                     console.log(messageError)
@@ -69,11 +76,16 @@
             }
 
             async function takeUsers () {
-                let response = { data: {} }
-      
                 try {
-                    response = await axios.get(`driverInfo/${driverName.value}`)
+                    const response = await fetch('/api/driverInvites', {
+                        method: 'GET',
+                        headers: {
+                        'Content-Type': 'application/json'
+                        },
+                        body: {id: driverId.value}
+                    })
                     console.log(response)
+
                 } catch (error) {
                     messageError.value = 'Parece que nosso servidor está em manutenção!'
                     console.log(messageError)
