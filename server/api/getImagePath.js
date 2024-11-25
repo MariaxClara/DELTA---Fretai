@@ -1,5 +1,5 @@
 // server/api/getImagePath.js
-import connectDatabase from '../plugins/database';
+import connectDatabase from '../db/database';
 
 const { getImagePathByUser } = connectDatabase();
 
