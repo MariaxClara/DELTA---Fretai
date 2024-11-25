@@ -1,9 +1,9 @@
 <template>
     <div id="app">
       <!-- Barra de endereços de origem, destino e waypoints dinâmicos -->
-      <label>Origem:
+      <!-- <label>Origem:
         <input type="text" v-model="originAddress" placeholder="Endereço de origem" />
-      </label>
+      </label> -->
       <label>Destino:
         <input type="text" v-model="destinationAddress" placeholder="Endereço de destino" />
       </label>
@@ -23,7 +23,7 @@
   </template>
   
   <script>
-  import maps from "./codes.js"
+  import maps from "./routes/codes.js"
   
   const { initMapPlatform, geocodeAddress, addWaypoint, removeWaypoint, updateRoute, calculateSegmentRoute } = maps()
   
@@ -33,7 +33,7 @@
   
     data() {
       return {
-        originAddress: "Jacareí, São Paulo",
+        //originAddress: "Jacareí, São Paulo",
         destinationAddress: "São José dos Campos, São Paulo",
         waypoints: [],
         platform: null,
@@ -59,6 +59,8 @@
   </script>
   
   <style scoped>
+  /* @import "./assets/css/main.css"; */
+
   #app {
     display: flex;
     flex-direction: column;
@@ -66,18 +68,28 @@
     padding: 20px;
     background-color: #BAE6FD;
   }
-  
+
   #app input {
     margin: 5px;
     padding: 5px;
+    color: #000000;
   }
-  
+
   #app button {
     margin-top: 10px;
     padding: 5px 10px;
+    background-color: #3498DB;
+    color: #FFFFFF;
   }
-  
+
+
   #app div[ref="mapContainer"] {
     margin-top: 20px;
   }
-  </style>
+
+  #app ::placeholder {
+    color: #000000;
+  }
+
+ 
+</style>
