@@ -37,7 +37,6 @@
 <script>
     import { ref, onMounted } from 'vue'
     import axios from 'axios'
-    import { sendWelcomeEmail } from '../composables/sendEmail'
 
     export default {
 
@@ -50,11 +49,32 @@
             const userEmails = ref([])
             const userEmail = ref('');
             const messageError = ref('');
+            const config = useRuntimeConfig();
 
             //Melhorar a ReEx para mais especificidade
             const reEmail = new RegExp(".+@.+");
 
             userEmails.value = ["cla@uni.com", "mar@uni.com"]
+
+            async function sendWelcomeEmail (userTo, driverName, linkInvite) {
+                let msg = {
+                    to: userTo,
+                    from: "fretaiunifesp@gmail.com",
+                    subject: "Bem vindo ao Fretai",
+                    text: 'Seja muito bem vindo ao Fretai. Você foi convidado para entrar no grupo do '+driverName +', acesse já pelo link: '+linkInvite,
+                }     
+                axios.post('https://api.sendgrid.com/v3/mail/send', msg, {
+                    mode: 'no-cors',
+                    headers: {
+                        'Authorization': `Bearer ${config.SENDGRID_API_KEY}`,
+                        'Content-Type': 'application/json'
+                    }
+                }).then(response => {
+                    console.log('Email enviado', response);
+                }).catch(error => {
+                    console.error('Não foi possível enviar o email', error);
+                });  
+            }
 
             async function addUser(email) {
                 // Adicionar no banco
