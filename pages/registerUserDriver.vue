@@ -59,7 +59,7 @@
             async function addUser(email) {
                 // Adicionar no banco
                 try {
-                    const response = await fetch('/api/updateUserPay', {
+                    const response = await fetch('/api/addDriverInvite', {
                         method: 'POST',
                         headers: {
                             'Content-Type': 'application/json'
@@ -67,9 +67,12 @@
                         body: {
                             email: email,
                             id: driverId.value
-                        }
+                        },
+                        mode: 'no-cors'
                     })
+                    console.log("Banco atualizado")
                     console.log(response)
+                    
                 } catch (error) {
                     messageError.value = 'Parece que nosso servidor está em manutenção, não foi possível convidar o usuário!'
                     console.log(messageError)

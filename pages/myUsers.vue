@@ -92,7 +92,8 @@ import { NuxtLink } from '../.nuxt/components';
                                 body: {
                                     email: user.email,
                                     paid: user.paid
-                                }
+                                },
+                                mode: 'no-cors'
                             })
                             console.log(response)
                         }
