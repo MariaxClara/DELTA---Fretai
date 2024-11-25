@@ -59,7 +59,8 @@ import { NuxtLink } from '../.nuxt/components';
             let driverId = ref(1)
             let messageError = ref('')
 
-            async function takeUsers () {
+            const takeUsers = async () => {
+                console.log('Estou indo pegar os passageiros')
                 try {
                     const response = await fetch('/api/driverUsers', {
                         method: 'GET',
@@ -68,11 +69,12 @@ import { NuxtLink } from '../.nuxt/components';
                         },
                         body: {id: driverId.value}
                     })
-                    console.log(response)
+                    const data = await response.json();
+                    console.log(data)
 
                 } catch (error) {
-
-                    messageError.value = 'Parece que nosso servidor está em manutenção!'
+                    //messageError.value = 'Parece que nosso servidor está em manutenção!'
+                    console.log('Não consegui pegar os passageiros:')
                     console.log(messageError)
                 }
 

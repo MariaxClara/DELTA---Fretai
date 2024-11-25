@@ -75,7 +75,7 @@
                 }
             }
 
-            async function takeUsers () {
+            const takeUsers = async () => {
                 try {
                     const response = await fetch('/api/driverInvites', {
                         method: 'GET',
@@ -84,7 +84,8 @@
                         },
                         body: {id: driverId.value}
                     })
-                    console.log(response)
+                    const data = await response.json();
+                    console.log(data)
 
                 } catch (error) {
                     messageError.value = 'Parece que nosso servidor está em manutenção!'

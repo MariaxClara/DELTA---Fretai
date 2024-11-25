@@ -4,6 +4,8 @@ const { getUsersByDriverID } = connectDatabase();
 
 export default defineEventHandler(async (event) => {
 
+  console.log('Estou indo pegar os passageiros, estou no back')
+
   const { id } = getQuery(event);
 
   if (!email) {
