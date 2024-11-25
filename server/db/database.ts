@@ -265,7 +265,7 @@ async function updatePay(email: string, paid: number): Promise<User | null> {
   }
 }
 
-async function addUserEmail(email: string, driverId: number): Promise<User | null> {
+async function addUserEmailInvite(email: string, driverId: number): Promise<User | null> {
   const client = await pool.connect();
   try {
     let id = 1;
@@ -288,4 +288,4 @@ async function addUserEmail(email: string, driverId: number): Promise<User | nul
   }
 }
 
-export { pool, loginUser, updatePassword, getTables, getDriverInfoByEmail, getPassengerInfoByEmail, getImagePathByUser, getUsersByDriverID, updatePay, getInviteUsersByDriverID, addUserEmail };
+export { pool, loginUser, updatePassword, getTables, getDriverInfoByEmail, getPassengerInfoByEmail, getImagePathByUser, getUsersByDriverID, updatePay, getInviteUsersByDriverID, addUserEmailInvite };
