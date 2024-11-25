@@ -183,8 +183,6 @@ async function getImagePathByUser(email: string): Promise<string | null> {
 
 async function getUsersByDriverID(id: number):  Promise<PassengerInfoForDriver[] | null> {
   try {
-    console.log('Buscando passageiros do motorista de id:', id);
-
     const client = await pool.connect();
     const res = await client.query(`
       select 
@@ -214,7 +212,30 @@ async function getUsersByDriverID(id: number):  Promise<PassengerInfoForDriver[]
       passageiro_pagamento: row.passageiro_pagamento
     }));
   } catch (error) {
-    console.error('Erro ao obter informações do passageiro:', (error as Error).message);
+    console.error('Erro ao obter informações dos passageiros:', (error as Error).message);
+    return null;
+  }
+}
+
+async function getInviteUsersByDriverID(id: number):  Promise<string[] | null> {
+  try {
+    const client = await pool.connect();
+    const res = await client.query(`
+      select email
+      from inviteusers
+      where motorista_id = $1
+    `, [id]);
+
+    client.release();
+
+    if (res.rows.length === 0) {
+      return null;
+    }
+
+    return res.rows.map(row => (row.email));
+
+  } catch (error) {
+    console.error('Erro ao obter emails convidados:', (error as Error).message);
     return null;
   }
 }
@@ -244,4 +265,27 @@ async function updatePay(email: string, paid: number): Promise<User | null> {
   }
 }
 
-export { pool, loginUser, updatePassword, getTables, getDriverInfoByEmail, getPassengerInfoByEmail, getImagePathByUser, getUsersByDriverID, updatePay };
+async function addUserEmail(email: string, driverId: number): Promise<User | null> {
+  const client = await pool.connect();
+  try {
+    let id = 1;
+    const res = await client.query(
+      `
+      INSERT INTO inviteusers (motorista_id, email)
+      VALUES ( $1, $2 );
+      `,
+      [id, email]
+    );
+
+    if (res.rowCount === 0) return null;
+    return res.rows[0];
+
+  } catch (error) {
+    console.error('Erro ao adicionar cliente convidado:', (error as Error).message);
+    return null;
+  } finally {
+    client.release();
+  }
+}
+
+export { pool, loginUser, updatePassword, getTables, getDriverInfoByEmail, getPassengerInfoByEmail, getImagePathByUser, getUsersByDriverID, updatePay, getInviteUsersByDriverID, addUserEmail };
