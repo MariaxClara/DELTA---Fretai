@@ -33,6 +33,13 @@ interface PassengerInfo {
   motorista_telefone: string | null;
 }
 
+interface PassengerInfoForDriver {
+  passageiro_nome: string;
+  passageiro_email: string;
+  passageiro_image: string | null;
+  passageiro_pagamento: number;
+}
+
 async function loginUser(email: string, password: string): Promise<User | null> {
   try {
     const client = await pool.connect();
@@ -174,4 +181,111 @@ async function getImagePathByUser(email: string): Promise<string | null> {
   }
 }
 
-export { pool, loginUser, updatePassword, getTables, getDriverInfoByEmail, getPassengerInfoByEmail, getImagePathByUser };
+async function getUsersByDriverID(id: number):  Promise<PassengerInfoForDriver[] | null> {
+  try {
+    const client = await pool.connect();
+    const res = await client.query(`
+      select 
+      p.nome AS passageiro_nome, 
+      u.email AS passageiro_email,
+      ui.image_path AS passageiro_imagem,
+      p.pago AS passageiro_pagamento
+      from passageiros p 
+      inner join motoristas m 
+      on m.motorista_id = p.motorista_id
+      inner join users u 
+      on u.user_id = p.user_id 
+      inner join user_images ui 
+      on ui.user_id = p.user_id
+      where m.user_id = $1
+    `, [id]);
+    client.release();
+
+    if (res.rows.length === 0) {
+      return null;
+    }
+
+    return res.rows.map(row => ({
+      passageiro_nome: row.passageiro_nome,
+      passageiro_email: row.passageiro_email,
+      passageiro_image: row.passageiro_image,
+      passageiro_pagamento: row.passageiro_pagamento
+    }));
+  } catch (error) {
+    console.error('Erro ao obter informações dos passageiros:', (error as Error).message);
+    return null;
+  }
+}
+
+async function getInviteUsersByDriverID(id: number):  Promise<string[] | null> {
+  try {
+    const client = await pool.connect();
+    const res = await client.query(`
+      select email
+      from inviteusers
+      where motorista_id = $1
+    `, [id]);
+
+    client.release();
+
+    if (res.rows.length === 0) {
+      return null;
+    }
+
+    return res.rows.map(row => (row.email));
+
+  } catch (error) {
+    console.error('Erro ao obter emails convidados:', (error as Error).message);
+    return null;
+  }
+}
+
+async function updatePay(email: string, paid: number): Promise<User | null> {
+  const client = await pool.connect();
+  try {
+    const res = await client.query(
+      `
+      UPDATE passageiros p
+      SET pago = $1
+      FROM users u
+      where u.user_id = p.user_id
+      AND u.email = $2
+      `,
+      [paid, email]
+    );
+
+    if (res.rowCount === 0) return null;
+    return res.rows[0];
+
+  } catch (error) {
+    console.error('Erro ao atualizar a confirmação de pagamento:', (error as Error).message);
+    return null;
+  } finally {
+    client.release();
+  }
+}
+
+async function addUserEmailInvite(email: string, driverId: number): Promise<User | null> {
+  const client = await pool.connect();
+  try {
+    let id = 1;
+    const res = await client.query(
+      `
+      INSERT INTO inviteusers (motorista_id, email)
+      VALUES ( $1, $2 );
+      `,
+      [id, email]
+    );
+
+    if (res.rowCount === 0) return null;
+    return res.rows[0];
+
+  } catch (error) {
+    console.error('Erro ao adicionar cliente convidado:', (error as Error).message);
+    return null;
+  } finally {
+    client.release();
+  }
+}
+
+export { pool, loginUser, updatePassword, getTables, getDriverInfoByEmail, getPassengerInfoByEmail, getImagePathByUser, getUsersByDriverID, updatePay, getInviteUsersByDriverID, addUserEmailInvite };

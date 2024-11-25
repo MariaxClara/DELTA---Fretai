@@ -1,5 +1,5 @@
 // server/api/passengerInfo.js
-import connectDatabase from '../plugins/database';
+import connectDatabase from '../db/database';
 
 const { getPassengerInfoByEmail } = connectDatabase();
 
