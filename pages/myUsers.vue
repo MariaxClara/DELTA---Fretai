@@ -94,27 +94,30 @@ import { NuxtLink } from '../.nuxt/components';
                             })
                             console.log(response)
                         }
-                            
+                        catch (error) {
+                            messageError.value = 'Parece que nosso servidor está em manutenção, não foi possível salvar as modificações!'
+                            console.log(messageError)
+                        }
                     }
                 } catch (error) {
                     messageError.value = 'Parece que nosso servidor está em manutenção, não foi possível salvar as modificações!'
                     console.log(messageError)
                 }
             }
-            users.value.push(
-                {
-                    idShort: 0,
-                    name: 'João da Silva',
-                    paid: 1,
-                }
-            )
-            users.value.push(
-                {
-                    idShort: 1,
-                    name: 'Maria das Palmas',
-                    paid: 0,
-                }
-            )
+            // users.value.push(
+            //     {
+            //         idShort: 0,
+            //         name: 'João da Silva',
+            //         paid: 1,
+            //     }
+            // )
+            // users.value.push(
+            //     {
+            //         idShort: 1,
+            //         name: 'Maria das Palmas',
+            //         paid: 0,
+            //     }
+            // )
 
             onMounted(() => {
                 takeUsers()
