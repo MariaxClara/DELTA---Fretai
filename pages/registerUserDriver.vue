@@ -49,6 +49,7 @@
             const errorMessage = ref('');
             const userEmails = ref([])
             const userEmail = ref('');
+            const messageError = ref('');
 
             //Melhorar a ReEx para mais especificidade
             const reEmail = new RegExp(".+@.+");
@@ -106,7 +107,7 @@
                             errorInvite.value = true;
                         } else {
                             sucessInvite.value = true;
-                            sendWelcomeEmail(userEmail.value, driverName, 'https://www.google.com/')
+                            sendWelcomeEmail(userEmail.value, driverId.value, 'https://www.google.com/')
                             addUser(userEmail.value);
                         }
                     } else {
