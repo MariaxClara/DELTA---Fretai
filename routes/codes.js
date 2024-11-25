@@ -1,10 +1,16 @@
+import createAndAnimateMarker from './live.js';
 import RouteOptimizer from './optmize.js';
+import dotenv from 'dotenv'
 
 export default function maps() {
 
   function initMapPlatform() {
+    // dotenv.config();
+    // const apiKey_env = process.env.HERE_API_KEY;
+    // console.log(apiKey_env);
     const apiKey = 'KJ72fZC8X7n9q7BlK42O4rv6upXTF6_B9l2JNVGhcBY';
     this.platform = new H.service.Platform({ apikey: apiKey });
+    
     const defaultLayers = this.platform.createDefaultLayers();
     this.map = new H.Map(this.$refs.mapContainer, defaultLayers.vector.normal.map, { zoom: 10, center: { lat: -23.5505, lng: -46.6333 } });
     this.ui = H.ui.UI.createDefault(this.map, defaultLayers);
@@ -23,7 +29,10 @@ export default function maps() {
     const style = document.createElement('style');
     style.innerHTML = '.H_btn { display: none; }';
     document.head.appendChild(style);
+
+    this.van = createAndAnimateMarker(this.map);
   }
+    
 
   function geocodeAddress(address) {
     return new Promise((resolve, reject) => {
@@ -44,14 +53,37 @@ export default function maps() {
     this.updateRoute(); // Recalcula a rota automaticamente após remover o waypoint
   }
 
+  async function getCurrentLocation() {
+    return new Promise((resolve, reject) => {
+      if (navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition(
+          function (position) {
+            const { latitude, longitude } = position.coords;
+            resolve({ lat: latitude, lng: longitude });
+          },
+          function (error) {
+            reject(error);
+          }
+        );
+      } else {
+        reject(new Error("Geolocalização não é suportada"));
+      }
+    });
+  }
+
   async function updateRoute() {
     try {
       // Geocodificar origem, destino e waypoints
-      const origin = await this.geocodeAddress(this.originAddress);
+      const origin = await getCurrentLocation();
       const destination = await this.geocodeAddress(this.destinationAddress);
       
       // Geocodificar cada waypoint inserido pelo usuário
+      // if (!this.waypoints.includes({address: this.originAddress})){
+      //   this.waypoints.push({address: this.originAddress});
+      // }
+      //console.log();
       const waypoints = await Promise.all(this.waypoints.map(wp => this.geocodeAddress(wp.address)));
+
 
       // Parâmetros para o roteamento
       const routingParameters = {
@@ -80,6 +112,8 @@ export default function maps() {
             distance: optimizedStop.distance
         };
       });
+
+      
 
       console.log(combinedRoute); // Debug
           // Criar um novo array para armazenar os endereços na ordem de combinedRoute
@@ -172,6 +206,10 @@ export default function maps() {
       this.map.getViewModel().setLookAtData({ bounds: group.getBoundingBox() });
     } catch (error) {
       console.error('Erro ao geocodificar endereços:', error);
+    }
+    if (this.van && !this.map.getObjects().includes(this.van)){
+      this.map.addObject(this.van);
+      console.log("Van readicionada");
     }
   }
 

@@ -1,9 +1,9 @@
 <template>
     <div id="app">
       <!-- Barra de endereços de origem, destino e waypoints dinâmicos -->
-      <label>Origem:
+      <!-- <label>Origem:
         <input type="text" v-model="originAddress" placeholder="Endereço de origem" />
-      </label>
+      </label> -->
       <label>Destino:
         <input type="text" v-model="destinationAddress" placeholder="Endereço de destino" />
       </label>
@@ -33,7 +33,7 @@
   
     data() {
       return {
-        originAddress: "Jacareí, São Paulo",
+        //originAddress: "Jacareí, São Paulo",
         destinationAddress: "São José dos Campos, São Paulo",
         waypoints: [],
         platform: null,
