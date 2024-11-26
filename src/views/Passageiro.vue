@@ -12,7 +12,7 @@
   
         <div v-if="passengerInfo" class="dados">
           <div class="photo-container">
-            <img src="../../public/images/motoristaImage.png" alt="Passageiro" class="motorista-photo">
+            <img src="/images/motoristaImage.png" alt="Passageiro" class="motorista-photo">
           </div>
           
           <p><strong>Nome:</strong> {{ passengerInfo.passageiro_nome }}</p>
