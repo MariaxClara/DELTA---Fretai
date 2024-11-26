@@ -35,12 +35,16 @@
 </template>
 
 <script>
+    export default {
+        name: 'RegisterUserDrive',
+       
+    }
+</script>
+
+<script setup>
     import { ref, onMounted } from 'vue'
     import axios from 'axios'
 
-    export default {
-        name: 'RegisterUserDrive',
-        async setup() {
 
             const driverId = ref(1);
             const errorInvite = ref(false);
@@ -150,18 +154,4 @@
             onMounted(() => {
                 takeUsers()
             })
-
-            return {
-                inviteUser,
-                errorInvite,
-                sucessInvite,
-                errorMessage,
-                userEmail
-            }
-
-        }
-
-    }
-
-
 </script>
