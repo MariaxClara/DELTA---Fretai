@@ -58,6 +58,7 @@ import { NuxtLink } from '../.nuxt/components';
 
 <script setup>
     import { ref, onMounted } from 'vue'
+    import '../assets/css/main.css'
 
     let edit = ref(false)
     let users = ref([])

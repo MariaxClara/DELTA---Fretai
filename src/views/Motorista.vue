@@ -37,7 +37,7 @@
 <script setup>
   import { ref } from 'vue';
   import { useRouter } from 'vue-router';
-  // import '~/assets/css/cssPerfilMotorista.css';
+  import '../assets/css/cssPerfilMotorista.css';
 
   const email = ref('');
   const driver = ref(null);
