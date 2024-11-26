@@ -24,7 +24,7 @@
         <div class="divButton">
             <button class="mainButton" @click="inviteUser()"> Convidar Cliente </button>
             <button class="mainButton">
-                <router-link :to="{name: 'MyUsers'}" class="mainLink"> Volttar</router-link>
+                <router-link :to="{name: 'MyUsers'}" class="mainLink"> Voltar</router-link>
             </button>
         </div>
    
