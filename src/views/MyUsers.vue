@@ -65,70 +65,67 @@ import { NuxtLink } from '../.nuxt/components';
     let messageError = ref('')
 
     const takeUsers = async () => {
-                console.log('Estou indo pegar os passageiros')
-                try {
-                    const response = await fetch('/api/driverUsers', {
-                        method: 'GET',
-                        headers: {
-                        'Content-Type': 'application/json'
-                        },
-                        body: {id: driverId.value}
-                    })
-                    const data = await response.json();
-                    console.log(data)
+        try {
+            const response = await fetch('/api/driverUsers', {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: {id: driverId.value}
+            })
+            const data = await response.json();
+            console.log(data)
 
-                } catch (error) {
-                    //messageError.value = 'Parece que nosso servidor está em manutenção!'
-                    console.log('Não consegui pegar os passageiros:')
-                    console.log(messageError)
-                }
+        } catch (error) {
+            console.log('Não consegui pegar os passageiros:')
+            console.log(messageError)
+        }
 
     }
     async function updateUsers() {
-                edit.value=!edit.value
+        edit.value=!edit.value
+        try {
+            for (user in users.value) {
                 try {
-                    for (user in users.value) {
-                        try {
-                            const response = await fetch('/api/updateUserPay', {
-                                method: 'POST',
-                                headers: {
-                                'Content-Type': 'application/json'
-                                },
-                                body: {
-                                    email: user.email,
-                                    paid: user.paid
-                                },
-                                mode: 'no-cors'
-                            })
-                            console.log(response)
-                        }
-                        catch (error) {
-                            messageError.value = 'Parece que nosso servidor está em manutenção, não foi possível salvar as modificações!'
-                            console.log(messageError)
-                        }
-                    }
+                    const response = await fetch('/api/updateUserPay', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: {
+                        email: user.email,
+                        paid: user.paid
+                    },
+                    mode: 'no-cors'
+                    })
+                    console.log(response)
                 } catch (error) {
                     messageError.value = 'Parece que nosso servidor está em manutenção, não foi possível salvar as modificações!'
                     console.log(messageError)
                 }
             }
-            users.value.push(
-                {
-                    idShort: 0,
-                    name: 'João da Silva',
-                    paid: 1,
-                }
-            )
-            users.value.push(
-                {
-                    idShort: 1,
-                    name: 'Maria das Palmas',
-                    paid: 0,
-                }
+        } catch (error) {
+            messageError.value = 'Parece que nosso servidor está em manutenção, não foi possível salvar as modificações!'
+            console.log(messageError)
+        }
+    }
+    users.value.push(
+        {
+            idShort: 0,
+            name: 'João da Silva',
+            paid: 1,
+        }
+    )
+    users.value.push(
+        {
+            idShort: 1,
+            name: 'Maria das Palmas',
+            paid: 0,
+        }
     )
 
     onMounted(() => {
-                takeUsers()
+        takeUsers()
     })
 
 </script>
