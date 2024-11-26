@@ -5,7 +5,7 @@ import CadastroMotorista from '../views/CadastroMotorista.vue'
 import Index from '../views/Index.vue'
 import Login from '../views/Login.vue'
 import MyRouters from '../views/MyRouters.vue'
-import MyUsersPage from '../views/MyUsersPage.vue'
+import MyUsers from '../views/MyUsers.vue'
 import PerfilMotorista from '../views/PerfilMotorista.vue'
 import PerfilUsuario from '../views/PerfilUsuario.vue'
 import RegisterUserDriver from '../views/RegisterUserDriver.vue'
@@ -46,7 +46,7 @@ const routes = [
   {
     path: '/MyUsers',
     name: 'MyUsers',
-    component: MyUsersPage
+    component: MyUsers
   },
   {
     path: '/PerfilMotorista',
