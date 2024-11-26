@@ -32,10 +32,8 @@ import { NuxtLink } from '../.nuxt/components';
         </div>
         
         <div v-if="!edit" class="divButton">
-            <button class="mainButton">
-                <NuxtLink class="mainLink" to="/registerUserDriver">
-                    Adicionar Participante
-                </NuxtLink>
+            <button  @click="()=> edit=!edit" class="mainButton">
+                <router-link :to="{name: 'RegisterUserDriver'}" class="mainLink">Adicionar Participante</router-link>
             </button>
             <button @click="()=> edit=!edit" class="mainButton">
                 Editar Participantes

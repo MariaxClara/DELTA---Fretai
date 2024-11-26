@@ -2,7 +2,7 @@
     <div>
 
         <div class="divLogo">
-            <img src="../public/images/iconeImage.png" alt="">
+            <img src="/images/iconeImage.png" alt="">
         </div>
 
 
@@ -24,9 +24,7 @@
         <div class="divButton">
             <button class="mainButton" @click="inviteUser()"> Convidar Cliente </button>
             <button class="mainButton">
-                <NuxtLink class="mainLink" to="/myUsers">
-                    Voltar
-                </NuxtLink>
+                <router-link :to="{name: 'MyUsers'}" class="mainLink"> Volttar</router-link>
             </button>
         </div>
    
@@ -44,7 +42,7 @@
 <script setup>
     import { ref, onMounted } from 'vue'
     import axios from 'axios'
-
+    import '../assets/css/main.css'
 
     const driverId = ref(1);
     const errorInvite = ref(false);
@@ -53,30 +51,13 @@
     const userEmails = ref([])
     const userEmail = ref('');
     const messageError = ref('');
-    const config = useRuntimeConfig();
 
     const reEmail = new RegExp(".+@.+");
 
     userEmails.value = ["cla@uni.com", "mar@uni.com"]
 
     async function sendWelcomeEmail (userTo, driverName, linkInvite) {
-        let msg = {
-            to: userTo,
-            from: "fretaiunifesp@gmail.com",
-            subject: "Bem vindo ao Fretai",
-            text: 'Seja muito bem vindo ao Fretai. Você foi convidado para entrar no grupo do '+driverName +', acesse já pelo link: '+linkInvite,
-        }     
-        axios.post('https://api.sendgrid.com/v3/mail/send', msg, {
-            mode: 'no-cors',
-            headers: {
-                'Authorization': `Bearer ${config.SENDGRID_API_KEY}`,
-                'Content-Type': 'application/json'
-            }
-        }).then(response => {
-            console.log('Email enviado', response);
-        }).catch(error => {
-            console.error('Não foi possível enviar o email', error);
-        });  
+        console.log("Enviando email...")
     }
 
     async function addUser(email) {
