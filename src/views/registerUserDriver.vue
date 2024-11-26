@@ -35,17 +35,11 @@
 </template>
 
 <script>
-  export default{
-    name: 'RegisterUserDrive',
-  }
-</script>
-
-<script>
     import { ref, onMounted } from 'vue'
     import axios from 'axios'
 
     export default {
-
+        name: 'RegisterUserDrive',
         async setup() {
 
             const driverId = ref(1);

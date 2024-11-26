@@ -1,7 +1,7 @@
 <template>
   <div class="app-container">
     <div class="logo-container">
-      <img src="~/public/images/iconeImage.png" alt="Van Logo" class="van-icon">
+      <img src="/images/iconeImage.png" alt="Van Logo" class="van-icon">
     </div>
 
     <div class="button-group">

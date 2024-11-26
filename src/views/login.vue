@@ -2,7 +2,7 @@
 <template>
   <div class="login-container">
     <div class="logo-container">
-      <img src="~/public/images/iconeImage.png" alt="Van Logo" class="van-icon">
+      <img src="/images/iconeImage.png" alt="Van Logo" class="van-icon">
     </div>
 
     <form class="login-form" @submit.prevent="handleLoginSubmit">

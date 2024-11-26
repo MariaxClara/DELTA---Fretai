@@ -23,18 +23,12 @@
 </template>
 
 <script>
-  export default{
-    name: 'MyRouters',
-  }
-</script>
-
-<script>
   import maps from "../composables/routes/codes.js"
   
   const { initMapPlatform, geocodeAddress, addWaypoint, removeWaypoint, updateRoute, calculateSegmentRoute } = maps()
   
   export default {
-    
+    name: 'MyRouters',
     mixins: [ initMapPlatform ],
   
     data() {

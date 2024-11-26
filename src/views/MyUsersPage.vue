@@ -51,14 +51,9 @@ import { NuxtLink } from '../.nuxt/components';
 </template>
 
 <script>
-  export default{
-    name: 'MyUsersPage',
-  }
-</script>
-
-<script>
     import { ref, onMounted } from 'vue'
     export	default {
+        name: 'MyUsersPage',
         async setup() {
             let edit = ref(false)
             let users = ref([])
