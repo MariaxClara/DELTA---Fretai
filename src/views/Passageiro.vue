@@ -45,7 +45,7 @@
 <script setup>
   import { ref } from 'vue';
   import { useRouter } from 'vue-router';
-  //import '~/assets/css/cssPerfilMotorista.css'; // Reaproveitando o mesmo CSS
+  import '../assets/css/cssPerfilMotorista.css';
   
   const email = ref('');
   const passengerInfo = ref(null);

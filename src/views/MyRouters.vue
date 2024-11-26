@@ -29,7 +29,7 @@
 </script>
 
 <script>
-  import maps from "./routes/codes.js"
+  import maps from "../composables/routes/codes.js"
   
   const { initMapPlatform, geocodeAddress, addWaypoint, removeWaypoint, updateRoute, calculateSegmentRoute } = maps()
   

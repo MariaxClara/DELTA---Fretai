@@ -20,9 +20,9 @@
 </script>
 
 <script setup>
-import { useIndex } from '@/composables/index'
-import Modal from '@/components/Modal.vue'
-import '@/assets/css/cssInicial.css'
+import { useIndex } from '../composables/index'
+import Modal from '../components/Modal.vue'
+import '../assets/css/cssInicial.css'
 
 const { showModal, toggleModal } = useIndex()
 </script>

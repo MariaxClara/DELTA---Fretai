@@ -7,10 +7,10 @@
     </div>
   </template>
   
-  <script setup lang="ts">
+  <script setup>
   import { ref, defineProps, defineEmits } from 'vue'
   import { useRouter } from 'vue-router'
-  import '@/assets/css/cssInicial.css'
+  import '../assets/css/cssInicial.css'
   
   const props = defineProps({
     visible: Boolean
