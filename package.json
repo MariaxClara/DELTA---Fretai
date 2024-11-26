@@ -1,18 +1,35 @@
 {
-  "name": "delta--fretai",
+  "name": "nuxt-app",
   "private": true,
-  "version": "0.0.0",
   "type": "module",
   "scripts": {
-    "dev": "vite",
-    "build": "vite build",
-    "preview": "vite preview"
+    "build": "nuxt build",
+    "dev": "nuxt dev",
+    "generate": "nuxt generate",
+    "preview": "nuxt preview",
+    "postinstall": "nuxt prepare"
   },
   "dependencies": {
-    "vue": "^3.5.13"
+    "@nuxtjs/axios": "^5.13.6",
+    "@sendgrid/mail": "^8.1.4",
+    "@types/pg": "^8.11.10",
+    "axios": "^1.7.7",
+    "consola": "^3.2.3",
+    "defu": "^6.1.4",
+    "dotenv": "^16.4.5",
+    "express": "^4.21.1",
+    "nodemailer": "^6.9.16",
+    "nuxt": "^3.13.2",
+    "nuxt-sass-resources-loader": "^2.0.5",
+    "pg": "^8.13.1",
+    "resend": "^4.0.1",
+    "vue": "latest",
+    "vue-router": "latest"
   },
   "devDependencies": {
-    "@vitejs/plugin-vue": "^5.2.1",
-    "vite": "^6.0.0"
+    "@nuxtjs/dotenv": "^1.4.2",
+    "@types/express": "^5.0.0",
+    "@types/nodemailer": "^6.4.16",
+    "better-sqlite3": "^9.6.0"
   }
 }
