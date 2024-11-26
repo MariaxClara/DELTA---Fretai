@@ -2,27 +2,27 @@ import { NuxtLink } from '../.nuxt/components';
 <template>
     <div>
         <div class="divLogo">
-            <img src="../public/images/iconeTexto.png" alt="">
+            <img src="/images/iconeTexto.png" alt="">
         </div>
         <div class="divList">
             <div class="divListTop">
-                <img class="listTop" src="../public/images/PeopleIcon.svg" alt="">
+                <img class="listTop" src="/images/PeopleIcon.svg" alt="">
                 <h1 class="listTop">Participantes</h1>
             </div>
             
             <div class="divListItens">
 
                 <div v-for="user in users" :key="user.idShort" class="listItens">
-                    <img class="listImage" src="../public/images/PeopleExample.svg" alt="">
+                    <img class="listImage" src="/images/PeopleExample.svg" alt="">
                     <div class="listUser">
                         <p class="listUserName">{{user.name}}</p>
                         <div v-if="!edit">
-                            <img v-if="user.paid" class="listUserName" src="../public/images/HandCoinsGreen.svg" alt="">
-                            <img v-else class="listUserName" src="../public/images/HandCoinsRed.svg" alt="">    
+                            <img v-if="user.paid" class="listUserName" src="/images/HandCoinsGreen.svg" alt="">
+                            <img v-else class="listUserName" src="/images/HandCoinsRed.svg" alt="">    
                         </div>
                         <div v-else>
-                            <img  v-if="user.paid" @click="()=> {user.paid=!user.paid; user.update = 1}" src="../public/images/CheckFat.svg" alt="">
-                            <img v-else @click="()=> {user.paid=!user.paid; user.update = 1}" src="../public/images/Selection.svg" alt="">
+                            <img  v-if="user.paid" @click="()=> {user.paid=!user.paid; user.update = 1}" src="/images/CheckFat.svg" alt="">
+                            <img v-else @click="()=> {user.paid=!user.paid; user.update = 1}" src="/images/Selection.svg" alt="">
                         </div>
                     </div>
                 </div>
@@ -51,16 +51,20 @@ import { NuxtLink } from '../.nuxt/components';
 </template>
 
 <script>
-    import { ref, onMounted } from 'vue'
     export	default {
         name: 'MyUsersPage',
-        async setup() {
-            let edit = ref(false)
-            let users = ref([])
-            let driverId = ref(1)
-            let messageError = ref('')
+    }
+</script>
 
-            const takeUsers = async () => {
+<script setup>
+    import { ref, onMounted } from 'vue'
+
+    let edit = ref(false)
+    let users = ref([])
+    let driverId = ref(1)
+    let messageError = ref('')
+
+    const takeUsers = async () => {
                 console.log('Estou indo pegar os passageiros')
                 try {
                     const response = await fetch('/api/driverUsers', {
@@ -79,8 +83,8 @@ import { NuxtLink } from '../.nuxt/components';
                     console.log(messageError)
                 }
 
-            }
-            async function updateUsers() {
+    }
+    async function updateUsers() {
                 edit.value=!edit.value
                 try {
                     for (user in users.value) {
@@ -108,31 +112,24 @@ import { NuxtLink } from '../.nuxt/components';
                     console.log(messageError)
                 }
             }
-            // users.value.push(
-            //     {
-            //         idShort: 0,
-            //         name: 'João da Silva',
-            //         paid: 1,
-            //     }
-            // )
-            // users.value.push(
-            //     {
-            //         idShort: 1,
-            //         name: 'Maria das Palmas',
-            //         paid: 0,
-            //     }
-            // )
+            users.value.push(
+                {
+                    idShort: 0,
+                    name: 'João da Silva',
+                    paid: 1,
+                }
+            )
+            users.value.push(
+                {
+                    idShort: 1,
+                    name: 'Maria das Palmas',
+                    paid: 0,
+                }
+    )
 
-            onMounted(() => {
+    onMounted(() => {
                 takeUsers()
-            })
+    })
 
-            return {
-                edit,
-                users,
-                updateUsers
-            }
-        }
-    }
 </script>
 
