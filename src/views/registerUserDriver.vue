@@ -46,112 +46,110 @@
     import axios from 'axios'
 
 
-            const driverId = ref(1);
-            const errorInvite = ref(false);
-            const sucessInvite = ref(false);
-            const errorMessage = ref('');
-            const userEmails = ref([])
-            const userEmail = ref('');
-            const messageError = ref('');
-            const config = useRuntimeConfig();
+    const driverId = ref(1);
+    const errorInvite = ref(false);
+    const sucessInvite = ref(false);
+    const errorMessage = ref('');
+    const userEmails = ref([])
+    const userEmail = ref('');
+    const messageError = ref('');
+    const config = useRuntimeConfig();
 
-            //Melhorar a ReEx para mais especificidade
-            const reEmail = new RegExp(".+@.+");
+    const reEmail = new RegExp(".+@.+");
 
-            userEmails.value = ["cla@uni.com", "mar@uni.com"]
+    userEmails.value = ["cla@uni.com", "mar@uni.com"]
 
-            async function sendWelcomeEmail (userTo, driverName, linkInvite) {
-                let msg = {
-                    to: userTo,
-                    from: "fretaiunifesp@gmail.com",
-                    subject: "Bem vindo ao Fretai",
-                    text: 'Seja muito bem vindo ao Fretai. Você foi convidado para entrar no grupo do '+driverName +', acesse já pelo link: '+linkInvite,
-                }     
-                axios.post('https://api.sendgrid.com/v3/mail/send', msg, {
-                    mode: 'no-cors',
-                    headers: {
-                        'Authorization': `Bearer ${config.SENDGRID_API_KEY}`,
-                        'Content-Type': 'application/json'
-                    }
-                }).then(response => {
-                    console.log('Email enviado', response);
-                }).catch(error => {
-                    console.error('Não foi possível enviar o email', error);
-                });  
+    async function sendWelcomeEmail (userTo, driverName, linkInvite) {
+        let msg = {
+            to: userTo,
+            from: "fretaiunifesp@gmail.com",
+            subject: "Bem vindo ao Fretai",
+            text: 'Seja muito bem vindo ao Fretai. Você foi convidado para entrar no grupo do '+driverName +', acesse já pelo link: '+linkInvite,
+        }     
+        axios.post('https://api.sendgrid.com/v3/mail/send', msg, {
+            mode: 'no-cors',
+            headers: {
+                'Authorization': `Bearer ${config.SENDGRID_API_KEY}`,
+                'Content-Type': 'application/json'
             }
+        }).then(response => {
+            console.log('Email enviado', response);
+        }).catch(error => {
+            console.error('Não foi possível enviar o email', error);
+        });  
+    }
 
-            async function addUser(email) {
-                // Adicionar no banco
-                try {
-                    const response = await fetch('/api/addDriverInvite', {
-                        method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/json'
-                        },
-                        body: {
-                            email: email,
-                            id: driverId.value
-                        },
-                        mode: 'no-cors'
-                    })
-                    console.log("Banco atualizado")
-                    console.log(response)
+    async function addUser(email) {
+        try {
+            const response = await fetch('/api/addDriverInvite', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: {
+                    email: email,
+                    id: driverId.value
+                },
+                mode: 'no-cors'
+            })
+            console.log("Banco atualizado")
+            console.log(response)
                     
-                } catch (error) {
-                    messageError.value = 'Parece que nosso servidor está em manutenção, não foi possível convidar o usuário!'
-                    console.log(messageError)
-                }
-            }
+        } catch (error) {
+            messageError.value = 'Parece que nosso servidor está em manutenção, não foi possível convidar o usuário!'
+            console.log(messageError)
+        }
+    }
 
-            const takeUsers = async () => {
-                try {
-                    const response = await fetch('/api/driverInvites', {
-                        method: 'GET',
-                        headers: {
-                        'Content-Type': 'application/json'
-                        },
-                        body: {id: driverId.value}
-                    })
-                    const data = await response.json();
-                    console.log(data)
+    const takeUsers = async () => {
+        try {
+            const response = await fetch('/api/driverInvites', {
+                method: 'GET',
+                headers: {
+                'Content-Type': 'application/json'
+                },
+                body: {id: driverId.value}
+            })
+            const data = await response.json();
+            console.log(data)
 
-                } catch (error) {
-                    messageError.value = 'Parece que nosso servidor está em manutenção!'
-                    console.log(messageError)
-                }
+        } catch (error) {
+            messageError.value = 'Parece que nosso servidor está em manutenção!'
+            console.log(messageError)
+        }
 
-            }
+    }
 
-            function inviteUser() {
+    function inviteUser() {
 
-                errorInvite.value = false;
-                sucessInvite.value = false;
+        errorInvite.value = false;
+        sucessInvite.value = false;
 
-                if (userEmail.value) {
-                    if(reEmail.test(userEmail.value)) {
-                        if(Array.from(userEmails.value).includes(userEmail.value)) {
-                            errorMessage.value = 'e-mail já cadastrado!';
-                            errorInvite.value = true;
-                        } else {
-                            sucessInvite.value = true;
-                            sendWelcomeEmail(userEmail.value, driverId.value, 'https://www.google.com/')
-                            addUser(userEmail.value);
-                        }
-                    } else {
-                        errorMessage.value = 'e-mail inválido!';
-                        errorInvite.value = true;
-                    }
-                }   else {
-                    errorMessage.value = 'e-mail inválido!';
+        if (userEmail.value) {
+            if(reEmail.test(userEmail.value)) {
+                if(Array.from(userEmails.value).includes(userEmail.value)) {
+                    errorMessage.value = 'e-mail já cadastrado!';
                     errorInvite.value = true;
+                } else {
+                    sucessInvite.value = true;
+                    sendWelcomeEmail(userEmail.value, driverId.value, 'https://www.google.com/')
+                    addUser(userEmail.value);
                 }
-
-                userEmail.value = '';
-
+            } else {
+                errorMessage.value = 'e-mail inválido!';
+                errorInvite.value = true;
             }
+        }   else {
+            errorMessage.value = 'e-mail inválido!';
+            errorInvite.value = true;
+        }
+
+        userEmail.value = '';
+
+    }
 
             
-            onMounted(() => {
-                takeUsers()
-            })
+    onMounted(() => {
+        takeUsers()
+    })
 </script>
