@@ -35,6 +35,12 @@
   </div>
 </template>
 
+<script>
+  export default{
+    name: 'TrocaSenha',
+  }
+</script>
+
 <script setup>
 import { ref } from 'vue';
 import { useRoute, useRouter } from 'vue-router';

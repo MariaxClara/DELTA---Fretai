@@ -1,5 +1,5 @@
 <template>
-    <Header/>
+    <!-- <Header/> -->
     <div>
         <h1>Perfil do motorista</h1>
 
@@ -9,5 +9,11 @@
         
     </div>
 </template>
+
+<script>
+  export default{
+    name: 'PerfilMotorista',
+  }
+</script>
 
 <script setup> </script>

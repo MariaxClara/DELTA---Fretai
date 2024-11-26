@@ -35,6 +35,12 @@
 </template>
 
 <script>
+  export default{
+    name: 'RegisterUserDrive',
+  }
+</script>
+
+<script>
     import { ref, onMounted } from 'vue'
     import axios from 'axios'
 

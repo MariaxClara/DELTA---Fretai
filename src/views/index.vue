@@ -13,7 +13,13 @@
   </div>
 </template>
 
-<script setup lang="ts">
+<script>
+  export default{
+    name: 'Index',
+  }
+</script>
+
+<script setup>
 import { useIndex } from '@/composables/index'
 import Modal from '@/components/Modal.vue'
 import '@/assets/css/cssInicial.css'

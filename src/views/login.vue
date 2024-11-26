@@ -46,7 +46,13 @@
   </div>
 </template>
 
-<script setup lang="ts">
+<script>
+  export default{
+    name: 'Login',
+  }
+</script>
+
+<script setup>
 import { ref } from 'vue';
 import { useRouter } from 'vue-router';
 import useLogin from '@/composables/UseLogin';

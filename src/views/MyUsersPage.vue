@@ -51,6 +51,12 @@ import { NuxtLink } from '../.nuxt/components';
 </template>
 
 <script>
+  export default{
+    name: 'MyUsersPage',
+  }
+</script>
+
+<script>
     import { ref, onMounted } from 'vue'
     export	default {
         async setup() {

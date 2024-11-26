@@ -20,9 +20,15 @@
   
       <div ref="mapContainer" style="width: 400px; height:550px; margin-top: 20px;"></div>
     </div>
-  </template>
-  
-  <script>
+</template>
+
+<script>
+  export default{
+    name: 'MyRouters',
+  }
+</script>
+
+<script>
   import maps from "./routes/codes.js"
   
   const { initMapPlatform, geocodeAddress, addWaypoint, removeWaypoint, updateRoute, calculateSegmentRoute } = maps()
@@ -56,9 +62,9 @@
       calculateSegmentRoute
     }
   };
-  </script>
+</script>
   
-  <style scoped>
+<style scoped>
   /* @import "./assets/css/main.css"; */
 
   #app {

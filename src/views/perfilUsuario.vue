@@ -4,6 +4,12 @@
     </div>
 </template>
 
+<script>
+  export default{
+    name: 'PerfilUsuario',
+  }
+</script>
+
 <script setup>
 
 </script>
