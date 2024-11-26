@@ -37,6 +37,12 @@
   </template>
   
 <script>
+    export default{
+        name: 'Passageiro',
+    }
+</script>
+
+<script setup>
   import { ref } from 'vue';
   import { useRouter } from 'vue-router';
   //import '~/assets/css/cssPerfilMotorista.css'; // Reaproveitando o mesmo CSS
@@ -46,50 +52,46 @@
   const error = ref(null);
   const router = useRouter();
   
-//   async function fetchPassengerInfo() {
-//     try {
-//       const response = await fetch(`/api/passengerInfo?email=${email.value}`);
-//       const data = await response.json();
+  async function fetchPassengerInfo() {
+    try {
+      const response = await fetch(`/api/passengerInfo?email=${email.value}`);
+      const data = await response.json();
   
-//       if (data.statusCode !== 200) {
-//         error.value = data.body.error || 'Erro desconhecido';
-//         return;
-//       }
+      if (data.statusCode !== 200) {
+        error.value = data.body.error || 'Erro desconhecido';
+        return;
+      }
   
-//       if (data.body.length > 0) {
-//         const firstPassenger = data.body[0];
-//         passengerInfo.value = {
-//           passageiro_nome: firstPassenger.passageiro_nome,
-//           passageiro_email: firstPassenger.passageiro_email,
-//           passageiro_telefone: firstPassenger.passageiro_telefone,
-//           motoristas: data.body.map(item => ({
-//             motorista_nome: item.motorista_nome,
-//             motorista_telefone: item.motorista_telefone,
-//           })),
-//         };
-//       } else {
-//         passengerInfo.value = null;
-//       }
-//       error.value = null;
-//     } catch (err) {
-//       error.value = err.message;
-//     }
-//   }
-  
-//   function goToTrocaSenha() {
-//     if (!passengerInfo.value || !passengerInfo.value.passageiro_email) {
-//       error.value = "Não foi possível encontrar o email do passageiro.";
-//       return;
-//     }
-  
-//     router.push({
-//       path: '/trocaSenha',
-//       query: { email: passengerInfo.value.passageiro_email, flag: 1 }
-//     });
-//   }
-
-    export default{
-        name: 'Passageiro',
+      if (data.body.length > 0) {
+        const firstPassenger = data.body[0];
+        passengerInfo.value = {
+          passageiro_nome: firstPassenger.passageiro_nome,
+          passageiro_email: firstPassenger.passageiro_email,
+          passageiro_telefone: firstPassenger.passageiro_telefone,
+          motoristas: data.body.map(item => ({
+            motorista_nome: item.motorista_nome,
+            motorista_telefone: item.motorista_telefone,
+          })),
+        };
+      } else {
+        passengerInfo.value = null;
+      }
+      error.value = null;
+    } catch (err) {
+      error.value = err.message;
     }
+  }
+  
+  function goToTrocaSenha() {
+    if (!passengerInfo.value || !passengerInfo.value.passageiro_email) {
+      error.value = "Não foi possível encontrar o email do passageiro.";
+      return;
+    }
+  
+    router.push({
+      path: '/trocaSenha',
+      query: { email: passengerInfo.value.passageiro_email, flag: 1 }
+    });
+  }
 
 </script>
