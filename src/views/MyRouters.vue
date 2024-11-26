@@ -24,7 +24,8 @@
 
 <script>
   import maps from "../composables/routes/codes.js"
-  
+  import { loadHereMaps } from "../composables/here-maps.js"
+
   const { initMapPlatform, geocodeAddress, addWaypoint, removeWaypoint, updateRoute, calculateSegmentRoute } = maps()
   
   export default {
@@ -43,7 +44,7 @@
       };
     },
     async mounted() {
-      await this.$loadHereMaps();
+      await loadHereMaps();
       
       this.initMapPlatform();
     },
