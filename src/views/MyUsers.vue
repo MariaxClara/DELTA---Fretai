@@ -55,8 +55,10 @@ import { NuxtLink } from '../.nuxt/components';
 </script>
 
 <script setup>
-    import { ref, onMounted } from 'vue'
-    import '../assets/css/main.css'
+    import { ref, onMounted } from 'vue';
+    import '../assets/css/main.css';
+
+    const {VITE_BASE_URL_BACKEND} = import.meta.env 
 
     let edit = ref(false)
     let users = ref([])
@@ -65,7 +67,7 @@ import { NuxtLink } from '../.nuxt/components';
 
     const takeUsers = async () => {
         try {
-            const response = await fetch(`http://localhost:3000/driverUsers/${driverId.value}`, {
+            const response = await fetch(`${VITE_BASE_URL_BACKEND}/driverUsers/${driverId.value}`, {
                 method: 'GET',
             })
             const data = await response.json();
