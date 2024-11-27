@@ -41,8 +41,9 @@
 
 <script setup>
     import { ref, onMounted } from 'vue'
-    import axios from 'axios'
     import '../assets/css/main.css'
+
+    const {VITE_BASE_URL_BACKEND} = import.meta.env 
 
     const driverId = ref(1);
     const errorInvite = ref(false);
@@ -62,11 +63,8 @@
 
     async function addUser(email) {
         try {
-            const response = await fetch('/api/addDriverInvite', {
+            const response = await fetch(`${VITE_BASE_URL_BACKEND}/addDriverInvite`, {
                 method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
                 body: {
                     email: email,
                     id: driverId.value
@@ -84,19 +82,15 @@
 
     const takeUsers = async () => {
         try {
-            const response = await fetch('/api/driverInvites', {
-                method: 'GET',
-                headers: {
-                'Content-Type': 'application/json'
-                },
-                body: {id: driverId.value}
+            const response = await fetch(`${VITE_BASE_URL_BACKEND}/driverInvites/${driverId.value}`, {
+                method: 'GET'
             })
             const data = await response.json();
             console.log(data)
 
         } catch (error) {
             messageError.value = 'Parece que nosso servidor está em manutenção!'
-            console.log(messageError)
+            console.log(error)
         }
 
     }

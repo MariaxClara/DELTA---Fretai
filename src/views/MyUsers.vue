@@ -93,7 +93,7 @@ import { NuxtLink } from '../.nuxt/components';
         try {
             for (let user in users.value) {
                 try {
-                    const response = await fetch(`http://localhost:3000/updateUserPay`, {
+                    const response = await fetch(`${VITE_BASE_URL_BACKEND}/updateUserPay`, {
                     method: 'POST',
                     body: JSON.stringify({
                         email: user.email,
