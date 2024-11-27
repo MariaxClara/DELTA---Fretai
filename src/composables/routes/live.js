@@ -1,8 +1,14 @@
 export default function createAndAnimateMarker(map) {
   // Create an SVG Dom Icon for the marker
-  var svg = `<svg xmlns="http://www.w3.org/2000/svg" class="svg-icon" width="10px" height="10px">
-      <circle cx="5" cy="5" r="4" fill="rgb(250, 127, 0)" stroke-width="1" stroke="black" opacity="1"/>
-      </svg>`;
+  var svg = `<svg xmlns="http://www.w3.org/2000/svg" class="svg-icon" width="24px" height="24px" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <rect x="1" y="5" width="22" height="13" rx="2" ry="2"></rect>
+      <path d="M5 16v1a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-1"></path>
+      <circle cx="6.5" cy="17.5" r="2.5"></circle>
+      <circle cx="17.5" cy="17.5" r="2.5"></circle>
+      <path d="M2 10h4"></path>
+      <path d="M18 10h4"></path>
+      <path d="M10 10h4"></path>
+    </svg>`;
   var domIcon = new H.map.DomIcon(svg);
 
   // Define the initial position for the marker (fallback in case geolocation is unavailable)

@@ -1,14 +1,15 @@
 import createAndAnimateMarker from './live.js';
 import RouteOptimizer from './optmize.js';
-import dotenv from 'dotenv'
 
 export default function maps() {
 
   function initMapPlatform() {
-    // dotenv.config();
-    // const apiKey_env = process.env.HERE_API_KEY;
-    // console.log(apiKey_env);
-    const apiKey = 'KJ72fZC8X7n9q7BlK42O4rv6upXTF6_B9l2JNVGhcBY';
+    const apiKey_env = import.meta.env.VITE_HERE_API_KEY;
+    if (!apiKey_env) {
+      console.error('VITE_HERE_API_KEY is not defined in the .env file');
+      return;
+    }
+    const apiKey = apiKey_env;
     this.platform = new H.service.Platform({ apikey: apiKey });
     
     const defaultLayers = this.platform.createDefaultLayers();
@@ -93,7 +94,18 @@ export default function maps() {
       };
 
       // Otimizar a rota
-      const routeOptimizer = new RouteOptimizer('marcos_aquino', 'engenhari@S24');
+      const user = import.meta.env.VITE_ROUTEXL_USER;      
+      if (!user) {
+        console.error('VITE_HERE_ROUTEXL_USER is not defined in the .env file');
+        return;
+      }
+
+      const password = import.meta.env.VITE_ROUTEXL_PASSWORD;
+      if (!password) {
+        console.error('VITE_HERE_ROUTEXL_PASSWORD is not defined in the .env file');
+        return;
+      }
+      const routeOptimizer = new RouteOptimizer(user, password);
       const { locations, optimizedRoute } = await routeOptimizer.optimizeRoute(origin, destination, waypoints);
 
       console.log(locations, optimizedRoute); // Debug
