@@ -86,7 +86,9 @@
                 method: 'GET'
             })
             const data = await response.json();
-            console.log(data)
+            for (let i in data.body) {
+                userEmails.value.push(data.body[i])
+            }
 
         } catch (error) {
             messageError.value = 'Parece que nosso servidor está em manutenção!'
@@ -103,7 +105,7 @@
         if (userEmail.value) {
             if(reEmail.test(userEmail.value)) {
                 if(Array.from(userEmails.value).includes(userEmail.value)) {
-                    errorMessage.value = 'e-mail já cadastrado!';
+                    errorMessage.value = 'e-mail já convidado!';
                     errorInvite.value = true;
                 } else {
                     sucessInvite.value = true;
