@@ -65,63 +65,50 @@ import { NuxtLink } from '../.nuxt/components';
 
     const takeUsers = async () => {
         try {
-            const response = await fetch('/api/driverUsers', {
+            const response = await fetch(`http://localhost:3000/driverUsers/${driverId.value}`, {
                 method: 'GET',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: {id: driverId.value}
             })
             const data = await response.json();
-            console.log(data)
-
+            let passageiros = []
+            for (let i in data.body) {
+                let passageiro = data.body[i]
+                passageiros.push({
+                    idShort: i,
+                    name: passageiro.passageiro_nome,
+                    paid: passageiro.passageiro_pagamento,
+                    update: 0,
+                })
+            }
+            users.value = passageiros
         } catch (error) {
             console.log('Não consegui pegar os passageiros:')
-            console.log(messageError)
+            console.log(error)
         }
 
     }
     async function updateUsers() {
         edit.value=!edit.value
         try {
-            for (user in users.value) {
+            for (let user in users.value) {
                 try {
-                    const response = await fetch('/api/updateUserPay', {
+                    const response = await fetch(`http://localhost:3000/updateUserPay`, {
                     method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                    body: {
+                    body: JSON.stringify({
                         email: user.email,
                         paid: user.paid
-                    },
-                    mode: 'no-cors'
+                    })
                     })
                     console.log(response)
                 } catch (error) {
                     messageError.value = 'Parece que nosso servidor está em manutenção, não foi possível salvar as modificações!'
-                    console.log(messageError)
                 }
             }
         } catch (error) {
             messageError.value = 'Parece que nosso servidor está em manutenção, não foi possível salvar as modificações!'
+            console.log(error)
             console.log(messageError)
         }
     }
-    users.value.push(
-        {
-            idShort: 0,
-            name: 'João da Silva',
-            paid: 1,
-        }
-    )
-    users.value.push(
-        {
-            idShort: 1,
-            name: 'Maria das Palmas',
-            paid: 0,
-        }
-    )
 
     onMounted(() => {
         takeUsers()
