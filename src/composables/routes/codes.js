@@ -57,27 +57,57 @@ export default function maps() {
   async function getCurrentLocation() {
     return new Promise((resolve, reject) => {
       if (navigator.geolocation) {
-        navigator.geolocation.getCurrentPosition(
-          function (position) {
-            const { latitude, longitude } = position.coords;
-            resolve({ lat: latitude, lng: longitude });
-          },
-          function (error) {
-            reject(error);
+        navigator.permissions.query({ name: 'geolocation' }).then(result => {
+          if (result.state === 'granted') {
+            navigator.geolocation.getCurrentPosition(
+              function (position) {
+                const { latitude, longitude } = position.coords;
+                resolve({ lat: latitude, lng: longitude });
+              },
+              function (error) {
+                // If permission is granted but location cannot be retrieved
+                reject(new Error("Não foi possível obter a localização"));
+              }
+            );
+          } else {
+            // If permission is not granted, reject with a specific error
+            reject(new Error("Localização não permitida"));
           }
-        );
+        });
       } else {
         reject(new Error("Geolocalização não é suportada"));
       }
     });
   }
 
+  function reverseGeocode(lat, lng) {
+    return new Promise((resolve, reject) => {
+      this.searchService.reverseGeocode({
+        at: `${lat},${lng}`
+      }, (result) => {
+        const location = result.items[0]?.address;
+        if (location) {
+          const formattedAddress = `${location.street}, ${location.city}, ${location.state}`;
+          resolve(formattedAddress);
+        } else {
+          reject(new Error(`Endereço não encontrado para as coordenadas: ${lat}, ${lng}`));
+        }
+      }, (error) => reject(error));
+    });
+  }
+      // Rest of the existing updateRoute method remains the same
   async function updateRoute() {
     try {
-      // Geocodificar origem, destino e waypoints
-      const origin = await getCurrentLocation();
+      let origin;
+      try {
+        // Try to get current location
+        origin = await getCurrentLocation();
+      } catch (locationError) {
+        // If location cannot be retrieved, fall back to manual address input
+        origin = await this.geocodeAddress(this.originAddress);
+      }
+
       const destination = await this.geocodeAddress(this.destinationAddress);
-      
       // Geocodificar cada waypoint inserido pelo usuário
       // if (!this.waypoints.includes({address: this.originAddress})){
       //   this.waypoints.push({address: this.originAddress});
@@ -164,11 +194,34 @@ export default function maps() {
         this.ui.getBubbles().forEach(bubble => this.ui.removeBubble(bubble));
       
         const bubbleContent = `
-          <div style="width: auto; height: auto; background-color: lightgray; color: black; padding: 10px; display: block; align-items: center; justify-content: center; position: relative;">
-            <button onclick="closeBubble()" style="position: absolute; top: 5px; right: 5px;">X</button>
-            ${evt.target.getData()}
+          <div style="
+              min-width: 200px; 
+              background-color: darkgray; 
+              color: black; 
+              padding: 10px; 
+              display: flex; 
+              flex-direction: column; 
+              position: relative; 
+              border-radius: 8px; 
+              box-shadow: 6px rgba(0, 0, 0, 0.1);">
+            <button onclick="closeBubble()" 
+              style="
+                position: absolute; 
+                top: 10px; 
+                right: 10px; 
+                background: transparent; 
+                border: none; 
+                font-size: 14px; 
+                cursor: pointer;">
+              X
+            </button>
+            <div style="margin-top: 20px;">
+              ${evt.target.getData()}
+            </div>
           </div>
         `;
+
+        
       
         const bubble = new H.ui.InfoBubble(evt.target.getGeometry(), {
           content: bubbleContent
@@ -198,13 +251,19 @@ export default function maps() {
         }
         
         const marker = new H.map.Marker({ lat: location.lat, lng: location.lng });
-        marker.setData(`
-          <div>Endereço: ${address}</div>
-          <div>Distância total até aqui: ${location.distance.toFixed(2)} km</div>
-          <div>Tempo total até aqui: ${location.arrival.toFixed(2)} min</div>
-          <div>Distância a partir da última parada: ${distanceToNext} km</div>
-          <div>Tempo a partir da última parada: ${timeToNext} min</div>
-        `);
+        if (i == 0){
+          const loc = await this.reverseGeocode(location.lat, location.lng);
+          marker.setData(`Ponto de partida: ${loc}`);
+        }
+        else{
+          marker.setData(`
+            <div>Endereço: ${address}</div>
+            <div>Distância total até aqui: ${location.distance.toFixed(2)} km</div>
+            <div>Tempo total até aqui: ${location.arrival.toFixed(2)} min</div>
+            <div>Distância a partir da última parada: ${distanceToNext} km</div>
+            <div>Tempo a partir da última parada: ${timeToNext} min</div>
+          `);
+        }
         group.addObject(marker);
       }
 
@@ -273,5 +332,5 @@ export default function maps() {
     });
   }
 
-  return {initMapPlatform, geocodeAddress, addWaypoint, removeWaypoint, updateRoute, calculateSegmentRoute};
+  return {initMapPlatform, geocodeAddress, addWaypoint, removeWaypoint, updateRoute, calculateSegmentRoute, reverseGeocode};
 }
