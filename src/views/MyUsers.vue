@@ -96,18 +96,15 @@ import { NuxtLink } from '../.nuxt/components';
             for (let i in users.value) {
                 let user = users.value[i]
                 try {
-                    console.log(JSON.stringify({
-                        email: user.email,
-                        paid: Number(user.paid)
-                    }))
                     const response = await fetch(`${VITE_BASE_URL_BACKEND}/updateUserPay`, {
-                    method: 'POST',
-                    body: JSON.stringify({
-                        email: user.email,
-                        paid: Number(user.paid)
+                        method: 'POST',
+                        headers: { "Content-Type": "application/json" },
+                        body: JSON.stringify({
+                            email: user.email,
+                            paid: Number(user.paid)
+                        })
                     })
-                    })
-                    console.log(response)
+                    const data = await response.json();
                 } catch (error) {
                     messageError.value = 'Parece que nosso servidor está em manutenção, não foi possível salvar as modificações!'
                 }
