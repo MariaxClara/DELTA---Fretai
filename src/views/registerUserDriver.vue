@@ -62,18 +62,15 @@
     }
 
     async function addUser(email) {
-        try {
-            const response = await fetch(`${VITE_BASE_URL_BACKEND}/addDriverInvite`, {
+        try {           
+            const response = await fetch(`${VITE_BASE_URL_BACKEND}/addUserEmailInvite`, {
                 method: 'POST',
-                body: {
-                    email: email,
-                    id: driverId.value
-                },
-                mode: 'no-cors'
-            })
-            console.log("Banco atualizado")
-            console.log(response)
-                    
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({
+                            email: email,
+                            id: Number(driverId.value)
+                })
+            })                    
         } catch (error) {
             messageError.value = 'Parece que nosso servidor está em manutenção, não foi possível convidar o usuário!'
             console.log(messageError)
