@@ -54,7 +54,6 @@
 
     const errorEnter = ref(false);
     const sucessEnter = ref(false);
-    const errorMessage = ref('');
     const userEmail = ref('');
     const userPassword = ref('');
     const code = ref('');
@@ -64,32 +63,33 @@
     async function enterGroup() {
         errorEnter.value = false
         sucessEnter.value = false
-        console.log(userEmail.value, userPassword.value, code.value)
         try {
-            const response = await fetch(`${VITE_BASE_URL_BACKEND}/addPassengerUser`, {
+            let response = await fetch(`${VITE_BASE_URL_BACKEND}/addPassengerUser`, {
                 method: 'POST',
-                body: {
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({
                     email: userEmail.value,
                     password: userPassword.value,
                     code: code.value
-                },
-                mode: 'no-cors'
+                })
             })
-            console.log(response)
-            if (response.body = -1) {
+            if ( response.status == 401){
+                errorEnter.value = true
+                messageError.value = "Login ou senha incorretos" 
+            } else if (response.status == 400) {
                 errorEnter.value = true
                 messageError.value = "Código de motorista inválido"
-            } else if (response.body = -2) {
-                errorEnter = true
-                messageError = "Login ou senha incorretos"
-            } else {
+            } else if (response.status == 200) {
                 sucessEnter = true
+            } else {
+                errorEnter.value = true
+                messageError.value = 'Ops! Parece que nosso servidor está em manutenção ...'
             }
 
         } catch (error) {
             errorEnter.value = true
             messageError.value = 'Ops! Parece que nosso servidor está em manutenção ...'
-            console.log(error)
+            console.log("Erro:",error)
         }
     }
 
