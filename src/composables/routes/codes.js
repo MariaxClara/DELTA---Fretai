@@ -95,9 +95,24 @@ export default function maps() {
       }, (error) => reject(error));
     });
   }
-      // Rest of the existing updateRoute method remains the same
+  // Rest of the existing updateRoute method remains the same
   async function updateRoute() {
     try {
+      if (!this.destinationAddress) {
+        this.errorMessage = "O endereço de destino precisa ser preenchido.";
+        return;
+      }
+      if(!this.originAddress){
+        this.errorMessage = "O endereço de origem precisa ser preenchido.";
+        return;
+      }
+      for (let i = 0; i < this.waypoints.length; i++) {
+        if (!this.waypoints[i].address) {
+          this.errorMessage = `O endereço da parada ${i + 1} precisa ser preenchido.`;
+          return;
+        }
+      } 
+      
       let origin;
       try {
         // Try to get current location
@@ -106,30 +121,22 @@ export default function maps() {
         // If location cannot be retrieved, fall back to manual address input
         origin = await this.geocodeAddress(this.originAddress);
       }
-
+  
       const destination = await this.geocodeAddress(this.destinationAddress);
-      // Geocodificar cada waypoint inserido pelo usuário
-      // if (!this.waypoints.includes({address: this.originAddress})){
-      //   this.waypoints.push({address: this.originAddress});
-      // }
-      //console.log();
       const waypoints = await Promise.all(this.waypoints.map(wp => this.geocodeAddress(wp.address)));
-
-
-      // Parâmetros para o roteamento
+  
       const routingParameters = {
         routingMode: "fast",
         transportMode: "car",
         return: "polyline"
       };
-
-      // Otimizar a rota
+  
       const user = import.meta.env.VITE_ROUTEXL_USER;      
       if (!user) {
         console.error('VITE_HERE_ROUTEXL_USER is not defined in the .env file');
         return;
       }
-
+  
       const password = import.meta.env.VITE_ROUTEXL_PASSWORD;
       if (!password) {
         console.error('VITE_HERE_ROUTEXL_PASSWORD is not defined in the .env file');
@@ -137,14 +144,11 @@ export default function maps() {
       }
       const routeOptimizer = new RouteOptimizer(user, password);
       const { locations, optimizedRoute } = await routeOptimizer.optimizeRoute(origin, destination, waypoints);
-
-      console.log(locations, optimizedRoute); // Debug
-      //esse dicionario combina as informações de locations com a de rotas otimizadas
+  
       const combinedRoute = Object.keys(optimizedRoute).map((key, index) => {
         const optimizedStop = optimizedRoute[key];
         const originalLocation = locations.find(location => location.name === optimizedStop.name);
         
-        // Criar objeto combinado
         return {
             name: originalLocation ? originalLocation.name : `Parada ${index}`,
             lat: originalLocation ? originalLocation.lat : null,
@@ -154,11 +158,7 @@ export default function maps() {
             distance: optimizedStop.distance
         };
       });
-
-      
-
-      console.log(combinedRoute); // Debug
-          // Criar um novo array para armazenar os endereços na ordem de combinedRoute
+  
       const orderedAddresses = combinedRoute.map(stop => {
         if (stop.name === 'Start') {
           return this.originAddress;
@@ -169,30 +169,25 @@ export default function maps() {
           return this.waypoints[waypointIndex].address;
         }
       });
-
-      console.log('Ordered Addresses:', orderedAddresses); // Debug
-
-      // Iniciar o grupo para exibir os pontos e a rota
+  
       this.map.removeObjects(this.map.getObjects());
       const group = new H.map.Group();
-
-      // Adicionar marcador para o ponto de origem
+  
       for (let i = 0; i < combinedRoute.length - 1; i++) {
-          const start = { lat: combinedRoute[i].lat, lng: combinedRoute[i].lng };
-          const end = { lat: combinedRoute[i + 1].lat, lng: combinedRoute[i + 1].lng };
-
-          // Calcular a rota para o segmento atual
-          await this.calculateSegmentRoute(start, end, routingParameters, group);
+        const start = { lat: combinedRoute[i].lat, lng: combinedRoute[i].lng };
+        const end = { lat: combinedRoute[i + 1].lat, lng: combinedRoute[i + 1].lng };
+  
+        await this.calculateSegmentRoute(start, end, routingParameters, group);
       }
-
-      // Adicionar marcador para o último ponto do combinedRoute
-      const lastMarker = new H.map.Marker({ lat: combinedRoute[combinedRoute.length - 1].lat, lng: combinedRoute[combinedRoute.length - 1].lng });
-      group.addObject(lastMarker);
-
-      // Adicionar bubbles de informação
-      group.addEventListener('tap', function (evt) {
+  
+      // const lastMarker = new H.map.Marker({ lat: combinedRoute[combinedRoute.length - 1].lat, lng: combinedRoute[combinedRoute.length - 1].lng });
+      // group.addObject(lastMarker);
+  
+      group.addEventListener('tap', async function (evt) {
         this.ui.getBubbles().forEach(bubble => this.ui.removeBubble(bubble));
       
+        const coords = evt.target.getGeometry();
+        const address = await this.reverseGeocode(coords.lat, coords.lng);
         const bubbleContent = `
           <div style="
               min-width: 200px; 
@@ -216,27 +211,41 @@ export default function maps() {
               X
             </button>
             <div style="margin-top: 20px;">
-              ${evt.target.getData()}
+              ${address}
             </div>
           </div>
         `;
-
-        
       
         const bubble = new H.ui.InfoBubble(evt.target.getGeometry(), {
           content: bubbleContent
         });
         this.ui.addBubble(bubble);
       
-        // Função para fechar o bubble
         window.closeBubble = () => {
           this.ui.removeBubble(bubble);
         };
       }.bind(this), false);
-
+  
       for (let i = 0; i < combinedRoute.length; i++) {
         const location = combinedRoute[i];
         const address = orderedAddresses[i];
+        
+              // Create a custom marker icon with the order number
+        const markerIcon = new H.map.Icon(
+          `<svg xmlns="http://www.w3.org/2000/svg" width="40" height="40">
+            <circle cx="20" cy="20" r="18" fill="#007bff" stroke="white" stroke-width="2"/>
+            <text x="50%" y="50%" text-anchor="middle" dy=".3em" 
+                  font-size="16" font-weight="bold" fill="white">
+              ${i + 1}
+            </text>
+          </svg>`, 
+          { size: { w: 40, h: 40 } }
+        );
+        
+        const marker = new H.map.Marker(
+          { lat: location.lat, lng: location.lng }, 
+          { icon: markerIcon }
+        );
         
         let prevLocation = null;
         if (i > 0) {
@@ -250,7 +259,6 @@ export default function maps() {
           timeToNext = (location.arrival - prevLocation.arrival).toFixed(2);
         }
         
-        const marker = new H.map.Marker({ lat: location.lat, lng: location.lng });
         if (i == 0){
           const loc = await this.reverseGeocode(location.lat, location.lng);
           marker.setData(`Ponto de partida: ${loc}`);
@@ -266,13 +274,16 @@ export default function maps() {
         }
         group.addObject(marker);
       }
-
+  
       const totalDistance = combinedRoute[combinedRoute.length - 1].distance;
       const totalDuration = combinedRoute[combinedRoute.length - 1].arrival;
       console.log(`Distância total: ${totalDistance} km`);
       console.log(`Duração total: ${totalDuration} min`);
       
-      // Exibir o grupo no mapa
+      this.totalDuration = totalDuration; // Armazena a duração total no estado
+      this.totalDistance = totalDistance; // Armazena a distância total no estado
+      this.routeCalculated = true; // Habilita o botão "Iniciar Viagem"
+  
       this.map.addObject(group);
       this.map.getViewModel().setLookAtData({ bounds: group.getBoundingBox() });
     } catch (error) {

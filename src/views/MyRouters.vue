@@ -1,5 +1,17 @@
 <template>
   <div id="app">
+    <!-- Turn Selection Modal -->
+    <div v-if="showTurnSelectionModal" class="modal">
+      <div class="modal-content">
+        <p>Selecione o turno:</p>
+        <div class="modal-buttons">
+          <button @click="selectTurn('morning')">Manhã</button>
+          <button @click="selectTurn('afternoon')">Tarde</button>
+          <button @click="selectTurn('night')">Noite</button>
+        </div>
+      </div>
+    </div>
+
     <!-- Geolocation Deny Modal -->
     <div v-if="showGeolocationDenyModal" class="modal">
       <div class="modal-content">
@@ -7,6 +19,16 @@
         <div class="modal-buttons">
           <button @click="handleGeolocationDeny('retry')">Permitir localização!</button>
           <button @click="handleGeolocationDeny('continue')">Manter dessa forma</button>
+        </div>
+      </div>
+    </div>
+
+    <div v-if="alertEndTrip" class="modal">
+      <div class="modal-content">
+        <p>Você tem certeza que deseja finalizar a viagem?</p>
+        <div class="modal-buttons">
+          <button @click="finalizeTrip('keep')">Continuar com a viagem!</button>
+          <button @click="finalizeTrip('end')">Sim, finalizar!</button>
         </div>
       </div>
     </div>
@@ -37,11 +59,23 @@
     <button @click="addWaypoint">Adicionar Parada</button>
     <button @click="updateRoute">Calcular Rota</button>
 
+    <!-- Exibir a mensagem de erro -->
+    <div v-if="errorMessage" class="divError" style="margin-top: 20px;">
+      <p>{{ errorMessage }}</p>
+    </div>
+
+    <!-- Exibir o tempo total previsto -->
+    <div v-if="totalDuration !== null" style="margin-top: 20px;">
+      <p>Tempo total previsto: {{ totalDuration }} minutos</p>
+      <p>Distância total: {{ totalDistance }} km</p>
+    </div>
+
     <div ref="mapContainer" style="width: 400px; height:550px; margin-top: 20px;"></div>
     <div class="modal-buttons">
-      <button :disabled="tripStarted" @click="startTrip">Iniciar Viagem</button>
+      <button :disabled="!routeCalculated | tripStarted" @click="startTrip">Iniciar Viagem</button>
     <button :disabled="!tripStarted" @click="finalizeTrip">Finalizar Viagem</button>
     </div>
+    
   </div>
 </template>
 
@@ -65,21 +99,19 @@ export default {
       ui: null,
       searchService: null,
       showGeolocationDenyModal: false,
-      useManualAddress: false
+      useManualAddress: false,
+      showTurnSelectionModal: true, // Mostrar o modal de seleção de turno ao carregar a página
+      selectedTurn: null,
+      totalDuration: null,
+      totalDistance: null,
+      tripStarted: false, // Indica se a viagem foi iniciada
+      routeCalculated: false, // Indica se a rota foi calculada   
+      errorMessage: null,
+      alertEndTrip: false
     };
   },
   async mounted() {
     await loadHereMaps();
-    
-    try {
-      await this.checkGeolocationPermission();
-    } catch (error) {
-      // Only show modal if explicitly denied
-      if (error.name === 'PermissionDeniedError') {
-        this.showGeolocationDenyModal = true;
-      }
-    }
-    
     this.initMapPlatform();
   },
   methods: {
@@ -127,7 +159,53 @@ export default {
         this.useManualAddress = true;
         this.showGeolocationDenyModal = false;
       }
-    }
+    },
+
+    async selectTurn(turn) {
+      this.selectedTurn = turn;
+      this.showTurnSelectionModal = false;
+      console.log(`Turno selecionado: ${turn}`);
+      
+      // Após a seleção do turno, verificar a permissão de geolocalização
+      try {
+        await this.checkGeolocationPermission();
+      } catch (error) {
+        // Only show modal if explicitly denied
+        if (error.name === 'PermissionDeniedError') {
+          this.showGeolocationDenyModal = true;
+        }
+      }
+    },
+    startTrip() {
+      this.tripStarted = true;
+      //dar zoom
+      //andar de acordo com a localizacao
+      //se passar pelo waypoint, tem que tirar o marker do waypoint
+      //se chegar no destino, tem que finalizar a viagem
+      
+      
+      // this.isAutoZoom = true;
+      // this.updateMarkerPosition();
+    },
+    finalizeTrip(action) {
+      //alerta: tem certeza que deseja finalizar a corrida?
+      this.alertEndTrip = true;
+      if (action === 'keep') {
+        this.alertEndTrip = false;
+      } else if (action === 'end') {
+        this.alertEndTrip = false;
+        this.tripStarted = false;
+        this.map.removeObjects(this.map.getObjects());
+        this.routeCalculated = false;
+        this.totalDuration = null; // Limpar a duração total
+        this.totalDistance = null; // Limpar a distância total
+        this.originAddress = ""; // Limpar o endereço de origem
+        this.destinationAddress = ""; // Limpar o endereço de destino
+        this.waypoints = [];
+      }
+      //alerta: voce chegou ao seu destino
+      
+    },
   }
 };
 </script>
@@ -207,4 +285,18 @@ export default {
   color: white;
 }
 
-</style>
+.divError {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    background-color: #B77575;
+    padding: 5px;
+    width: 30%;
+    height: 100%;
+
+    border: 0.15em solid #FFFCFC;
+    border-radius: 5%;
+}
+
+</style>  
