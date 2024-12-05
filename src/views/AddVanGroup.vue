@@ -47,7 +47,7 @@
 </script>
 
 <script setup>
-    import { ref, onMounted } from 'vue'
+    import { ref } from 'vue'
     import '../assets/css/main.css'
 
     const {VITE_BASE_URL_BACKEND} = import.meta.env 
