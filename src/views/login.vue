@@ -46,11 +46,11 @@
   </div>
 </template>
 
-<script>
+<!-- <script>
   export default{
     name: 'Login',
   }
-</script>
+</script> -->
 
 <script setup>
 import { ref } from 'vue';
@@ -71,17 +71,17 @@ const {
 
 const handleLoginSubmit = async () => {
   const userTypeResult = await loginAndDetermineUserType();
-  
+
   if (userTypeResult) {
     // Handle successful login and redirect based on user type
     switch (userTypeResult) {
       case 'motorista':
         console.log('Logged in as driver');
-        await router.push({ name: 'perfil_motorista' });
+        await router.push({ name: 'PerfilMotorista' }); // Nome correto da rota
         break;
       case 'passageiro':
         console.log('Logged in as passenger');
-        await router.push({ name: 'perfil_passageiro' });
+        await router.push({ name: 'PerfilUsuario' }); // Nome correto da rota
         break;
       default:
         console.log('Unknown user type');
