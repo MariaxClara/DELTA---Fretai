@@ -1,67 +1,111 @@
 <template>
-    <div class="login-container">
-      <!-- Logo e título -->
-      <div class="logo-container">
-       <img src="/images/iconeImage.png" alt="Van Logo" class="van-icon">
-      </div>
-  
-      <!-- Formulário -->
-      <!-- <form class="login-form" @submit.prevent="handleSubmit">
-        <input 
-          type="text"
-          v-model="formData.nome"
-          placeholder="Nome"
-          required
-        >
-  
-        <input 
-          type="text"
-          v-model="formData.sobrenome"
-          placeholder="Sobrenome"
-          required
-        >
-  
-        <input 
-          type="text"
-          v-model="formData.cpf"
-          placeholder="CPF"
-          required
-        >
-  
-        <input 
-          type="email"
-          v-model="formData.email"
-          placeholder="E-mail"
-          required
-        >
+    <div>
 
-        <input 
-          type="password"
-          v-model="formData.password"
-          placeholder="Senha"
-          required
-        >
+        <div class="divLogo">
+            <img src="/images/iconeImage.png" alt="">
+        </div>
+                
+        <div class="divInput">
+            <input type="text"
+            v-model="userName"
+            placeholder="Nome"
+            required class="mainInput">
+        </div>
+    
+        
+        <div class="divInput">
+            <input type="text"
+            v-model="userCpf"
+            placeholder="CPF"
+            required class="mainInput">
+        </div>
+            
+        <div class="divInput">
+            <input type="email"
+            v-model="userEmail"
+            placeholder="E-mail"
+            required class="mainInput">
+        </div>
+
+        <div class="divInput">
+            <input type="text"
+            v-model="userPhone"
+            placeholder="Telefone"
+            required class="mainInput">
+        </div>
+
+        <div class="divInput">
+            <input type="password"
+            v-model="userPassword"
+            placeholder="Senha"
+            required class="mainInput">
+        </div>
+
+        <div class="mainDiv">
+            <div v-if="sucessEnter" class="divSucces">
+                <p class="textSucces"> Cadastro realizado com suscesso!</p>
+            </div>
+            <div v-if="errorEnter" class="divError">
+                <p class="errorSucces">{{ messageError }}</p>
+            </div>
+        </div>
+            
+        <div class="divButton">
+            <button @click="cadastroUsuario()" class="mainButton">CADASTRAR</button>
+        </div>
   
-        <button type="submit" class="cadastrar-btn">CADASTRAR</button>
-      </form> -->
-  
-      <!-- <p v-if="confirmationMessage" class="confirmation-message">
-        {{ confirmationMessage }}
-      </p> -->
     </div>
-  </template>
+</template>
   
-  <script>
+<script>
     export default{
-      name: 'cadastroPassageiro',
+        name: 'cadastroPassageiro',
     }
-  </script>
+</script>
   
   
-  <script setup >
-    // import { useFormSetup } from '../composables/cadastroMotorista'
-    // // import '@/assets/css/cssCadastroMotorista.css'
+<script setup >
+    import { ref } from 'vue'
+    import '../assets/css/main.css';
+
+    const {VITE_BASE_URL_BACKEND} = import.meta.env; 
+
+    const errorEnter = ref(false);
+    const sucessEnter = ref(false);
+    const userName = ref('');
+    const userPhone = ref('')
+    const userEmail = ref('');
+    const userPassword = ref('');
+    const userCpf = ref('');
+    const messageError = ref('');
+
+    async function cadastroUsuario() {
+        errorEnter.value = false
+        sucessEnter.value = false
+        try {
+            let response = await fetch(`${VITE_BASE_URL_BACKEND}/addPassengerUser`, {
+                method: 'POST',
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({
+                    email: userEmail.value,
+                    password: userPassword.value,
+                    cpf: userPassword.value,
+                    phone: userPhone.value,
+                    name: userName.value
+                })
+            })
+            if (response.status == 200) {
+                sucessEnter = true
+            } else {
+                errorEnter.value = true
+                messageError.value = 'Ops! Parece que nosso servidor está em manutenção ...'
+            }
+        } catch (error) {
+            console.error('Erro ao cadastrar usuário:', error)
+            errorEnter.value = true
+            messageError.value = 'Ops! Parece que nosso servidor está em manutenção ...'
+        }
+    }
   
-    // const { formData, handleSubmit, confirmationMessage } = useFormSetup()
   </script>
   

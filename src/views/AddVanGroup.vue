@@ -14,7 +14,7 @@
         </div>
         
         <div class="divInput">
-            <input v-model="code" type="password" class="mainInput" placeholder="Código de convite" >
+            <input v-model="code" type="text" class="mainInput" placeholder="Código de convite" >
         </div>
 
         <div class="mainDiv">
@@ -47,7 +47,7 @@
 </script>
 
 <script setup>
-    import { ref, onMounted } from 'vue'
+    import { ref } from 'vue'
     import '../assets/css/main.css'
 
     const {VITE_BASE_URL_BACKEND} = import.meta.env 
