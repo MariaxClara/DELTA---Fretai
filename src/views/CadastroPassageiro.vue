@@ -86,6 +86,24 @@
         errorEnter.value = false
         sucessEnter.value = false
 
+        if(!(userName.value)) {
+            messageError.value = 'Insira seu nome!';
+            errorEnter.value = true;
+            return;
+        }
+
+        if(!(userPassword.value)) {
+            messageError.value = 'Insira uma senha!';
+            errorEnter.value = true;
+            return;
+        }
+
+        if(!(userPhone.value)) {
+            messageError.value = 'Insira um telefone!';
+            errorEnter.value = true;
+            return;
+        }
+
         if (userEmail.value) {
             if(!(reEmail.test(userEmail.value))) {
                 messageError.value = 'e-mail inválido!';
@@ -93,7 +111,7 @@
                 return;
             }
         } else {
-            messageError.value = 'e-mail inválido!';
+            messageError.value = 'Insira seu email!';
             errorEnter.value = true;
             return;
         }
@@ -105,7 +123,7 @@
                 return;
             }
         } else {
-            messageError.value = 'cpf inválido!';
+            messageError.value = 'Insira seu cpf!';
             errorEnter.value = true;
             return;
         }
