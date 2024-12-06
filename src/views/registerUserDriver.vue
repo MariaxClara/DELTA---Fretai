@@ -55,8 +55,6 @@
 
     const reEmail = new RegExp(".+@.+");
 
-    userEmails.value = ["cla@uni.com", "mar@uni.com"]
-
     async function sendWelcomeEmail (userTo, driverName, linkInvite) {
         console.log("Enviando email...")
     }
