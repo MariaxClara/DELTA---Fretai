@@ -14,7 +14,7 @@
         </div>
         
         <div class="divInput">
-            <input v-model="code" type="password" class="mainInput" placeholder="Código de convite" >
+            <input v-model="code" type="text" class="mainInput" placeholder="Código de convite" >
         </div>
 
         <div class="mainDiv">

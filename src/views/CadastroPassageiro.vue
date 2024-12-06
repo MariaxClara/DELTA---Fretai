@@ -1,57 +1,74 @@
 <template>
-    <div class="login-container">
+    <div>
 
-        <div class="logo-container">
-            <img src="/images/iconeImage.png" alt="Van Logo" class="van-icon">
+        <div class="divLogo">
+            <img src="/images/iconeImage.png" alt="">
         </div>
-    
-        <form class="login-form" @submit.prevent="cadastroUsuario">
+                
+        <div class="divInput">
             <input type="text"
             v-model="userName"
             placeholder="Nome"
-            required>
+            required class="mainInput">
+        </div>
     
+        
+        <div class="divInput">
             <input type="text"
             v-model="userCpf"
             placeholder="CPF"
-            required>
-    
+            required class="mainInput">
+        </div>
+            
+        <div class="divInput">
             <input type="email"
             v-model="userEmail"
             placeholder="E-mail"
-            required>
+            required class="mainInput">
+        </div>
 
+        <div class="divInput">
             <input type="text"
             v-model="userPhone"
             placeholder="Telefone"
-            required>
+            required class="mainInput">
+        </div>
 
+        <div class="divInput">
             <input type="password"
             v-model="userPassword"
             placeholder="Senha"
-            required>
-    
-            <button type="submit" class="cadastrar-btn">CADASTRAR</button>
-        </form>
+            required class="mainInput">
+        </div>
+
+        <div class="mainDiv">
+            <div v-if="sucessEnter" class="divSucces">
+                <p class="textSucces"> Cadastro realizado com suscesso!</p>
+            </div>
+            <div v-if="errorEnter" class="divError">
+                <p class="errorSucces">{{ messageError }}</p>
+            </div>
+        </div>
+            
+        <div class="divButton">
+            <button @click="cadastroUsuario()" class="mainButton">CADASTRAR</button>
+        </div>
   
-        <p v-if="confirmationMessage" class="confirmation-message">
-            {{ confirmationMessage }}
-        </p>
     </div>
-  </template>
+</template>
   
-  <script>
+<script>
     export default{
-      name: 'cadastroPassageiro',
+        name: 'cadastroPassageiro',
     }
-  </script>
+</script>
   
   
-  <script setup >
+<script setup >
+    import { ref } from 'vue'
+    import '../assets/css/main.css';
 
-    import '../assets/css/cssCadastroMotorista.css'
-
-    const {VITE_BASE_URL_BACKEND} = import.meta.env 
+    const {VITE_BASE_URL_BACKEND} = import.meta.env; 
 
     const errorEnter = ref(false);
     const sucessEnter = ref(false);
@@ -63,6 +80,8 @@
     const messageError = ref('');
 
     async function cadastroUsuario() {
+        errorEnter.value = false
+        sucessEnter.value = false
         try {
             let response = await fetch(`${VITE_BASE_URL_BACKEND}/addPassengerUser`, {
                 method: 'POST',
@@ -75,9 +94,16 @@
                     name: userName.value
                 })
             })
-
+            if (response.status == 200) {
+                sucessEnter = true
+            } else {
+                errorEnter.value = true
+                messageError.value = 'Ops! Parece que nosso servidor está em manutenção ...'
+            }
         } catch (error) {
             console.error('Erro ao cadastrar usuário:', error)
+            errorEnter.value = true
+            messageError.value = 'Ops! Parece que nosso servidor está em manutenção ...'
         }
     }
   
