@@ -79,9 +79,57 @@
     const userCpf = ref('');
     const messageError = ref('');
 
+    const reEmail = new RegExp(".+@.+");
+
     async function cadastroUsuario() {
+        
         errorEnter.value = false
         sucessEnter.value = false
+
+        if(!(userName.value)) {
+            messageError.value = 'Insira seu nome!';
+            errorEnter.value = true;
+            return;
+        }
+
+        if(!(userPassword.value)) {
+            messageError.value = 'Insira uma senha!';
+            errorEnter.value = true;
+            return;
+        }
+
+        if(!(userPhone.value)) {
+            messageError.value = 'Insira um telefone!';
+            errorEnter.value = true;
+            return;
+        }
+
+        if (userEmail.value) {
+            if(!(reEmail.test(userEmail.value))) {
+                messageError.value = 'e-mail inválido!';
+                errorEnter.value = true;
+                return;
+            }
+        } else {
+            messageError.value = 'Insira seu email!';
+            errorEnter.value = true;
+            return;
+        }
+
+        if (userCpf.value) {
+            if(userCpf.value.length != 11) {
+                messageError.value = 'cpf inválido!';
+                errorEnter.value = true;
+                return;
+            }
+        } else {
+            messageError.value = 'Insira seu cpf!';
+            errorEnter.value = true;
+            return;
+        }
+
+        userEmail.value = '';
+
         try {
             let response = await fetch(`${VITE_BASE_URL_BACKEND}/addPassengerUser`, {
                 method: 'POST',
@@ -107,5 +155,4 @@
         }
     }
   
-  </script>
-  
+</script>
