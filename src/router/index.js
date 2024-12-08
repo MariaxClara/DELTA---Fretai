@@ -2,14 +2,15 @@ import { createRouter, createWebHistory } from 'vue-router'
 import Passageiro from '../views/Passageiro.vue'
 import Motorista from '../views/Motorista.vue'
 import CadastroMotorista from '../views/CadastroMotorista.vue'
-import Index from '../views/Index.vue'
-import Login from '../views/Login.vue'
+import Index from '../views/index.vue'
+import Login from '../views/login.vue'
 import MyRouters from '../views/MyRouters.vue'
 import MyUsers from '../views/MyUsers.vue'
 import PerfilMotorista from '../views/PerfilMotorista.vue'
-import PerfilUsuario from '../views/PerfilUsuario.vue'
-import RegisterUserDriver from '../views/RegisterUserDriver.vue'
-import TrocaSenha from '../views/TrocaSenha.vue'
+import PerfilUsuario from '../views/perfilUsuario.vue'
+import RegisterUserDriver from '../views/registerUserDriver.vue'
+import TrocaSenha from '../views/trocaSenha.vue'
+import Chat from '../views/Chat.vue'
 
 
 const routes = [
@@ -67,7 +68,12 @@ const routes = [
     path: '/TrocaSenha',
     name: 'TrocaSenha',
     component: TrocaSenha
-  }
+  },
+  {
+    path: '/Chat',
+    name: 'Chat',
+    component: Chat
+  },
 ]
 
 const router = createRouter({
