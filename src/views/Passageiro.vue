@@ -36,11 +36,11 @@
     <div class="bottom-section"></div>
   </template>
   
-<script>
+<!-- <script>
     export default{
         name: 'Passageiro',
     }
-</script>
+</script> -->
 
 <script setup>
   import { ref } from 'vue';
@@ -51,10 +51,11 @@
   const passengerInfo = ref(null);
   const error = ref(null);
   const router = useRouter();
+  const VITE_BASE_URL_BACKEND = import.meta.env.VITE_BASE_URL_BACKEND 
   
   async function fetchPassengerInfo() {
     try {
-      const response = await fetch(`/api/passengerInfo?email=${email.value}`);
+      const response = await fetch(`${VITE_BASE_URL_BECKEND}passengerInfo/${email.value}`);
       const data = await response.json();
   
       if (data.statusCode !== 200) {

@@ -8,7 +8,7 @@
         placeholder="Digite o e-mail do motorista"
       >
 
-      <button @click="fetchDriverInfo" class="cadastrar-btn">Buscar</button>
+      <button @click="fetchDriverInfo" class="buscar-btn">Buscar</button>
 
       <div v-if="driver" class="dados">
         <div class="photo-container">
@@ -20,7 +20,7 @@
         <p><strong>Telefone:</strong> {{ driver.telefone }}</p>
 
         <!-- Botão de troca de senha -->
-        <button @click="goToTrocaSenha" class="trocar-senha-btn">Trocar Senha</button>
+        <button @click="goToTrocaSenha" class="buscar-btn">Trocar Senha</button>
       </div>
       <p v-else-if="error">{{ error }}</p>
     </form>
@@ -77,7 +77,7 @@
 
   async function fetchDriverImagePath() {
     try {
-      const response = await fetch(`${VITE_BASE_URL_BACKEND}/getImagePath/${email.value}`);
+      const response = await fetch(`${VITE_BASE_URL_BACKEND}/imagePath/${email.value}`);
       const data = await response.json();
       console.log(email.value);
       if (data.statusCode !== 200) {

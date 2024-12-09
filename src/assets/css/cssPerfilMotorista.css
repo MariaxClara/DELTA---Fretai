@@ -44,6 +44,7 @@
 
 input {
   width: 100%;
+  max-width: 290px;
   padding: 15px;
   border: none;
   border-radius: 25px;
@@ -58,7 +59,7 @@ input::placeholder {
   color: #666;
 }
 
-.cadastrar-btn {
+.buscar-btn {
   margin-top: 1rem;
   padding: 15px 30px; 
   border: none;
@@ -73,14 +74,14 @@ input::placeholder {
   width: 100%; 
 }
 
-.cadastrar-btn:hover {
+.buscar-btn:hover {
   transform: translateY(-2px); 
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
   background-color: #007bff;
   color: white;
 }
 
-.cadastrar-btn:active {
+.buscar-btn:active {
   transform: translateY(1px);
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 
