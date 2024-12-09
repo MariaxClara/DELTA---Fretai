@@ -8,7 +8,7 @@ export default function useLogin() {
   const {VITE_BASE_URL_BACKEND} = import.meta.env 
 
   const showPasswordReset = ref(false);
-  const userType = ref("desconhecido");
+  const userType = ref('');
   const errorMessage = ref('');
 
   const handleSubmit = async () => {
@@ -52,18 +52,23 @@ export default function useLogin() {
     const user = await handleSubmit();
     if (user && user.user_id) {
       try {
-        const response = await fetch(`${VITE_BASE_URL_BACKEND}/user-type`, {
-          method: 'POST',
+        const response = await fetch(`http://localhost:3000/user-type?user_id=${encodeURIComponent(user.user_id)}`, {
+          method: 'GET',
           headers: {
             'Content-Type': 'application/json',
           },
-          body: JSON.stringify({ user_id: user.user_id }),
         });
   
+        if (!response.ok) {
+          throw new Error(`Erro na resposta do servidor: ${response.statusText}`);
+        }
+  
         const data = await response.json();
-        userType.value = data.userType || 'desconhecido';
-        console.log(`O tipo de usuário é: ${userType.value}`);
-        return data.userType;
+  
+        // Ajuste para lidar com 0 e 1 retornados pelo backend
+        userType.value = data.userType
+  
+        return userType.value;
       } catch (error) {
         console.error('Erro ao determinar tipo de usuário:', error);
         return 'desconhecido';
@@ -73,6 +78,10 @@ export default function useLogin() {
       return 'desconhecido';
     }
   };
+  
+
+  
+
   
   const handlePasswordReset = async () => {
     alert('Senha alterada com sucesso');
