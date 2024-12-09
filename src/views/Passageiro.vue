@@ -12,7 +12,7 @@
   
         <div v-if="passengerInfo" class="dados">
           <div class="photo-container">
-            <img src="/images/motoristaImage.png" alt="Passageiro" class="motorista-photo">
+            <img :src="PassengerImagePath" alt="Passageiro" class="motorista-photo">
           </div>
           
           <p><strong>Nome:</strong> {{ passengerInfo.passageiro_nome }}</p>
@@ -27,7 +27,7 @@
             </li>
           </ul>
   
-          <button @click="goToTrocaSenha" class="trocar-senha-btn">Trocar Senha</button>
+          <button @click="goToTrocaSenha" class="buscar-btn">Trocar Senha</button>
         </div>
         
         <p v-else-if="error" class="error">{{ error }}</p>
@@ -48,14 +48,15 @@
   import '../assets/css/cssPerfilMotorista.css';
   
   const email = ref('');
+  const PassengerImagePath = ref(''); 
   const passengerInfo = ref(null);
   const error = ref(null);
   const router = useRouter();
-  const VITE_BASE_URL_BACKEND = import.meta.env.VITE_BASE_URL_BACKEND 
+  const {VITE_BASE_URL_BACKEND} = import.meta.env
   
   async function fetchPassengerInfo() {
     try {
-      const response = await fetch(`${VITE_BASE_URL_BECKEND}passengerInfo/${email.value}`);
+      const response = await fetch(`${VITE_BASE_URL_BACKEND}/passengerInfo/${email.value}`);
       const data = await response.json();
   
       if (data.statusCode !== 200) {
@@ -63,6 +64,8 @@
         return;
       }
   
+      await fetchPassengerImagePath();
+
       if (data.body.length > 0) {
         const firstPassenger = data.body[0];
         passengerInfo.value = {
@@ -83,6 +86,24 @@
     }
   }
   
+  async function fetchPassengerImagePath() {
+    try {
+      const response = await fetch(`${VITE_BASE_URL_BACKEND}/imagePath/${email.value}`);
+      const data = await response.json();
+      console.log(email.value);
+      if (data.statusCode !== 200) {
+        console.error("Erro ao buscar a imagem:", data.body.error || 'Erro desconhecido');
+        PassengerImagePath.value = '/images/user.png'; // Define um valor padrão se a imagem não for encontrada
+        return;
+      }
+      
+      PassengerImagePath.value = data.body.imagePath;
+    } catch (err) {
+      console.error("Erro ao buscar o caminho da imagem:", err.message);
+      PassengerImagePath.value = '/images/motorista1.png'; // Define um valor padrão se houver erro
+    }
+  }
+
   function goToTrocaSenha() {
     if (!passengerInfo.value || !passengerInfo.value.passageiro_email) {
       error.value = "Não foi possível encontrar o email do passageiro.";
