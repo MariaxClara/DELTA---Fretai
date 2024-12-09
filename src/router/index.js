@@ -11,6 +11,7 @@ import PerfilUsuario from '../views/perfilUsuario.vue'
 import RegisterUserDriver from '../views/registerUserDriver.vue'
 import TrocaSenha from '../views/trocaSenha.vue'
 import Chat from '../views/Chat.vue'
+import Corridas from '../views/Corridas.vue'
 
 
 const routes = [
@@ -73,6 +74,11 @@ const routes = [
     path: '/Chat',
     name: 'Chat',
     component: Chat
+  },
+  {
+    path: '/Corridas',
+    name: 'Corridas',
+    component: Corridas
   },
 ]
 
