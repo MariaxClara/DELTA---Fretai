@@ -10,6 +10,7 @@ import PerfilMotorista from '../views/PerfilMotorista.vue'
 import PerfilUsuario from '../views/PerfilUsuario.vue'
 import RegisterUserDriver from '../views/RegisterUserDriver.vue'
 import TrocaSenha from '../views/TrocaSenha.vue'
+import Home from '../views/Home.vue'
 
 
 const routes = [
@@ -67,6 +68,11 @@ const routes = [
     path: '/TrocaSenha',
     name: 'TrocaSenha',
     component: TrocaSenha
+  },
+  {
+    path: '/Home',
+    name: 'Home',
+    component: Home
   }
 ]
 
