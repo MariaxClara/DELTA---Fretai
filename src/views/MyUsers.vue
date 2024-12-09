@@ -58,7 +58,9 @@ import { NuxtLink } from '../.nuxt/components';
     import { ref, onMounted } from 'vue';
     import '../assets/css/main.css';
 
-    const {VITE_BASE_URL_BACKEND} = import.meta.env 
+    const VITE_BASE_URL_BACKEND = import.meta.env.VITE_BASE_URL_BACKEND 
+    console.log('URL Base do Backend:', VITE_BASE_URL_BACKEND);
+    console.log('Variaveis do ambiente:', import.meta.env);
 
     let edit = ref(false)
     let users = ref([])

@@ -29,26 +29,31 @@
 </template>
 
 <script>
-  export default{
-    name: 'Motorista',
-  }
+    export	default {
+        name: 'Motorista',
+    }
 </script>
 
 <script setup>
-  import { ref } from 'vue';
+  import { ref, onMounted } from 'vue';
   import { useRouter } from 'vue-router';
   import '../assets/css/cssPerfilMotorista.css';
+
+  const {VITE_BASE_URL_BACKEND} = import.meta.env
+  console.log('URL Base do Backend:', VITE_BASE_URL_BACKEND);
 
   const email = ref('');
   const driver = ref(null);
   const driverImagePath = ref(''); // Caminho da imagem do motorista
   const error = ref(null);
 
-  const router = useRouter();
 
   async function fetchDriverInfo() {
     try {
-      const response = await fetch(`/api/driverInfo?email=${email.value}`);
+      console.log("URL da requisição:", `${VITE_BASE_URL_BACKEND}/driverInfo/${email.value}`);
+      console.log(email.value);
+
+      const response = await fetch(`${VITE_BASE_URL_BACKEND}/driverInfo/${email.value}`);
       const data = await response.json();
       
       if (data.statusCode !== 200) {
@@ -72,7 +77,7 @@
 
   async function fetchDriverImagePath() {
     try {
-      const response = await fetch(`/api/getImagePath?email=${email.value}`);
+      const response = await fetch(`${VITE_BASE_URL_BACKEND}/getImagePath/${email.value}`);
       const data = await response.json();
       console.log(email.value);
       if (data.statusCode !== 200) {
@@ -84,7 +89,7 @@
       driverImagePath.value = data.body.imagePath;
     } catch (err) {
       console.error("Erro ao buscar o caminho da imagem:", err.message);
-      driverImagePath.value = '/images/user.png'; // Define um valor padrão se houver erro
+      driverImagePath.value = '/images/motorista1.png'; // Define um valor padrão se houver erro
     }
   }
 
