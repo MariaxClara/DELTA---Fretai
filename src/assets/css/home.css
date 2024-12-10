@@ -104,9 +104,10 @@
     box-sizing: border-box;
     display: flex;
     flex-direction: row;
-    justify-content: center;
+    justify-content: space-between;
     align-items: center;
-    padding: 0;
+    padding-left: 1rem;
+    padding-right: 5rem;
     width: 359px;
     height: 75px;
     background: #3498DB;

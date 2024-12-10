@@ -10,9 +10,11 @@
       <div class="participantes">
         <button class="botao">
           <i class="icon-user"></i>
+          <img src="/images/van.svg" alt="">
           Perfil
         </button>
         <button class="botao">
+          <img src="/images/UserCircle.svg" alt="">
           <i class="icon-bus"></i>
           Motoristas
         </button>
