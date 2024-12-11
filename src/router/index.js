@@ -10,7 +10,9 @@ import PerfilMotorista from '../views/PerfilMotorista.vue'
 import PerfilUsuario from '../views/perfilUsuario.vue'
 import RegisterUserDriver from '../views/registerUserDriver.vue'
 import TrocaSenha from '../views/trocaSenha.vue'
-import Chat from '../views/Chat.vue'
+import ChatMotorista from '../views/chatMotorista.vue';
+import ChatPassageiro from '../views/chatPassageiro.vue';
+
 
 
 const routes = [
@@ -70,9 +72,14 @@ const routes = [
     component: TrocaSenha
   },
   {
-    path: '/Chat',
-    name: 'Chat',
-    component: Chat
+    path: '/chatMotorista',
+    name: 'chatMotorista',
+    component: ChatMotorista
+  },
+  {
+    path: '/chatPassageiro',
+    name: 'chatPassageiro',
+    component: ChatPassageiro
   },
 ]
 
