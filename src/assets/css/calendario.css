@@ -1,0 +1,120 @@
+body {
+    font-family: 'Roboto', sans-serif;
+    background-color: #BAE6FD;
+    margin: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+  }
+  
+  #calendar-app {
+    position: relative;
+    width: 409px;
+    height: 925px;
+    background-color: #F4F4F4;
+    border-radius: 10px;
+    overflow: hidden;
+  }
+  
+  .header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 15px 25px;
+    background: #BAE6FD;
+  }
+  
+  .time {
+    font-family: 'Grandstander', cursive;
+    font-size: 22px;
+    color: #000;
+  }
+  
+  .icons .icon {
+    width: 16.5px;
+    height: 16.5px;
+    background: #000;
+    margin-left: 10px;
+  }
+  
+  .clouds .cloud {
+    position: absolute;
+    width: 132px;
+    height: 107px;
+    background: rgba(0, 0, 0, 0.2);
+    border-radius: 50%;
+  }
+  
+  #cloud1 {
+    left: -23px;
+    top: 76px;
+  }
+  
+  #cloud2 {
+    right: -34px;
+    top: 76px;
+  }
+  
+  .buttons {
+    position: absolute;
+    bottom: 20px;
+    width: 100%;
+    display: flex;
+    justify-content: center;
+  }
+  
+  .button {
+    width: 359px;
+    height: 76px;
+    background: #3498DB;
+    border: 2px solid #FFFCFC;
+    border-radius: 5px;
+    color: #FFFCFC;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-family: 'Grandstander', cursive;
+    font-size: 32px;
+  }
+  
+  .datepicker {
+    position: absolute;
+    width: 375px;
+    height: 402px;
+    top: 150px;
+    left: 17px;
+    background: #F4F4F4;
+    border-radius: 10px;
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+    padding: 10px;
+  }
+  
+  .days {
+    display: flex;
+    justify-content: space-around;
+    font-weight: bold;
+    color: #3498DB;
+    margin-bottom: 10px;
+  }
+  
+  .dates {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    gap: 10px;
+  }
+  
+  .dates span {
+    width: 40px;
+    height: 40px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: #D9D9D9;
+    border-radius: 5px;
+    cursor: pointer;
+    font-weight: 500;
+    color: #333;
+  }
+  

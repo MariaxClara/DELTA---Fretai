@@ -11,6 +11,7 @@ import PerfilUsuario from '../views/PerfilUsuario.vue'
 import RegisterUserDriver from '../views/RegisterUserDriver.vue'
 import TrocaSenha from '../views/TrocaSenha.vue'
 import Home from '../views/Home.vue'
+import Calendario from '../views/Calendario.vue'
 
 
 const routes = [
@@ -73,6 +74,11 @@ const routes = [
     path: '/Home',
     name: 'Home',
     component: Home
+  },
+  {
+    path: '/Calendario',
+    name: 'Calendario',
+    component: Calendario
   }
 ]
 
