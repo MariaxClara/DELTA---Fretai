@@ -12,6 +12,7 @@ import RegisterUserDriver from '../views/registerUserDriver.vue'
 import TrocaSenha from '../views/trocaSenha.vue'
 import ChatMotorista from '../views/chatMotorista.vue';
 import ChatPassageiro from '../views/chatPassageiro.vue';
+import Corridas from '../views/Corridas.vue'
 
 
 
@@ -80,6 +81,11 @@ const routes = [
     path: '/chatPassageiro',
     name: 'chatPassageiro',
     component: ChatPassageiro
+  },
+  {
+    path: '/Corridas',
+    name: 'Corridas',
+    component: Corridas
   },
 ]
 
