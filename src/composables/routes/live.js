@@ -1,6 +1,6 @@
 export default function createAndAnimateMarker(map) {
-  // Create an SVG Dom Icon for the marker
-  var svg = `<svg xmlns="http://www.w3.org/2000/svg" class="svg-icon" width="24px" height="24px" viewBox="0 0 24 24" fill="black" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+// Create an SVG Dom Icon for the marker
+var svg = `<svg xmlns="http://www.w3.org/2000/svg" class="svg-icon" width="48px" height="48px" viewBox="0 0 24 24" fill="black" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
     <rect x="1" y="5" width="22" height="13" rx="2" ry="2"></rect>
     <path d="M5 16v1a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-1"></path>
     <circle cx="6.5" cy="17.5" r="2.5"></circle>
@@ -8,7 +8,7 @@ export default function createAndAnimateMarker(map) {
     <path d="M2 10h4"></path>
     <path d="M18 10h4"></path>
     <path d="M10 10h4"></path>
-  </svg>`;
+</svg>`;
   var domIcon = new H.map.DomIcon(svg);
 
   // Define the initial position for the marker (fallback in case geolocation is unavailable)
@@ -25,36 +25,52 @@ export default function createAndAnimateMarker(map) {
   /**
    * Update the marker's position based on the user's current geolocation.
    */
-  function updateMarkerPosition() {
-      if (navigator.geolocation) {
-          navigator.geolocation.getCurrentPosition(
-              function (position) {
-                  const { latitude, longitude } = position.coords;
-                  const newPosition = { lat: latitude, lng: longitude };
+    function updateMarkerPosition() {
+        if (navigator.geolocation) {
+            navigator.geolocation.getCurrentPosition(
+                function (position) {
+                    const { latitude, longitude } = position.coords;
+                    const newPosition = { lat: latitude, lng: longitude };
 
-                  // Animate the marker's movement to the new position
-                  ease(
-                      marker.getGeometry(),
-                      newPosition,
-                      4000,
-                      function (coord) {
-                          marker.setGeometry(coord);
-                      }
-                  );
-              },
-              function (error) {
-                  console.error("Geolocation error:", error.message);
-              },
-              {
-                  enableHighAccuracy: true,
-                  timeout: 30000,
-                  maximumAge: 0
-              }
-          );
-      } else {
-          console.warn("Geolocation is not supported by this browser.");
-      }
-  }
+                    // Animate the marker's movement to the new position
+                    ease(
+                        marker.getGeometry(),
+                        newPosition,
+                        4000,
+                        function (coord) {
+                            marker.setGeometry(coord);
+                        }
+                    );
+                },
+                function (error) {
+                    console.error("Geolocation error:", error.message);
+                    
+                    // Enhanced error handling
+                    switch(error.code) {
+                        case error.PERMISSION_DENIED:
+                            console.error("User denied geolocation permission");
+                            break;
+                        case error.POSITION_UNAVAILABLE:
+                            console.error("Location information unavailable");
+                            break;
+                        case error.TIMEOUT:
+                            console.error("Location request timed out");
+                            break;
+                        default:
+                            console.error("Unknown geolocation error");
+                    }
+                },
+                {
+                    enableHighAccuracy: false,  // Try setting to false
+                    timeout: 100000,             // Reduce timeout
+                    maximumAge: 60000           // Allow cached location within 1 minute
+                }
+            );
+        } else {
+            console.warn("Geolocation is not supported by this browser.");
+        }
+    }
+    
   return marker;
 }
 

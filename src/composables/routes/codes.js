@@ -51,6 +51,7 @@ export default function maps() {
 
   function removeWaypoint(index) {
     this.waypoints.splice(index, 1);
+    this.errorMessage = null; // Limpa a mensagem de erro ao remover um waypoint
     this.updateRoute(); // Recalcula a rota automaticamente após remover o waypoint
   }
 
@@ -98,25 +99,35 @@ export default function maps() {
   // Rest of the existing updateRoute method remains the same
   async function updateRoute() {
     try {
+      //erro digitar endereço invalido, nao reconhecido
+      //erro só pedir o de origem se estiver nesse modo, caso contrario usa loc atual
       if (!this.destinationAddress) {
         this.errorMessage = "O endereço de destino precisa ser preenchido.";
         return;
       }
-      if(!this.originAddress){
+  
+      // Verificar o endereço de origem apenas se estiver no modo de endereço manual
+      if (this.useManualAddress && !this.originAddress) {
         this.errorMessage = "O endereço de origem precisa ser preenchido.";
         return;
       }
+  
+      // Verificar se todos os waypoints têm endereços válidos
       for (let i = 0; i < this.waypoints.length; i++) {
         if (!this.waypoints[i].address) {
           this.errorMessage = `O endereço da parada ${i + 1} precisa ser preenchido.`;
           return;
         }
-      } 
-      
+      }
+  
       let origin;
       try {
-        // Try to get current location
-        origin = await getCurrentLocation();
+        // Try to get current location if not using manual address
+        if (!this.useManualAddress) {
+          origin = await getCurrentLocation();
+        } else {
+          origin = await this.geocodeAddress(this.originAddress);
+        }
       } catch (locationError) {
         // If location cannot be retrieved, fall back to manual address input
         origin = await this.geocodeAddress(this.originAddress);
@@ -128,7 +139,7 @@ export default function maps() {
       const routingParameters = {
         routingMode: "fast",
         transportMode: "car",
-        return: "polyline"
+        return: "polyline,turnByTurnActions,actions,instructions,summary",
       };
   
       const user = import.meta.env.VITE_ROUTEXL_USER;      
@@ -180,8 +191,8 @@ export default function maps() {
         await this.calculateSegmentRoute(start, end, routingParameters, group);
       }
   
-      // const lastMarker = new H.map.Marker({ lat: combinedRoute[combinedRoute.length - 1].lat, lng: combinedRoute[combinedRoute.length - 1].lng });
-      // group.addObject(lastMarker);
+      const lastMarker = new H.map.Marker({ lat: combinedRoute[combinedRoute.length - 1].lat, lng: combinedRoute[combinedRoute.length - 1].lng });
+      group.addObject(lastMarker);
   
       group.addEventListener('tap', async function (evt) {
         this.ui.getBubbles().forEach(bubble => this.ui.removeBubble(bubble));
@@ -226,11 +237,14 @@ export default function maps() {
         };
       }.bind(this), false);
   
+     
+      console.log('Rota otimizada:', combinedRoute);
+      console.log('Endereços ordenados:', orderedAddresses);
       for (let i = 0; i < combinedRoute.length; i++) {
         const location = combinedRoute[i];
         const address = orderedAddresses[i];
         
-              // Create a custom marker icon with the order number
+        // Create a custom marker icon with the order number
         const markerIcon = new H.map.Icon(
           `<svg xmlns="http://www.w3.org/2000/svg" width="40" height="40">
             <circle cx="20" cy="20" r="18" fill="#007bff" stroke="white" stroke-width="2"/>
@@ -286,6 +300,9 @@ export default function maps() {
   
       this.map.addObject(group);
       this.map.getViewModel().setLookAtData({ bounds: group.getBoundingBox() });
+      return{
+      combinedRoute, orderedAddresses
+    }
     } catch (error) {
       console.error('Erro ao geocodificar endereços:', error);
     }
@@ -293,6 +310,7 @@ export default function maps() {
       this.map.addObject(this.van);
       console.log("Van readicionada");
     }
+    
   }
 
   async function calculateSegmentRoute(start, end, routingParameters, group) {
@@ -302,10 +320,21 @@ export default function maps() {
         origin: `${start.lat},${start.lng}`,
         destination: `${end.lat},${end.lng}`
       };
-
+      
       const router = this.platform.getRoutingService(null, 8);
       router.calculateRoute(segmentParams, (result) => {
         if (result.routes.length) {
+          const route = result.routes[0];
+          const section = route.sections[0];
+          
+          // Extract turn-by-turn instructions
+          const turnInstructions = section.actions.map(action => ({
+            instruction: action.instruction,
+                type: action.type,
+                distance: action.distance,
+                duration: action.duration
+          }));
+
           const lineString = H.geo.LineString.fromFlexiblePolyline(result.routes[0].sections[0].polyline);
 
           // Rota com fundo azul
@@ -332,7 +361,16 @@ export default function maps() {
 
           // Adicionar a rota segmentada ao grupo
           group.addObjects([routeBackground, routeArrows]);
-          resolve();
+          resolve({
+            lineString,
+            turnInstructions,
+            summary: route.sections[0].summary
+          });
+          this.turnInstructions = turnInstructions.map((step) => ({
+            instruction: step.instruction,
+            distance: step.distance,
+            duration: step.duration
+          }));
         } else {
           reject(new Error("Nenhuma rota encontrada entre os pontos"));
         }
@@ -343,5 +381,5 @@ export default function maps() {
     });
   }
 
-  return {initMapPlatform, geocodeAddress, addWaypoint, removeWaypoint, updateRoute, calculateSegmentRoute, reverseGeocode};
+  return {initMapPlatform, geocodeAddress, addWaypoint, removeWaypoint, updateRoute, calculateSegmentRoute, reverseGeocode, getCurrentLocation};
 }
