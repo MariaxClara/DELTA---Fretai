@@ -84,6 +84,9 @@
 import { ref } from "vue";
 import "../assets/css/cssCorridas.css";
 
+
+const {VITE_BASE_URL_BACKEND} = import.meta.env 
+
 // Dados reativos
 const email = ref("");
 const corridaInfo = ref(null);
@@ -96,20 +99,50 @@ const selectedRaceIndex = ref(null); // Para armazenar a corrida selecionada
 popupType.value = 0; // Define o tipo do pop-up
 
 // Função para buscar as informações da corrida
+// Função para buscar as informações da corrida
+// Função para buscar as informações da corrida
+// Função para buscar as informações da corrida
 async function fetchRaceInfo() {
     isLoading.value = true; // Ativa o carregamento
     try {
-        const response = await fetch(`/api/raceInfo?email=${email.value}`);
-        const data = await response.json();
+        const response = await fetch(`${VITE_BASE_URL_BACKEND}/getRaceInfo/${email.value}`, {
+            method: 'GET',
+        });
 
+        console.log("Resposta HTTP completa:", response);
+
+        // Verifica se a resposta foi bem-sucedida
+        if (!response.ok) {
+            throw new Error(`Erro HTTP ao buscar informações da corrida. Status: ${response.status}`);
+        }
+
+        // Verifica se o conteúdo retornado é JSON
+        const contentType = response.headers.get("content-type");
+        if (!contentType || !contentType.includes("application/json")) {
+            const textResponse = await response.text();
+            console.error("Resposta inesperada do servidor (não JSON):", textResponse);
+            throw new Error("Resposta inesperada do servidor. Esperado JSON.");
+        }
+
+        // Processa o corpo da resposta como JSON
+        const data = await response.json();
+        console.log("Resposta completa do servidor (JSON):", data);
+
+        // Valida o formato da resposta JSON
+        if (!data || typeof data.statusCode === "undefined" || typeof data.body === "undefined") {
+            throw new Error(`Resposta do backend em formato inesperado: ${JSON.stringify(data)}`);
+        }
+
+        // Verifica o statusCode retornado no corpo do JSON
         if (data.statusCode !== 200) {
+            console.error("Erro ao buscar informações da corrida, statusCode:", data.statusCode);
             error.value = data.body.error || "Erro desconhecido";
             return;
         }
 
-        if (data.body.length > 0) {
-            // Popula corridaInfo
-            corridaInfo.value = data.body.map((item) => ({
+        // Processa as informações da corrida
+        if (data.body.raceInfo && Array.isArray(data.body.raceInfo)) {
+            corridaInfo.value = data.body.raceInfo.map((item) => ({
                 motorista_nome: item.motorista_nome,
                 motorista_telefone: item.motorista_telefone,
                 passageiro_nome: item.passageiro_nome,
@@ -123,23 +156,22 @@ async function fetchRaceInfo() {
                 user_id: item.user_id,
                 isCanceled: false, // Define inicialmente como não cancelada
             }));
-
-            // Atualiza o status de cada corrida
-            await Promise.all(
-                corridaInfo.value.map((_, index) => checkRaceStatus(index))
-            );
         } else {
+            console.warn("Nenhuma corrida encontrada na resposta do servidor.");
             corridaInfo.value = []; // Nenhuma corrida encontrada
         }
 
         error.value = null; // Limpa qualquer erro anterior
     } catch (err) {
+        console.error("Erro capturado ao buscar informações da corrida:", err.message);
         error.value = err.message;
         corridaInfo.value = []; // Limpa as informações da corrida caso ocorra um erro
     } finally {
         isLoading.value = false; // Desativa o carregamento
     }
 }
+
+
 
 
 

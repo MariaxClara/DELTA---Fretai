@@ -1,0 +1,190 @@
+/* Tela Inicial */
+.tela-inicial {
+    position: relative;
+    background: #BAE6FD;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+  }
+  
+  /* Cabeçalho */
+  .header {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    padding: 0;
+    gap: 190px;
+    isolation: isolate;
+    position: relative;
+  }
+  
+  /* Ícones no cabeçalho */
+  .icones {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    padding: 0 8px;
+    gap: 10px;
+    position: absolute;
+  }
+  
+  /* Vetores (ícones específicos) */
+  .vector {
+    background: #000000;
+  }
+  
+  .vector-1 {
+    width: 16.5px;
+    height: 21px;
+  }
+  
+  .vector-2 {
+    width: 16.5px;
+    height: 17.25px;
+  }
+  
+  .vector-3 {
+    width: 21px;
+    height: 15.75px;
+  }
+  
+  .vector-4 {
+    width: 23.25px;
+    height: 13.5px;
+  }
+  
+  /* Nuvens */
+  .nuvens {
+    position: absolute;
+    width: 466px;
+    height: 144px;
+    left: -23px;
+    top: 76px;
+  }
+  
+  .nuvem-1,
+  .nuvem-2 {
+    position: absolute;
+    width: 132px;
+    height: 107px;
+    background: rgba(0, 0, 0, 0.2);
+  }
+  
+  .nuvem-1 {
+    left: -23px;
+    top: calc(50% - 107px/2 - 296px);
+  }
+  
+  .nuvem-2 {
+    right: -34px;
+    top: calc(50% - 107px/2 - 333px);
+  }
+  
+  /* Participantes */
+  .participantes {
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    padding: 0;
+    gap: 16px;
+    position: absolute;
+    width: 359px;
+    height: 167px;
+    top: 334px;
+    border: 1px solid #FFFCFC;
+  }
+  
+  /* Botão genérico */
+  .botao {
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    padding-left: 1rem;
+    padding-right: 5rem;
+    width: 359px;
+    height: 75px;
+    background: #3498DB;
+    border: 2px solid #FFFCFC;
+    border-radius: 5px;
+    color: #FFFCFC;
+    font-family: 'Grandstander', sans-serif;
+    font-size: 32px;
+    font-weight: 700;
+    text-align: center;
+    letter-spacing: -0.3px;
+    cursor: pointer;
+    transition: background 0.3s ease;
+  }
+  
+  .botao:hover {
+    background: #2874A6;
+  }
+  
+  /* Ícones nos botões */
+  .user-circle,
+  .van {
+    width: 48px;
+    height: 48px;
+  }
+  
+  .user-circle .vector,
+  .van .vector {
+    position: absolute;
+    background: #FFFCFC;
+  }
+  
+  .user-circle .vector {
+    left: 9.38%;
+    right: 9.37%;
+    top: 9.38%;
+    bottom: 9.37%;
+  }
+  
+  .van .vector {
+    left: 6.25%;
+    right: 0%;
+    top: 18.75%;
+    bottom: 15.6%;
+  }
+  
+  /* Botão: PERFIL */
+  .perfil {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #FFFCFC;
+  }
+  
+  /* Botão: MOTORISTAS */
+  .motoristas {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 -20px;
+    color: #FFFCFC;
+  }
+  
+  /* CaretDown */
+  .caret-down {
+    width: 48px;
+    height: 48px;
+  }
+  
+  .caret-down .vector {
+    box-sizing: border-box;
+    position: absolute;
+    left: 15.62%;
+    right: 15.62%;
+    top: 34.37%;
+    bottom: 28.12%;
+    background: #FFFCFC;
+    border: 1px solid #FFFCFC;
+  }
+  

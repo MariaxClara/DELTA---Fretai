@@ -12,6 +12,7 @@ import RegisterUserDriver from '../views/registerUserDriver.vue'
 import TrocaSenha from '../views/trocaSenha.vue'
 import Chat from '../views/Chat.vue'
 import Corridas from '../views/Corridas.vue'
+import Home from '../views/Home.vue'
 
 
 const routes = [
@@ -79,6 +80,11 @@ const routes = [
     path: '/Corridas',
     name: 'Corridas',
     component: Corridas
+  },
+  {
+    path: '/Home',
+    name: 'Home',
+    component: Home
   },
 ]
 
