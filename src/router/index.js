@@ -79,7 +79,7 @@ const routes = [
     component: ChatMotorista
   },
   {
-    path: '/chat/:senderId/:receiveId',
+    path: '/chat/:senderId/:receiverId',
     name: 'Chat',
     component: ChatPassageiro
   },

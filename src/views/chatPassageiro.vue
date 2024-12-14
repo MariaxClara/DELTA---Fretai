@@ -1,7 +1,10 @@
 <template>
   <div class="chat-container">
     <div v-for="message in messages" :key="message.mensagem_id" class="message">
-      <div :class="{'my-message': message.remetente_id === senderId, 'other-message': message.remetente_id !== senderId}">
+      <div :class="{
+        'my-message': message.remetente_id == senderId,
+        'other-message': message.remetente_id != senderId
+      }">
         <p>{{ message.conteudo }}</p>
         <small>{{ new Date(message.created_at).toLocaleTimeString() }}</small>
       </div>
@@ -104,24 +107,27 @@ export default {
 
 .my-message {
   align-self: flex-end;
-  background-color: #d1ffd6;
+  background-color: #5fb350; /* Verde claro */
   padding: 10px;
   border-radius: 8px;
   max-width: 60%;
+  text-align: right;
 }
 
 .other-message {
   align-self: flex-start;
-  background-color: #f1f1f1;
+  background-color: #5483b6; /* Azul claro */
   padding: 10px;
   border-radius: 8px;
   max-width: 60%;
+  text-align: left;
 }
 
 .message-input {
   display: flex;
   align-items: center;
   margin-top: auto;
+  color: #000;
 }
 
 .message-input input {
@@ -129,6 +135,8 @@ export default {
   padding: 10px;
   border: 1px solid #ccc;
   border-radius: 4px;
+  color: #000;
+
 }
 
 .message-input button {
@@ -143,5 +151,7 @@ export default {
 
 .message-input button:hover {
   background-color: #0056b3;
+  color: #000;
+
 }
 </style>
