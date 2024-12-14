@@ -1,136 +1,147 @@
 <template>
-    <div class="chat-container">
-      <header class="chat-header">
-        <h1 class="chat-title">Chat</h1>
-      </header>
-  
-      <div class="chat-messages">
-        <div v-for="message in messages" :key="message.id" :class="{'my-message': message.isMine, 'other-message': !message.isMine}">
-          <p class="message-content">{{ message.content }}</p>
-          <span class="message-timestamp">{{ message.timestamp }}</span>
-        </div>
+  <div class="chat-container">
+    <div v-for="message in messages" :key="message.mensagem_id" class="message">
+      <div :class="{'my-message': message.remetente_id === senderId, 'other-message': message.remetente_id !== senderId}">
+        <p>{{ message.conteudo }}</p>
+        <small>{{ new Date(message.created_at).toLocaleTimeString() }}</small>
       </div>
-  
-      <form class="chat-input-container" @submit.prevent="sendMessage">
-        <input 
-          type="text" 
-          v-model="newMessage" 
-          placeholder="Digite sua mensagem..." 
-          class="chat-input" 
-          required
-        >
-        <button type="submit" class="send-button">Enviar</button>
-      </form>
     </div>
-  </template>
-  
-  <script setup>
-  import { ref } from 'vue';
-  
-  const messages = ref([]);
-  
-  const newMessage = ref('');
-  
-  const sendMessage = () => {
-    if (newMessage.value.trim()) {
-      messages.value.push({
-        id: Date.now(),
-        content: newMessage.value,
-        isMine: true,
-        timestamp: new Date().toLocaleTimeString(),
-      });
-      newMessage.value = '';
-    }
-  };
-  </script>
-  
-  <style scoped>
-  .chat-container {
-    display: flex;
-    flex-direction: column;
-    height: 100vh;
-    width: 100%;
-    background-color: #f5f5f5;
-  }
-  
-  .chat-header {
-    padding: 1rem;
-    background-color: #007bff;
-    color: #fff;
-    text-align: center;
-  }
-  
-  .chat-title {
-    margin: 0;
-    font-size: 1.5rem;
-  }
-  
-  .chat-messages {
-    flex-grow: 1;
-    padding: 1rem;
-    overflow-y: auto;
-    background-color: #ffffff;
-  }
-  
-  .my-message {
-    align-self: flex-end;
-    background-color: #007bff;
-    color: #fff;
-    border-radius: 10px;
-    padding: 0.5rem 1rem;
-    margin: 0.5rem 0;
-    max-width: 60%;
-  }
-  
-  .other-message {
-    align-self: flex-start;
-    background-color: #f1f1f1;
-    color: #000;
-    border-radius: 10px;
-    padding: 0.5rem 1rem;
-    margin: 0.5rem 0;
-    max-width: 60%;
-  }
-  
-  .message-content {
-    margin: 0;
-  }
-  
-  .message-timestamp {
-    font-size: 0.75rem;
-    text-align: right;
-    display: block;
-  }
-  
-  .chat-input-container {
-    display: flex;
-    padding: 1rem;
-    background-color: #f1f1f1;
-    border-top: 1px solid #ccc;
-  }
-  
-  .chat-input {
-    flex-grow: 1;
-    padding: 0.5rem;
-    border: 1px solid #ccc;
-    border-radius: 5px;
-    font-size: 1rem;
-    color: #000
 
-  }
-  
-  .send-button {
-    margin-left: 0.5rem;
-    padding: 0.5rem 1rem;
-    border: none;
-    background-color: #007bff;
-    color: #fff;
-    border-radius: 5px;
-    cursor: pointer;
-  }
-  
-  .send-button:hover {
-    background-color: #0056b3;
-  }
-  </style>
-  
+    <div class="message-input">
+      <input
+        type="text"
+        v-model="newMessage"
+        placeholder="Digite sua mensagem..."
+        @keyup.enter="sendMessage"
+      />
+      <button @click="sendMessage">Enviar</button>
+    </div>
+  </div>
+</template>
+
+<script>
+export default {
+  data() {
+    return {
+      senderId: null, // Será definido a partir da URL
+      receiverId: null, // Será definido a partir da URL
+      newMessage: '', // Nova mensagem a ser enviada
+      messages: [], // Histórico de mensagens carregado do backend
+    };
+  },
+  methods: {
+    async fetchMessages() {
+      console.log('SenderId:', this.senderId);
+      console.log('ReceiverId:', this.receiverId);
+      try {
+        const response = await fetch(`http://localhost:3000/chat/${this.senderId}/${this.receiverId}`);
+        if (response.ok) {
+          const data = await response.json();
+          this.messages = data; // Atualiza o histórico de mensagens
+        } else {
+          console.error('Erro ao buscar mensagens:', await response.text());
+        }
+      } catch (error) {
+        console.error('Erro de rede ao buscar mensagens:', error);
+      }
+    },
+    async sendMessage() {
+      if (!this.newMessage.trim()) return;
+
+      const messageData = {
+        senderId: this.senderId,
+        receiverId: this.receiverId,
+        content: this.newMessage,
+      };
+
+      try {
+        const response = await fetch('http://localhost:3000/chat', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(messageData),
+        });
+
+        if (response.ok) {
+          const data = await response.json();
+          this.messages.push(data); 
+          this.newMessage = ''; 
+        } else {
+          console.error('Erro ao enviar mensagem:', await response.text());
+        }
+      } catch (error) {
+        console.error('Erro de rede ao enviar mensagem:', error);
+      }
+    },
+  },
+  mounted() {
+    // Obtém os parâmetros da URL
+    this.senderId = this.$route.params.senderId;
+    this.receiverId = this.$route.params.receiverId;
+
+
+    console.log('SenderId:', this.senderId);
+    console.log('ReceiverId:', this.receiverId);
+
+    // Busca as mensagens assim que o componente é montado
+    this.fetchMessages();
+  },
+};
+</script>
+
+<style>
+.chat-container {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  padding: 10px;
+}
+
+.message {
+  margin-bottom: 10px;
+}
+
+.my-message {
+  align-self: flex-end;
+  background-color: #d1ffd6;
+  padding: 10px;
+  border-radius: 8px;
+  max-width: 60%;
+}
+
+.other-message {
+  align-self: flex-start;
+  background-color: #f1f1f1;
+  padding: 10px;
+  border-radius: 8px;
+  max-width: 60%;
+}
+
+.message-input {
+  display: flex;
+  align-items: center;
+  margin-top: auto;
+}
+
+.message-input input {
+  flex-grow: 1;
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+}
+
+.message-input button {
+  padding: 10px;
+  margin-left: 10px;
+  background-color: #007bff;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.message-input button:hover {
+  background-color: #0056b3;
+}
+</style>
