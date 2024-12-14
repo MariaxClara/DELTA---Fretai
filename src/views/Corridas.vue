@@ -86,7 +86,8 @@
   const email = ref("");
   const corridaInfo = ref(null);
   const error = ref(null);
-  const isLoading = ref(false); // Indicador de carregamento
+ 
+  
   const showPopup = ref(false);
   const popupType = ref(null); // Tipo de pop-up a ser exibido
   const selectedRaceIndex = ref(null); // Para armazenar a corrida selecionada

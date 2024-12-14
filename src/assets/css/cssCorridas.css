@@ -39,7 +39,7 @@ input {
 .dados-container {
     flex: 1; /* Ocupa o espaço restante */
     display: flex;
-    justify-content: flex-start; /* Alinha as informações à esquerda */
+    justify-content: center; /* Alinha as informações à esquerda */
     margin-top: 40px; 
     
 }
@@ -158,6 +158,14 @@ input {
     z-index: 1001;
   }
   
+  .popup p {
+    color: #333; 
+  }
+
+  .popup h2 {
+    color: #333;
+  }
+
   /* Botões no pop-up */
   .popup button {
     margin: 10px 5px;
