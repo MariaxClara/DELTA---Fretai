@@ -65,27 +65,22 @@ const {
 } = useLogin();
 
 const handleLoginSubmit = async () => {
-  const userTypeResult = await loginAndDetermineUserType();
-  
-  if (userTypeResult) {
-    // Handle successful login and redirect based on user type
-    switch (userTypeResult) {
-      case 'motorista':
-        console.log('Logged in as driver');
-        await router.push({ name: 'perfil_motorista' });
-        break;
-      case 'passageiro':
-        console.log('Logged in as passenger');
-        await router.push({ name: 'perfil_passageiro' });
-        break;
-      default:
-        console.log('Unknown user type');
+  const user = await loginAndDetermineUserType(); // Supondo que esta função retorne o usuário logado
+
+  if (user && user.user_id) {
+    const userType = user.userType; // Exemplo: motorista ou passageiro
+
+    if (userType === 'motorista') {
+      await router.push({ name: 'PerfilMotorista', query: { user_id: user.user_id } });
+    } else if (userType === 'passageiro') {
+      await router.push({ name: 'PerfilUsuario', query: { user_id: user.user_id } });
+    } else {
+      console.error('Tipo de usuário desconhecido.');
     }
   } else {
-    errorMessage.value = 'Falha no login. Verifique suas credenciais.';
+    console.error('Falha no login. Verifique suas credenciais.');
   }
 };
-
 
 
 const onPasswordChanged = () => {

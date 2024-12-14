@@ -27,13 +27,15 @@ export default function useLogin() {
       
       if (data.status === 'success') {
         console.log('Login bem-sucedido:', data.user);
-        
-        // Verifica se é o primeiro login
+      
+        // Salva o user_id no localStorage
+        localStorage.setItem('user_id', data.user.user_id);
+      
         if (data.primeiro_login) {
           alert('Você precisa alterar sua senha');
-          showPasswordReset.value = true; // Exibe o pop-up para alteração de senha
+          showPasswordReset.value = true;
         }
-        
+      
         return data.user;
       } else {
         errorMessage.value = 'Credenciais inválidas';
