@@ -286,7 +286,6 @@ export default {
 //     this.van.setGeometry(currentLocation);
 //     this.map.setCenter(currentLocation);
 //   }
-
 //   try {
 //     // Check if we've deviated from the route
 //     if (await this.hasDeviatedFromRoute(currentLocation)) {
@@ -379,14 +378,6 @@ export default {
 //     closestIndex,
 //     skippedWaypoints: this.waypoints.slice(0, closestIndex)
 //   };
-// },
-
-// updateMapWithNewRoute(route) {
-//   // Clear existing route
-//   this.map.removeObjects(this.map.getObjects());
-  
-//   // Re-render the route
-//   this.renderOptimizedRoute(route.combinedRoute);
 // },
 
     finalizeTrip(action) {
