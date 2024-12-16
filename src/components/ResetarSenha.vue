@@ -34,7 +34,7 @@ async function handlePasswordSubmit() {
   
   try {
     console.log("Enviando requisição para atualizar a senha - Front");
-    const response = await fetch('/api/update-password', {
+    const response = await fetch('http://localhost:3000/changePassword', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
