@@ -10,6 +10,9 @@ import PerfilMotorista from '../views/PerfilMotorista.vue'
 import PerfilUsuario from '../views/PerfilUsuario.vue'
 import RegisterUserDriver from '../views/RegisterUserDriver.vue'
 import TrocaSenha from '../views/TrocaSenha.vue'
+import Home from '../views/Home.vue'
+import Calendario from '../views/Calendario.vue'
+import Dia from '../views/Dia.vue'
 import AddVanGroup from '../views/AddVanGroup.vue'
 import CadastroPassageiro from '../views/CadastroPassageiro.vue'
 
@@ -71,6 +74,19 @@ const routes = [
     component: TrocaSenha
   },
   {
+    path: '/Home',
+    name: 'Home',
+    component: Home
+  },
+  {
+    path: '/Calendario',
+    name: 'Calendario',
+    component: Calendario
+  },
+  {
+    path: '/Dia',
+    name: 'Dia',
+    component: Dia
     path: '/AddVanGroup',
     name: 'AddVanGroup',
     component: AddVanGroup
