@@ -72,29 +72,28 @@ const {
 } = useLogin();
 
 const handleLoginSubmit = async () => {
-    const userTypeResult = await loginAndDetermineUserType();
-    if (userTypeResult) {
-      switch (userTypeResult) {
-        case 'motorista':
-          console.log('Logged in as driver');
-          await router.push({ name: 'PerfilMotorista' });
-          break;
-        case 'passageiro':
-          console.log('Logged in as passenger');
-          await router.push({ name: 'PerfilUsuario' });
-          break;
-        case 'desconhecido':
-          console.log('Tipo de usuário desconhecido.');
-          errorMessage.value = 'Tipo de usuário inválido.';
-          break;
-        default:
-          console.log('Unknown user type');
-          errorMessage.value = 'Falha no login. Verifique suas credenciais.';
-      }
-    } else {
-      errorMessage.value = 'Falha no login. Verifique suas credenciais.';
+  const userTypeResult = await loginAndDetermineUserType();
+  
+  if (userTypeResult) {
+    // Handle successful login and redirect based on user type
+    switch (userTypeResult) {
+      case 'motorista':
+        console.log('Logged in as driver');
+        await router.push({ name: 'Home' });
+        break;
+      case 'passageiro':
+        console.log('Logged in as passenger');
+        await router.push({ name: 'Home' });
+        break;
+      default:
+        console.log('Unknown user type');
     }
-  };
+  } else {
+    errorMessage.value = 'Falha no login. Verifique suas credenciais.';
+  }
+};
+
+
 
 
 

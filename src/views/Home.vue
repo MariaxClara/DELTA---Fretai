@@ -53,6 +53,13 @@
               >
                   Cancelar corrida
               </button>
+              <button
+                  type="button"
+                  class="chat-btn"
+                  @click="handleChat()"
+              >
+                  Chat com o motorista
+              </button>
               <hr />
           </div>
       </div>
@@ -219,6 +226,12 @@ async function cancelRace() {
     }
     // Fecha o pop-up
     closePopup();
+}
+
+// Redirecionar para a página de chat
+async function handleChat() {
+            const chatUrl = `http://localhost:5173/chat/3/1`;
+            window.location.href = chatUrl;
 }
 </script>
 

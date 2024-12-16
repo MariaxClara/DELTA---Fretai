@@ -86,6 +86,8 @@ const routes = [
     name: 'Chat',
     component: ChatPassageiro
   },
+
+
   {
     path: '/Corridas',
     name: 'Corridas',
