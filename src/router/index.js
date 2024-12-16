@@ -12,6 +12,7 @@ import RegisterUserDriver from '../views/RegisterUserDriver.vue'
 import TrocaSenha from '../views/TrocaSenha.vue'
 import Home from '../views/Home.vue'
 import Calendario from '../views/Calendario.vue'
+import Dia from '../views/Dia.vue'
 
 
 const routes = [
@@ -79,6 +80,11 @@ const routes = [
     path: '/Calendario',
     name: 'Calendario',
     component: Calendario
+  },
+  {
+    path: '/Dia',
+    name: 'Dia',
+    component: Dia
   }
 ]
 
