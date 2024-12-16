@@ -15,7 +15,6 @@ import ChatMotorista from '../views/chatMotorista.vue';
 import ChatPassageiro from '../views/chatPassageiro.vue';
 import Corridas from '../views/Corridas.vue'
 import Home from '../views/Home.vue'
-import Home from '../views/Home.vue'
 import Calendario from '../views/Calendario.vue'
 import Dia from '../views/Dia.vue'
 import AddVanGroup from '../views/AddVanGroup.vue'
