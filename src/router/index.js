@@ -11,6 +11,16 @@ import PerfilUsuario from '../views/perfilUsuario.vue'
 import RegisterUserDriver from '../views/registerUserDriver.vue'
 import TrocaSenha from '../views/trocaSenha.vue'
 
+import ChatMotorista from '../views/chatMotorista.vue';
+import ChatPassageiro from '../views/chatPassageiro.vue';
+import Corridas from '../views/Corridas.vue'
+import Home from '../views/Home.vue'
+import Home from '../views/Home.vue'
+import Calendario from '../views/Calendario.vue'
+import Dia from '../views/Dia.vue'
+import AddVanGroup from '../views/AddVanGroup.vue'
+import CadastroPassageiro from '../views/CadastroPassageiro.vue'
+
 
 const routes = [
   {
@@ -67,6 +77,46 @@ const routes = [
     path: '/TrocaSenha',
     name: 'TrocaSenha',
     component: TrocaSenha
+  },
+  {
+    path: '/chatMotorista',
+    name: 'chatMotorista',
+    component: ChatMotorista
+  },
+  {
+    path: '/chat/:senderId/:receiverId',
+    name: 'Chat',
+    component: ChatPassageiro
+  },
+  {
+    path: '/Corridas',
+    name: 'Corridas',
+    component: Corridas
+  },
+  {
+    path: '/Home',
+    name: 'Home',
+    component: Home
+  },
+  {
+    path: '/Calendario',
+    name: 'Calendario',
+    component: Calendario
+  },
+  {
+    path: '/Dia',
+    name: 'Dia',
+    component: Dia
+  },
+  {
+    path: '/AddVanGroup',
+    name: 'AddVanGroup',
+    component: AddVanGroup
+  },
+  {
+    path: '/CadastroPassageiro',
+    name: 'CadastroPassageiro',
+    component: CadastroPassageiro
   }
 ]
 

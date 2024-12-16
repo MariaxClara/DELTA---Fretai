@@ -1,9 +1,10 @@
 {
-  "_hash": "GXFKF8ixBt",
+
+  "_hash": "2rzDV6wirH",
   "project": {
-    "rootDir": "/home/daniel/Documentos/eng_software/DELTA---Fretai"
+    "rootDir": "C:/Users/corte/Documents/GitHub/DELTA---Fretai__teste"
   },
   "versions": {
-    "nuxt": "3.13.2"
+    "nuxt": "3.14.1592"
   }
 }

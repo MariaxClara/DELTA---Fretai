@@ -46,11 +46,7 @@
   </div>
 </template>
 
-<!-- <script>
-  export default{
-    name: 'Login',
-  }
-</script> -->
+
 
 <script setup>
 import { ref } from 'vue';

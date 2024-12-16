@@ -46,6 +46,8 @@
     const {VITE_BASE_URL_BACKEND} = import.meta.env 
 
     const driverId = ref(1);
+    const driverName = ref('João') 
+    const driverCode = ref('111-111')
     const errorInvite = ref(false);
     const sucessInvite = ref(false);
     const errorMessage = ref('');
@@ -55,25 +57,35 @@
 
     const reEmail = new RegExp(".+@.+");
 
-    userEmails.value = ["cla@uni.com", "mar@uni.com"]
-
-    async function sendWelcomeEmail (userTo, driverName, linkInvite) {
-        console.log("Enviando email...")
+    async function sendWelcomeEmail (userTo, driverName, inviteCode) {
+        let textValue = "Seja bem vindo ao fretai, você foi convidado para participar da van de "+driverName+". Siga o link http://localhost, o código da van é: "+inviteCode 
+        try {           
+            const response = await fetch(`${VITE_BASE_URL_BACKEND}/sendEmail`, {
+                method: 'POST',
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({
+                    to: userTo,
+                    from: "fretaiunifesp@gmail.com",
+                    subject: "Bem vindo ao Fretai!",
+                    text: textValue
+                })
+            })                    
+        } catch (error) {
+            messageError.value = 'Parece que nosso servidor está em manutenção, não foi possível convidar o usuário!'
+            console.log(messageError)
+        }
     }
 
     async function addUser(email) {
-        try {
-            const response = await fetch(`${VITE_BASE_URL_BACKEND}/addDriverInvite`, {
+        try {           
+            const response = await fetch(`${VITE_BASE_URL_BACKEND}/addUserEmailInvite`, {
                 method: 'POST',
-                body: {
-                    email: email,
-                    id: driverId.value
-                },
-                mode: 'no-cors'
-            })
-            console.log("Banco atualizado")
-            console.log(response)
-                    
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({
+                            email: email,
+                            id: Number(driverId.value)
+                })
+            })                    
         } catch (error) {
             messageError.value = 'Parece que nosso servidor está em manutenção, não foi possível convidar o usuário!'
             console.log(messageError)
@@ -109,7 +121,7 @@
                     errorInvite.value = true;
                 } else {
                     sucessInvite.value = true;
-                    sendWelcomeEmail(userEmail.value, driverId.value, 'https://www.google.com/')
+                    sendWelcomeEmail(userEmail.value, driverName.value, driverCode.value)
                     addUser(userEmail.value);
                 }
             } else {

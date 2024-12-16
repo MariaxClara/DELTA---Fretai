@@ -67,7 +67,6 @@ import { NuxtLink } from '../.nuxt/components';
 
     const takeUsers = async () => {
         try {
-            console.log("Estou indo pegar meus users")
             const response = await fetch(`${VITE_BASE_URL_BACKEND}/driverUsers/${driverId.value}`, {
                 method: 'GET',
             })
@@ -79,7 +78,6 @@ import { NuxtLink } from '../.nuxt/components';
                     idShort: i,
                     name: passageiro.passageiro_nome,
                     paid: passageiro.passageiro_pagamento,
-                    email: passageiro.passageiro_email,
                     update: 0,
                 })
             }
@@ -93,18 +91,16 @@ import { NuxtLink } from '../.nuxt/components';
     async function updateUsers() {
         edit.value=!edit.value
         try {
-            for (let i in users.value) {
-                let user = users.value[i]
+            for (let user in users.value) {
                 try {
                     const response = await fetch(`${VITE_BASE_URL_BACKEND}/updateUserPay`, {
-                        method: 'POST',
-                        headers: { "Content-Type": "application/json" },
-                        body: JSON.stringify({
-                            email: user.email,
-                            paid: Number(user.paid)
-                        })
+                    method: 'POST',
+                    body: JSON.stringify({
+                        email: user.email,
+                        paid: user.paid
                     })
-                    const data = await response.json();
+                    })
+                    console.log(response)
                 } catch (error) {
                     messageError.value = 'Parece que nosso servidor está em manutenção, não foi possível salvar as modificações!'
                 }
