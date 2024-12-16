@@ -32,9 +32,12 @@
         "../*",
         "../*"
       ],
+<<<<<<< HEAD
       "nitropack/types": [
         "../node_modules/nitropack/types"
       ],
+=======
+>>>>>>> story6
       "nitropack": [
         "../node_modules/nitropack"
       ],
@@ -65,6 +68,12 @@
       "nuxt": [
         "../node_modules/nuxt"
       ],
+<<<<<<< HEAD
+=======
+      "#internal/nuxt/paths": [
+        "../node_modules/nuxt/dist/core/runtime/nitro/paths"
+      ],
+>>>>>>> story6
       "~": [
         "./.."
       ],
@@ -77,9 +86,12 @@
       "@@": [
         "./.."
       ],
+<<<<<<< HEAD
       "#shared": [
         "../shared"
       ],
+=======
+>>>>>>> story6
       "assets": [
         "../assets"
       ],
@@ -92,6 +104,7 @@
       "public/*": [
         "../public/*"
       ],
+<<<<<<< HEAD
       "#build": [
         "./"
       ],
@@ -101,6 +114,8 @@
       "#internal/nuxt/paths": [
         "../node_modules/nuxt/dist/core/runtime/nitro/paths"
       ],
+=======
+>>>>>>> story6
       "#vue-router": [
         "./vue-router"
       ]

@@ -59,6 +59,11 @@ declare module 'nuxt/schema' {
       cdnURL: string,
    },
 
+<<<<<<< HEAD
+=======
+   SENDGRID_API_KEY: string,
+
+>>>>>>> story6
    nitro: {
       envPrefix: string,
    },

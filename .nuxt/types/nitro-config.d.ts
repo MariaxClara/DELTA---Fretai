@@ -7,8 +7,15 @@ import type { Defu } from 'defu'
 
 type UserAppConfig = Defu<{}, []>
 
+<<<<<<< HEAD
 declare module "nitropack/types" {
   interface AppConfig extends UserAppConfig {}
 
 }
+=======
+declare module 'nitropack' {
+  interface AppConfig extends UserAppConfig {}
+}
+    
+>>>>>>> story6
 export {}

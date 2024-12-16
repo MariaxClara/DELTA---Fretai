@@ -2,9 +2,12 @@
 {
   "compilerOptions": {
     "paths": {
+<<<<<<< HEAD
       "nitropack/types": [
         "../node_modules/nitropack/types"
       ],
+=======
+>>>>>>> story6
       "nitropack": [
         "../node_modules/nitropack"
       ],
@@ -59,9 +62,12 @@
       "@@/*": [
         "../*"
       ],
+<<<<<<< HEAD
       "#shared": [
         "../shared"
       ],
+=======
+>>>>>>> story6
       "assets": [
         "../assets"
       ],
@@ -74,12 +80,15 @@
       "public/*": [
         "../public/*"
       ],
+<<<<<<< HEAD
       "#build": [
         "."
       ],
       "#build/*": [
         "./*"
       ],
+=======
+>>>>>>> story6
       "#app": [
         "../node_modules/nuxt/dist/app"
       ],
@@ -98,6 +107,15 @@
       "#app-manifest": [
         "./manifest/meta/dev"
       ],
+<<<<<<< HEAD
+=======
+      "#build": [
+        "."
+      ],
+      "#build/*": [
+        "./*"
+      ],
+>>>>>>> story6
       "#components": [
         "./components"
       ]

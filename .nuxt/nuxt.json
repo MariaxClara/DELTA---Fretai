@@ -1,9 +1,18 @@
 {
+<<<<<<< HEAD
   "_hash": "2rzDV6wirH",
   "project": {
     "rootDir": "C:/Users/corte/Documents/GitHub/DELTA---Fretai__teste"
   },
   "versions": {
     "nuxt": "3.14.1592"
+=======
+  "_hash": "GXFKF8ixBt",
+  "project": {
+    "rootDir": "/home/daniel/Documentos/eng_software/DELTA---Fretai"
+  },
+  "versions": {
+    "nuxt": "3.13.2"
+>>>>>>> story6
   }
 }
