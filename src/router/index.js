@@ -2,14 +2,18 @@ import { createRouter, createWebHistory } from 'vue-router'
 import Passageiro from '../views/Passageiro.vue'
 import Motorista from '../views/Motorista.vue'
 import CadastroMotorista from '../views/CadastroMotorista.vue'
-import Index from '../views/index'
+import Index from '../views/index.vue'
 import Login from '../views/login.vue'
 import MyRouters from '../views/MyRouters.vue'
 import MyUsers from '../views/MyUsers.vue'
 import PerfilMotorista from '../views/PerfilMotorista.vue'
-import PerfilUsuario from '../views/PerfilUsuario.vue'
-import RegisterUserDriver from '../views/RegisterUserDriver.vue'
-import TrocaSenha from '../views/TrocaSenha.vue'
+import PerfilUsuario from '../views/perfilUsuario.vue'
+import RegisterUserDriver from '../views/registerUserDriver.vue'
+import TrocaSenha from '../views/trocaSenha.vue'
+import ChatMotorista from '../views/chatMotorista.vue';
+import ChatPassageiro from '../views/chatPassageiro.vue';
+import Corridas from '../views/Corridas.vue'
+import Home from '../views/Home.vue'
 import Home from '../views/Home.vue'
 import Calendario from '../views/Calendario.vue'
 import Dia from '../views/Dia.vue'
@@ -74,6 +78,21 @@ const routes = [
     component: TrocaSenha
   },
   {
+    path: '/chatMotorista',
+    name: 'chatMotorista',
+    component: ChatMotorista
+  },
+  {
+    path: '/chat/:senderId/:receiverId',
+    name: 'Chat',
+    component: ChatPassageiro
+  },
+  {
+    path: '/Corridas',
+    name: 'Corridas',
+    component: Corridas
+  },
+  {
     path: '/Home',
     name: 'Home',
     component: Home
@@ -87,6 +106,8 @@ const routes = [
     path: '/Dia',
     name: 'Dia',
     component: Dia
+  },
+  {
     path: '/AddVanGroup',
     name: 'AddVanGroup',
     component: AddVanGroup

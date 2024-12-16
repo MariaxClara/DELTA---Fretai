@@ -1,0 +1,191 @@
+/* corridas.css */
+
+/* Contêiner principal */
+.corridas-container {
+    display: flex;
+    flex-direction: column;
+    justify-content: start;
+    align-items: center;
+    min-height: 100vh;
+    background-color: #BAE6FD;
+    padding: 20px;
+}
+input {
+  color: #333; /* Cor do texto */
+}
+
+/* Formulário centralizado */
+.formulario {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+    max-width: 320px;
+    
+}
+
+.login-form {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    max-width: 320px; 
+    gap: 1rem; 
+    font-family: Verdana, Geneva, Tahoma, sans-serif;
+    margin: auto; 
+}
+
+
+/* Informações da corrida à esquerda */
+.dados-container {
+    flex: 1; /* Ocupa o espaço restante */
+    display: flex;
+    justify-content: center; /* Alinha as informações à esquerda */
+    margin-top: 40px; 
+    
+}
+
+.dados {
+    background-color: white;
+    padding: 20px;
+    border-radius: 15px; /* Bordas arredondadas */
+    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2); /* Sombras para destaque */
+    color: #333333;
+    max-width: 400px; /* Largura fixa */
+    width: 100%;
+}
+
+.dados h2 {
+    color: #333;
+    text-align: center;
+    margin-bottom: 10px;
+    font-size: 1.5rem;
+}
+
+.dados p {
+    color: #333; /* Definindo cor para texto */
+    margin: 8px 0;
+}
+
+/* Estilo do botão */
+.buscar-btn {
+    margin-top: 1rem;
+    padding: 15px 30px;
+    border: none;
+    border-radius: 25px;
+    background-color: white;
+    color: #007bff;
+    font-size: 18px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    width: 100%;
+}
+
+.buscar-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    background-color: #007bff;
+    color: white;
+}
+
+.buscar-btn:active {
+    transform: translateY(1px);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.cancelar-btn {
+    margin-top: 3px;
+    margin-bottom: 3px;
+    padding: 15px 30px;
+    border: none;
+    border-radius: 25px;
+    background-color: rgb(255, 0, 0);
+    color: #fff;
+    font-size: 18px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    width: 100%;
+}
+
+.cancelar-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    background-color: #ff6c6c;
+    color: white;
+}
+
+.cancelar-btn:active {
+    transform: translateY(1px);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.popup-overlay {
+    opacity: 0;
+    animation: fadeIn 0.3s forwards;
+  }
+  
+  @keyframes fadeIn {
+    to {
+      opacity: 1;
+    }
+  }
+
+  /* Estilo para o overlay do pop-up */
+.popup-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5); /* Fundo semitransparente */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+  }
+  
+  /* Estilo para o pop-up */
+  .popup {
+    background: #fff;
+    padding: 20px 30px;
+    border-radius: 8px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+    text-align: center;
+    width: 300px;
+    z-index: 1001;
+  }
+  
+  .popup p {
+    color: #333; 
+  }
+
+  .popup h2 {
+    color: #333;
+  }
+
+  /* Botões no pop-up */
+  .popup button {
+    margin: 10px 5px;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+  }
+  
+  .confirmar-btn {
+    background-color: #e63946;
+    color: #fff;
+  }
+  
+  .fechar-btn {
+    background-color: #ccc;
+    color: #000;
+  }
+  
+  .popup button:hover {
+    opacity: 0.9;
+  }
+  
