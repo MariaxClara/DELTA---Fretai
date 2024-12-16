@@ -38,8 +38,8 @@
   color: #333;
 }
 
-.dados p {
-  margin: 8px 0;
+.dados p, .dados p strong {
+  color: #333 !important; /* Usando !important para garantir que o estilo seja aplicado */
 }
 
 input {

@@ -51,55 +51,103 @@ export default function maps() {
 
   function removeWaypoint(index) {
     this.waypoints.splice(index, 1);
+    this.errorMessage = null; // Limpa a mensagem de erro ao remover um waypoint
     this.updateRoute(); // Recalcula a rota automaticamente após remover o waypoint
   }
 
   async function getCurrentLocation() {
     return new Promise((resolve, reject) => {
       if (navigator.geolocation) {
-        navigator.geolocation.getCurrentPosition(
-          function (position) {
-            const { latitude, longitude } = position.coords;
-            resolve({ lat: latitude, lng: longitude });
-          },
-          function (error) {
-            reject(error);
+        navigator.permissions.query({ name: 'geolocation' }).then(result => {
+          if (result.state === 'granted') {
+            navigator.geolocation.getCurrentPosition(
+              function (position) {
+                const { latitude, longitude } = position.coords;
+                resolve({ lat: latitude, lng: longitude });
+              },
+              function (error) {
+                // If permission is granted but location cannot be retrieved
+                reject(new Error("Não foi possível obter a localização"));
+              }
+            );
+          } else {
+            // If permission is not granted, reject with a specific error
+            reject(new Error("Localização não permitida"));
           }
-        );
+        });
       } else {
         reject(new Error("Geolocalização não é suportada"));
       }
     });
   }
 
+  function reverseGeocode(lat, lng) {
+    return new Promise((resolve, reject) => {
+      this.searchService.reverseGeocode({
+        at: `${lat},${lng}`
+      }, (result) => {
+        const location = result.items[0]?.address;
+        if (location) {
+          const formattedAddress = `${location.street}, ${location.city}, ${location.state}`;
+          resolve(formattedAddress);
+        } else {
+          reject(new Error(`Endereço não encontrado para as coordenadas: ${lat}, ${lng}`));
+        }
+      }, (error) => reject(error));
+    });
+  }
+  // Rest of the existing updateRoute method remains the same
   async function updateRoute() {
     try {
-      // Geocodificar origem, destino e waypoints
-      const origin = await getCurrentLocation();
+      //erro digitar endereço invalido, nao reconhecido
+      //erro só pedir o de origem se estiver nesse modo, caso contrario usa loc atual
+      if (!this.destinationAddress) {
+        this.errorMessage = "O endereço de destino precisa ser preenchido.";
+        return;
+      }
+  
+      // Verificar o endereço de origem apenas se estiver no modo de endereço manual
+      if (this.useManualAddress && !this.originAddress) {
+        this.errorMessage = "O endereço de origem precisa ser preenchido.";
+        return;
+      }
+  
+      // Verificar se todos os waypoints têm endereços válidos
+      for (let i = 0; i < this.waypoints.length; i++) {
+        if (!this.waypoints[i].address) {
+          this.errorMessage = `O endereço da parada ${i + 1} precisa ser preenchido.`;
+          return;
+        }
+      }
+  
+      let origin;
+      try {
+        // Try to get current location if not using manual address
+        if (!this.useManualAddress) {
+          origin = await getCurrentLocation();
+        } else {
+          origin = await this.geocodeAddress(this.originAddress);
+        }
+      } catch (locationError) {
+        // If location cannot be retrieved, fall back to manual address input
+        origin = await this.geocodeAddress(this.originAddress);
+      }
+  
       const destination = await this.geocodeAddress(this.destinationAddress);
-      
-      // Geocodificar cada waypoint inserido pelo usuário
-      // if (!this.waypoints.includes({address: this.originAddress})){
-      //   this.waypoints.push({address: this.originAddress});
-      // }
-      //console.log();
       const waypoints = await Promise.all(this.waypoints.map(wp => this.geocodeAddress(wp.address)));
-
-
-      // Parâmetros para o roteamento
+  
       const routingParameters = {
         routingMode: "fast",
         transportMode: "car",
-        return: "polyline"
+        return: "polyline,turnByTurnActions,actions,instructions,summary",
       };
-
-      // Otimizar a rota
+  
       const user = import.meta.env.VITE_ROUTEXL_USER;      
       if (!user) {
         console.error('VITE_HERE_ROUTEXL_USER is not defined in the .env file');
         return;
       }
-
+  
       const password = import.meta.env.VITE_ROUTEXL_PASSWORD;
       if (!password) {
         console.error('VITE_HERE_ROUTEXL_PASSWORD is not defined in the .env file');
@@ -107,14 +155,11 @@ export default function maps() {
       }
       const routeOptimizer = new RouteOptimizer(user, password);
       const { locations, optimizedRoute } = await routeOptimizer.optimizeRoute(origin, destination, waypoints);
-
-      console.log(locations, optimizedRoute); // Debug
-      //esse dicionario combina as informações de locations com a de rotas otimizadas
+  
       const combinedRoute = Object.keys(optimizedRoute).map((key, index) => {
         const optimizedStop = optimizedRoute[key];
         const originalLocation = locations.find(location => location.name === optimizedStop.name);
         
-        // Criar objeto combinado
         return {
             name: originalLocation ? originalLocation.name : `Parada ${index}`,
             lat: originalLocation ? originalLocation.lat : null,
@@ -124,11 +169,7 @@ export default function maps() {
             distance: optimizedStop.distance
         };
       });
-
-      
-
-      console.log(combinedRoute); // Debug
-          // Criar um novo array para armazenar os endereços na ordem de combinedRoute
+  
       const orderedAddresses = combinedRoute.map(stop => {
         if (stop.name === 'Start') {
           return this.originAddress;
@@ -139,34 +180,50 @@ export default function maps() {
           return this.waypoints[waypointIndex].address;
         }
       });
-
-      console.log('Ordered Addresses:', orderedAddresses); // Debug
-
-      // Iniciar o grupo para exibir os pontos e a rota
+  
       this.map.removeObjects(this.map.getObjects());
       const group = new H.map.Group();
-
-      // Adicionar marcador para o ponto de origem
+  
       for (let i = 0; i < combinedRoute.length - 1; i++) {
-          const start = { lat: combinedRoute[i].lat, lng: combinedRoute[i].lng };
-          const end = { lat: combinedRoute[i + 1].lat, lng: combinedRoute[i + 1].lng };
-
-          // Calcular a rota para o segmento atual
-          await this.calculateSegmentRoute(start, end, routingParameters, group);
+        const start = { lat: combinedRoute[i].lat, lng: combinedRoute[i].lng };
+        const end = { lat: combinedRoute[i + 1].lat, lng: combinedRoute[i + 1].lng };
+  
+        await this.calculateSegmentRoute(start, end, routingParameters, group);
       }
-
-      // Adicionar marcador para o último ponto do combinedRoute
+  
       const lastMarker = new H.map.Marker({ lat: combinedRoute[combinedRoute.length - 1].lat, lng: combinedRoute[combinedRoute.length - 1].lng });
       group.addObject(lastMarker);
-
-      // Adicionar bubbles de informação
-      group.addEventListener('tap', function (evt) {
+  
+      group.addEventListener('tap', async function (evt) {
         this.ui.getBubbles().forEach(bubble => this.ui.removeBubble(bubble));
       
+        const coords = evt.target.getGeometry();
+        const address = await this.reverseGeocode(coords.lat, coords.lng);
         const bubbleContent = `
-          <div style="width: auto; height: auto; background-color: lightgray; color: black; padding: 10px; display: block; align-items: center; justify-content: center; position: relative;">
-            <button onclick="closeBubble()" style="position: absolute; top: 5px; right: 5px;">X</button>
-            ${evt.target.getData()}
+          <div style="
+              min-width: 200px; 
+              background-color: darkgray; 
+              color: black; 
+              padding: 10px; 
+              display: flex; 
+              flex-direction: column; 
+              position: relative; 
+              border-radius: 8px; 
+              box-shadow: 6px rgba(0, 0, 0, 0.1);">
+            <button onclick="closeBubble()" 
+              style="
+                position: absolute; 
+                top: 10px; 
+                right: 10px; 
+                background: transparent; 
+                border: none; 
+                font-size: 14px; 
+                cursor: pointer;">
+              X
+            </button>
+            <div style="margin-top: 20px;">
+              ${address}
+            </div>
           </div>
         `;
       
@@ -175,15 +232,34 @@ export default function maps() {
         });
         this.ui.addBubble(bubble);
       
-        // Função para fechar o bubble
         window.closeBubble = () => {
           this.ui.removeBubble(bubble);
         };
       }.bind(this), false);
-
+  
+     
+      console.log('Rota otimizada:', combinedRoute);
+      console.log('Endereços ordenados:', orderedAddresses);
       for (let i = 0; i < combinedRoute.length; i++) {
         const location = combinedRoute[i];
         const address = orderedAddresses[i];
+        
+        // Create a custom marker icon with the order number
+        const markerIcon = new H.map.Icon(
+          `<svg xmlns="http://www.w3.org/2000/svg" width="40" height="40">
+            <circle cx="20" cy="20" r="18" fill="#007bff" stroke="white" stroke-width="2"/>
+            <text x="50%" y="50%" text-anchor="middle" dy=".3em" 
+                  font-size="16" font-weight="bold" fill="white">
+              ${i + 1}
+            </text>
+          </svg>`, 
+          { size: { w: 40, h: 40 } }
+        );
+        
+        const marker = new H.map.Marker(
+          { lat: location.lat, lng: location.lng }, 
+          { icon: markerIcon }
+        );
         
         let prevLocation = null;
         if (i > 0) {
@@ -197,25 +273,36 @@ export default function maps() {
           timeToNext = (location.arrival - prevLocation.arrival).toFixed(2);
         }
         
-        const marker = new H.map.Marker({ lat: location.lat, lng: location.lng });
-        marker.setData(`
-          <div>Endereço: ${address}</div>
-          <div>Distância total até aqui: ${location.distance.toFixed(2)} km</div>
-          <div>Tempo total até aqui: ${location.arrival.toFixed(2)} min</div>
-          <div>Distância a partir da última parada: ${distanceToNext} km</div>
-          <div>Tempo a partir da última parada: ${timeToNext} min</div>
-        `);
+        if (i == 0){
+          const loc = await this.reverseGeocode(location.lat, location.lng);
+          marker.setData(`Ponto de partida: ${loc}`);
+        }
+        else{
+          marker.setData(`
+            <div>Endereço: ${address}</div>
+            <div>Distância total até aqui: ${location.distance.toFixed(2)} km</div>
+            <div>Tempo total até aqui: ${location.arrival.toFixed(2)} min</div>
+            <div>Distância a partir da última parada: ${distanceToNext} km</div>
+            <div>Tempo a partir da última parada: ${timeToNext} min</div>
+          `);
+        }
         group.addObject(marker);
       }
-
+  
       const totalDistance = combinedRoute[combinedRoute.length - 1].distance;
       const totalDuration = combinedRoute[combinedRoute.length - 1].arrival;
       console.log(`Distância total: ${totalDistance} km`);
       console.log(`Duração total: ${totalDuration} min`);
       
-      // Exibir o grupo no mapa
+      this.totalDuration = totalDuration; // Armazena a duração total no estado
+      this.totalDistance = totalDistance; // Armazena a distância total no estado
+      this.routeCalculated = true; // Habilita o botão "Iniciar Viagem"
+  
       this.map.addObject(group);
       this.map.getViewModel().setLookAtData({ bounds: group.getBoundingBox() });
+      return{
+      combinedRoute, orderedAddresses
+    }
     } catch (error) {
       console.error('Erro ao geocodificar endereços:', error);
     }
@@ -223,6 +310,7 @@ export default function maps() {
       this.map.addObject(this.van);
       console.log("Van readicionada");
     }
+    
   }
 
   async function calculateSegmentRoute(start, end, routingParameters, group) {
@@ -232,10 +320,21 @@ export default function maps() {
         origin: `${start.lat},${start.lng}`,
         destination: `${end.lat},${end.lng}`
       };
-
+      
       const router = this.platform.getRoutingService(null, 8);
       router.calculateRoute(segmentParams, (result) => {
         if (result.routes.length) {
+          const route = result.routes[0];
+          const section = route.sections[0];
+          
+          // Extract turn-by-turn instructions
+          const turnInstructions = section.actions.map(action => ({
+            instruction: action.instruction,
+                type: action.type,
+                distance: action.distance,
+                duration: action.duration
+          }));
+
           const lineString = H.geo.LineString.fromFlexiblePolyline(result.routes[0].sections[0].polyline);
 
           // Rota com fundo azul
@@ -262,7 +361,16 @@ export default function maps() {
 
           // Adicionar a rota segmentada ao grupo
           group.addObjects([routeBackground, routeArrows]);
-          resolve();
+          resolve({
+            lineString,
+            turnInstructions,
+            summary: route.sections[0].summary
+          });
+          this.turnInstructions = turnInstructions.map((step) => ({
+            instruction: step.instruction,
+            distance: step.distance,
+            duration: step.duration
+          }));
         } else {
           reject(new Error("Nenhuma rota encontrada entre os pontos"));
         }
@@ -273,5 +381,5 @@ export default function maps() {
     });
   }
 
-  return {initMapPlatform, geocodeAddress, addWaypoint, removeWaypoint, updateRoute, calculateSegmentRoute};
+  return {initMapPlatform, geocodeAddress, addWaypoint, removeWaypoint, updateRoute, calculateSegmentRoute, reverseGeocode, getCurrentLocation};
 }
