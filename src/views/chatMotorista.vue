@@ -1,7 +1,6 @@
 <template>
   <div class="chat-container">
     <header class="chat-header">
-      <h1 class="chat-title">Chat do Motorista</h1>
     </header>
 
     <div class="chat-messages">

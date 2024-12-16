@@ -81,7 +81,7 @@ const handleLoginSubmit = async () => {
           break;
         case 'passageiro':
           console.log('Logged in as passenger');
-          await router.push({ name: 'PerfilUsuario' });
+          await router.push({ name: 'Home' });
           break;
         case 'desconhecido':
           console.log('Tipo de usuário desconhecido.');
