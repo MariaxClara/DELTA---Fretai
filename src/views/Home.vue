@@ -223,3 +223,9 @@ async function cancelRace() {
 </script>
 
 <style src="../assets/css/home.css"></style>
+ 
+<script>
+  export default {
+    name: "Home",
+  };
+</script>
