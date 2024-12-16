@@ -32,6 +32,7 @@
         "../*",
         "../*"
       ],
+
       "nitropack/types": [
         "../node_modules/nitropack/types"
       ],
@@ -65,6 +66,7 @@
       "nuxt": [
         "../node_modules/nuxt"
       ],
+
       "~": [
         "./.."
       ],
@@ -92,6 +94,7 @@
       "public/*": [
         "../public/*"
       ],
+
       "#build": [
         "./"
       ],

@@ -10,6 +10,7 @@ import PerfilMotorista from '../views/PerfilMotorista.vue'
 import PerfilUsuario from '../views/perfilUsuario.vue'
 import RegisterUserDriver from '../views/registerUserDriver.vue'
 import TrocaSenha from '../views/trocaSenha.vue'
+
 import ChatMotorista from '../views/chatMotorista.vue';
 import ChatPassageiro from '../views/chatPassageiro.vue';
 import Corridas from '../views/Corridas.vue'
