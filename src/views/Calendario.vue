@@ -102,40 +102,27 @@ onMounted(() => {
 });
 
 function dayChoice(day, month, year) {
-        if (!day.active){
-            console.log("aeiou");
-            return;
+    const date = new Date(year, month, day.date);
+    const isWeekend = date.getDay() === 0 || date.getDay() === 6; // 0 = Domingo, 6 = Sábado
+
+    if (!day.active) {
+        if (isWeekend) {
+            alert('O motorista não trabalha em finais de semana.');
+        } else {
+            alert('Você não pode votar em viagens passadas.');
         }
-        console.log(month);
-        router.push({
-            path: '/dia',
-            query: { day: day.date, month: month, year: year, flag: 1 }
-          });
+        return;
     }
+
+    router.push({
+        path: '/dia',
+        query: { day: day.date, month: month, year: year, flag: 1 }
+    });
+}
 </script>
 
 
 <style scoped>
   @import "../assets/css/calendario.css";
 
-  /* .green {
-    background-color: green;
-  }
-
-  .half-green-red {
-    background: linear-gradient(to bottom, green 50%, red 50%);
-  }
-
-  .half-red-green {
-    background: linear-gradient(to bottom, red 50%, green 50%);
-  }
-
-  .red {
-    background-color: red;
-  }
-
-  .inactive {
-    background-color: #f0f0f0;
-    color: #ccc;
-  } */
 </style>

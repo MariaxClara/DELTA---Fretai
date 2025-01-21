@@ -37,6 +37,8 @@ export default function maps() {
         // Current month days
         for (let i = 1; i <= lastDateOfMonth; i++) {
             console.log(`Checking day ${i} of month ${currentMonthW + 1} of year ${currentYearW}`);
+            const date = new Date(currentYearW, currentMonthW, i);
+            const isWeekend = date.getDay() === 0 || date.getDay() === 6;
             const isPastDay =
                 new Date(currentYearW, currentMonthW, i) <
                 new Date(currentYear, currentMonth, currentDay);
@@ -65,10 +67,11 @@ export default function maps() {
 
             days.push({
                 date: i,
-                active: !isPastDay,
+                active: !isPastDay && !isWeekend,
                 key: `current-${i}`,
-                color: isPastDay ? 'inactive' : choice,
-                isToday
+                color: (isPastDay || isWeekend) ? 'inactive' : choice,
+                isToday,
+                isWeekend
             });
         }
 
