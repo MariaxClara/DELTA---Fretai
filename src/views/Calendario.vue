@@ -111,7 +111,7 @@ function dayChoice(day, month, year) {
 <style scoped>
   @import "../assets/css/calendario.css";
 
-  .green {
+  /* .green {
     background-color: green;
   }
 
@@ -130,5 +130,5 @@ function dayChoice(day, month, year) {
   .inactive {
     background-color: #f0f0f0;
     color: #ccc;
-  }
+  } */
 </style>

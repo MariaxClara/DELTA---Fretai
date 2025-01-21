@@ -47,13 +47,15 @@ export default function maps() {
             // Get saved data for this day if it exists
             const key = getCalendarKey(currentYearW, currentMonthW, i);
             const savedData = calendarData.get(key) || localData.find(item => item.dia === i && item.mes === currentMonthW + 1 && item.ano === currentYearW);
+            console.log(savedData);
 
             let color = 'default'; // Default para dia sem seleção
             if (savedData) {
-                if (savedData.ida && savedData.volta) color = 'green';
-                else if (savedData.ida) color = 'half-green-red';
-                else if (savedData.volta) color = 'half-red-green';
-                else color = 'red';
+                console.log("new\n");
+                if (savedData.ida && savedData.volta) color = 'dupla';
+                else if (savedData.ida) color = 'ida';
+                else if (savedData.volta) color = 'volta';
+                else color = 'nada';
             }
 
             if (color !== 'default' && color !== 'inactive' && savedData) {
@@ -80,21 +82,21 @@ export default function maps() {
             });
         }
 
-        localData.forEach(item => {
-            let color = 'default'; // Default para dia sem seleção
-            if (item.ida && item.volta) color = 'green';
-            else if (item.ida) color = 'half-green-red';
-            else if (item.volta) color = 'half-red-green';
-            else color = 'red';
+        // localData.forEach(item => {
+        //     let color = 'default'; // Default para dia sem seleção
+        //     if (item.ida && item.volta) color = 'dupla';
+        //     else if (item.ida) color = 'ida';
+        //     else if (item.volta) color = 'volta';
+        //     else color = 'nada';
 
-            days.push({
-                date: item.dia,
-                active: true,
-                key: `current-${item.dia}`,
-                color: color,
-            });
-            console.log(`Day: ${item.dia}, Color: ${color}`); // Log the color for relevant days
-        });
+        //     days.push({
+        //         date: item.dia,
+        //         active: true,
+        //         key: `current-${item.dia}`,
+        //         color: color,
+        //     });
+        //     console.log(`Day: ${item.dia}, Color: ${color}`); // Log the color for relevant days
+        // });
 
         return { currentDate, days };
     }
