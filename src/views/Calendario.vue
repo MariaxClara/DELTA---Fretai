@@ -64,7 +64,7 @@ const { updateCalendar, goToPreviousMonth, goToNextMonth } = maps();
 const { localData } = useTransportOptions();
 
 // Variáveis reativas
-import { ref, onMounted } from 'vue';
+import { ref, onMounted, watch } from 'vue';
 
 const currentDate = ref('');
 const currentMonth = ref(new Date().getMonth());
@@ -89,9 +89,16 @@ const goToNextMonthWrapper = () => {
   updateCalendarWrapper();
 };
 
-// Lifecycle: executa quando o componente é montado
+// Observa mudanças no localData
+watch(localData, (newValue) => {
+    console.log('LocalData changed:', newValue);
+    updateCalendarWrapper();
+}, { deep: true });
+
+// Atualiza quando o componente é montado
 onMounted(() => {
-  updateCalendarWrapper();
+    console.log('Calendar mounted with localData:', localData.value);
+    updateCalendarWrapper();
 });
 
 function dayChoice(day, month, year) {

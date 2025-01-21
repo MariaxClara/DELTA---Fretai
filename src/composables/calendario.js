@@ -36,6 +36,7 @@ export default function maps() {
 
         // Current month days
         for (let i = 1; i <= lastDateOfMonth; i++) {
+            console.log(`Checking day ${i} of month ${currentMonthW + 1} of year ${currentYearW}`);
             const isPastDay =
                 new Date(currentYearW, currentMonthW, i) <
                 new Date(currentYear, currentMonth, currentDay);
@@ -44,30 +45,30 @@ export default function maps() {
                 currentMonthW === currentMonth &&
                 currentYearW === currentYear;
 
-            // Get saved data for this day if it exists
-            const key = getCalendarKey(currentYearW, currentMonthW, i);
-            const savedData = calendarData.get(key) || localData.find(item => item.dia === i && item.mes === currentMonthW + 1 && item.ano === currentYearW);
-            console.log(savedData);
+            // Find if this day has a saved vote
+            const savedDay = localData.find(item => 
+                parseInt(item.dia) === i && 
+                item.mes === currentMonthW + 1 && 
+                parseInt(item.ano) === currentYearW
+            );
+            console.log(savedDay);
+            
 
-            let color = 'default'; // Default para dia sem seleção
-            if (savedData) {
-                console.log("new\n");
-                if (savedData.ida && savedData.volta) color = 'dupla';
-                else if (savedData.ida) color = 'ida';
-                else if (savedData.volta) color = 'volta';
-                else color = 'nada';
-            }
-
-            if (color !== 'default' && color !== 'inactive' && savedData) {
-                console.log(`Day: ${i}, Color: ${color}, Saved Data: ${JSON.stringify(savedData)}`); // Log the color and saved data for relevant days
+            let choice = 'default';
+            if (savedDay) {
+                if (savedDay.ida && savedDay.volta) choice = 'dupla';
+                else if (savedDay.ida) choice = 'ida';
+                else if (savedDay.volta) choice = 'volta';
+                else choice = 'nada';
+                console.log(`Found vote for day ${i}: ${choice}`);
             }
 
             days.push({
                 date: i,
                 active: !isPastDay,
                 key: `current-${i}`,
-                color: isPastDay ? 'inactive' : color,
-                isToday,
+                color: isPastDay ? 'inactive' : choice,
+                isToday
             });
         }
 
@@ -81,7 +82,9 @@ export default function maps() {
                 color: 'inactive',
             });
         }
-
+        
+        // Preencher os dias do mês atual com cores aleatórias
+       
         // localData.forEach(item => {
         //     let color = 'default'; // Default para dia sem seleção
         //     if (item.ida && item.volta) color = 'dupla';

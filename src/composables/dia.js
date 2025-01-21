@@ -46,10 +46,7 @@ export function useTransportOptions() {
     }
 
     try {
-      // Atualiza o calendário em memória
-      calendar.updateDayStatus(ano, mes, dia, ida, volta);
-      
-      // Salva os dados localmente
+      // Salva os dados localmente primeiro
       const existingIndex = localData.value.findIndex(item => item.dia === dia && item.mes === mes && item.ano === ano);
       if (existingIndex !== -1) {
         localData.value[existingIndex] = { dia, mes, ano, rota, user, ida, volta };
@@ -57,11 +54,13 @@ export function useTransportOptions() {
         localData.value.push({ dia, mes, ano, rota, user, ida, volta });
       }
       
-      // Imprime o vetor no console
-      console.log('Local Data:', localData.value);
+      // Força atualização do calendário com os novos dados
+      calendar.updateCalendar(mes - 1, ano, localData.value);
       
-      // Envia para o backend (comentado)
-      // await addViagem(dia, mes, ano, rota, user, ida, volta);
+      // Atualiza o calendário em memória
+      calendar.updateDayStatus(ano, mes, dia, ida, volta);
+      
+      console.log('Local Data após atualização:', localData.value);
       
       // Navega de volta para o calendário
       router.push({ name: 'Calendario' });
