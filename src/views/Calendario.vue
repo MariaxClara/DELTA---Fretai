@@ -57,9 +57,11 @@
 <script setup>
 import maps from "../composables/calendario.js";
 import { useRoute, useRouter } from 'vue-router';
+import { useTransportOptions } from '../composables/dia';
 
 // Importa as funções do composable
 const { updateCalendar, goToPreviousMonth, goToNextMonth } = maps();
+const { localData } = useTransportOptions();
 
 // Variáveis reativas
 import { ref, onMounted } from 'vue';
@@ -73,8 +75,8 @@ const router = useRouter();
 
 // Métodos para manipulação do calendário
 const updateCalendarWrapper = () => {
-  ({ currentDate: currentDate.value, days: days.value } = updateCalendar(currentMonth.value, currentYear.value));
-
+  ({ currentDate: currentDate.value, days: days.value } = updateCalendar(currentMonth.value, currentYear.value, localData.value));
+  console.log('Updated Calendar Days:', days.value.filter(day => day.color !== 'default' && day.color !== 'inactive')); // Log the updated days array
 };
 
 const goToPreviousMonthWrapper = () => {
@@ -109,4 +111,24 @@ function dayChoice(day, month, year) {
 <style scoped>
   @import "../assets/css/calendario.css";
 
+  .green {
+    background-color: green;
+  }
+
+  .half-green-red {
+    background: linear-gradient(to bottom, green 50%, red 50%);
+  }
+
+  .half-red-green {
+    background: linear-gradient(to bottom, red 50%, green 50%);
+  }
+
+  .red {
+    background-color: red;
+  }
+
+  .inactive {
+    background-color: #f0f0f0;
+    color: #ccc;
+  }
 </style>
