@@ -8,7 +8,7 @@
 
     <!-- Botões -->
     <div class="participantes">
-      <button class="botao">
+      <button class="botao" @click="PassangerProfile">
         <i class="icon-user"></i>
         <img src="/images/van.svg" alt="" />
         Perfil
@@ -90,6 +90,8 @@
 
 <script setup>
 import { ref } from "vue";
+import { useRouter } from 'vue-router';
+
 // import "../assets/css/cssCorridas.css";
 
 const { VITE_BASE_URL_BACKEND } = import.meta.env;
@@ -105,11 +107,17 @@ const selectedRaceIndex = ref(null); // Para armazenar a corrida selecionada
 
 popupType.value = 0; // Define o tipo do pop-up
 
+const router = useRouter();
+
+async function PassangerProfile(){
+    await router.push({name: 'passageiro'});
+}
+
 // Função para buscar as informações da corrida
 async function fetchRaceInfo() {
     isLoading.value = true; // Ativa o carregamento
     try {
-        const response = await fetch(`${VITE_BASE_URL_BACKEND}/getRaceInfo/${email.value}`, {
+        const response = await fetch(`${VITE_BASE_URL_BACKEND}/getRaceInfo/${email}`, {
             method: 'GET',
         });
 
@@ -182,6 +190,8 @@ function closePopup() {
     popupType.value = null; // Reseta o tipo do pop-up
     selectedRaceIndex.value = null; // Reseta o índice selecionado
 }
+
+
 
 // Cancelar corrida selecionada
 async function cancelRace() {

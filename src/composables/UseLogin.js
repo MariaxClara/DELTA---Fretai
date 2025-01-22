@@ -5,11 +5,16 @@ export default function useLogin() {
     email: '',
     password: '',
   });
-  const {VITE_BASE_URL_BACKEND} = import.meta.env 
+  const { VITE_BASE_URL_BACKEND } = import.meta.env;
 
   const showPasswordReset = ref(false);
   const userType = ref('');
   const errorMessage = ref('');
+
+  // Função para salvar cookies
+  const setCookie = (name, value) => {
+    document.cookie = `${name}=${encodeURIComponent(value)}; path=/`;
+  };
 
   const handleSubmit = async () => {
     try {
@@ -21,20 +26,29 @@ export default function useLogin() {
         body: JSON.stringify({
           email: formData.value.email,
           password: formData.value.password,
+          id: formData.value.user_id,
         }),
       });
-  
+
       const data = await response.json();
-  
+
       if (data.status === 'success') {
         console.log('Login bem-sucedido:', data.user);
-  
+
+        // Salva o userId e o email nos cookies
+        if (data.user.user_id) {
+          setCookie('userId', data.user.user_id);
+        }
+        if (data.user.email) {
+          setCookie('userEmail', data.user.email);
+        }
+
         // Verifica se é o primeiro login
         if (data.user.primeiro_login) {
           alert('Você precisa alterar sua senha');
           showPasswordReset.value = true; // Exibe o pop-up para alteração de senha
         }
-  
+
         return data.user;
       } else {
         errorMessage.value = 'Credenciais inválidas';
@@ -47,27 +61,30 @@ export default function useLogin() {
       return null;
     }
   };
-  
+
   const loginAndDetermineUserType = async () => {
     const user = await handleSubmit();
     if (user && user.user_id) {
       try {
-        const response = await fetch(`http://localhost:3000/user-type?user_id=${encodeURIComponent(user.user_id)}`, {
-          method: 'GET',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-        });
-  
+        const response = await fetch(
+          `http://localhost:3000/user-type?user_id=${encodeURIComponent(user.user_id)}`,
+          {
+            method: 'GET',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+          }
+        );
+
         if (!response.ok) {
           throw new Error(`Erro na resposta do servidor: ${response.statusText}`);
         }
-  
+
         const data = await response.json();
-  
+
         // Ajuste para lidar com 0 e 1 retornados pelo backend
-        userType.value = data.userType
-  
+        userType.value = data.userType;
+
         return userType.value;
       } catch (error) {
         console.error('Erro ao determinar tipo de usuário:', error);
@@ -78,14 +95,10 @@ export default function useLogin() {
       return 'desconhecido';
     }
   };
-  
 
-  
-
-  
   const handlePasswordReset = async () => {
     alert('Senha alterada com sucesso');
-    console.log("Senha alterada com sucesso");
+    console.log('Senha alterada com sucesso');
     showPasswordReset.value = false; // Fecha o pop-up
   };
 
