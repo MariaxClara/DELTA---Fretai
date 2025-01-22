@@ -117,8 +117,12 @@ function dayChoice(day, month, year) {
     const isWeekend = date.getDay() === 0 || date.getDay() === 6; // 0 = Domingo, 6 = Sábado
 
     if (!day.active) {
-        if (isWeekend) {
+        if (day.holiday) {
+            alert(`O motorista não trabalha em feriados: ${day.holiday}`);
+        } else if (day.isWeekend) {
             alert('O motorista não trabalha em finais de semana.');
+        } else if (day.key.startsWith('prev') || day.key.startsWith('next')) {
+            alert('Este dia está bloqueado porque não pertence ao mês atual.');
         } else {
             alert('Você não pode votar em viagens passadas.');
         }
