@@ -46,6 +46,7 @@
   import { ref } from 'vue';
   import { useRouter } from 'vue-router';
   import '../assets/css/cssPerfilMotorista.css';
+  const {VITE_BASE_URL_BACKEND} = import.meta.env 
   
   const email = ref('');
   const passengerInfo = ref(null);
@@ -54,7 +55,7 @@
   
   async function fetchPassengerInfo() {
     try {
-      const response = await fetch(`/api/passengerInfo?email=${email.value}`);
+      const response = await fetch(`${VITE_BASE_URL_BACKEND}/driverInfo/${email.value}`);
       const data = await response.json();
   
       if (data.statusCode !== 200) {
