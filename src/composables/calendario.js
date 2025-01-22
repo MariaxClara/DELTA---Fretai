@@ -6,6 +6,16 @@ export default function maps() {
         return `${year}-${month}-${day}`;
     }
 
+    function isMonthAllowed(targetMonth, targetYear) {
+        const today = new Date();
+        const currentMonth = today.getMonth();
+        const currentYear = today.getFullYear();
+
+        // Calculate months difference
+        const monthsDiff = (targetYear - currentYear) * 12 + (targetMonth - currentMonth);
+        return monthsDiff <= 2;
+    }
+
     function updateCalendar(currentMonthW, currentYearW, localData) {
         const firstDayOfMonth = new Date(currentYearW, currentMonthW, 1).getDay();
         const lastDateOfMonth = new Date(currentYearW, currentMonthW + 1, 0).getDate();
@@ -54,7 +64,6 @@ export default function maps() {
                 parseInt(item.ano) === currentYearW
             );
             console.log(savedDay);
-            
 
             let choice = 'default';
             if (savedDay) {
@@ -85,24 +94,6 @@ export default function maps() {
                 color: 'inactive',
             });
         }
-        
-        // Preencher os dias do mês atual com cores aleatórias
-       
-        // localData.forEach(item => {
-        //     let color = 'default'; // Default para dia sem seleção
-        //     if (item.ida && item.volta) color = 'dupla';
-        //     else if (item.ida) color = 'ida';
-        //     else if (item.volta) color = 'volta';
-        //     else color = 'nada';
-
-        //     days.push({
-        //         date: item.dia,
-        //         active: true,
-        //         key: `current-${item.dia}`,
-        //         color: color,
-        //     });
-        //     console.log(`Day: ${item.dia}, Color: ${color}`); // Log the color for relevant days
-        // });
 
         return { currentDate, days };
     }
@@ -130,13 +121,15 @@ export default function maps() {
     }
 
     function goToNextMonth(currentMonthW, currentYearW) {
-        if (currentMonthW === 11) {
-            currentMonthW = 0;
-            currentYearW += 1;
-        } else {
-            currentMonthW += 1;
+        let nextMonth = currentMonthW === 11 ? 0 : currentMonthW + 1;
+        let nextYear = currentMonthW === 11 ? currentYearW + 1 : currentYearW;
+
+        if (!isMonthAllowed(nextMonth, nextYear)) {
+            alert('Não é possível visualizar mais de dois meses à frente.');
+            return { currentMonthW, currentYearW };
         }
-        return { currentMonthW, currentYearW };
+
+        return { currentMonthW: nextMonth, currentYearW: nextYear };
     }
 
     return {
@@ -145,5 +138,6 @@ export default function maps() {
         goToNextMonth,
         updateDayStatus,
         getDayStatus,
+        isMonthAllowed
     };
 }
