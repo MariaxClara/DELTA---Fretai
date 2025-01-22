@@ -46,11 +46,7 @@
   </div>
 </template>
 
-<!-- <script>
-  export default{
-    name: 'Login',
-  }
-</script> -->
+
 
 <script setup>
 import { ref } from 'vue';
@@ -81,7 +77,7 @@ const handleLoginSubmit = async () => {
           break;
         case 'passageiro':
           console.log('Logged in as passenger');
-          await router.push({ name: 'Home' });
+          await router.push({ name: 'PerfilUsuario' });
           break;
         case 'desconhecido':
           console.log('Tipo de usuário desconhecido.');
@@ -115,8 +111,6 @@ const onPasswordChanged = () => {
   margin-top: 1rem;
   text-align: center;
   color: #28a745;
-  color: #000
-  
 }
 
 .forgot-password-btn {
