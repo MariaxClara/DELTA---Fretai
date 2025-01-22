@@ -35,11 +35,11 @@
   </div>
 </template>
 
-<script>
+<!-- <script>
   export default{
     name: 'TrocaSenha',
   }
-</script>
+</script> -->
 
 <script setup>
 import { ref } from 'vue';
@@ -61,7 +61,7 @@ async function submitForm() {
   }
 
   try {
-    const response = await fetch('/api/trocaSenha', {
+    const response = await fetch('http://localhost:3000/changePassword', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ email: email.value, newPassword: novaSenha.value }), // Corrigido aqui
