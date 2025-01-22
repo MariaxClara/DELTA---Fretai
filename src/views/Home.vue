@@ -30,29 +30,8 @@
           <h2>Informações da Corrida:</h2>
           <div v-for="(corrida, index) in corridaInfo" :key="index" class="corrida-detalhes">
               <p><strong>Motorista:</strong> {{ corrida.motorista_nome }}</p>
-              <p><strong>Telefone Motorista:</strong> {{ corrida.motorista_telefone }}</p>
-              <!-- <p><strong>Passageiro:</strong> {{ corrida.passageiro_nome }}</p> -->
-              <!-- <p><strong>Telefone Passageiro:</strong> {{ corrida.passageiro_telefone }}</p> -->
-              <p><strong>Destino:</strong> {{ corrida.destino }}</p>
-              <p><strong>Horário:</strong> {{ corrida.horario }}</p>
-              <p><strong>Dia da Semana:</strong> {{ corrida.dia_da_semana }}</p>
-              <p><strong>Status corrida:</strong> {{ corrida.status_corrida }}</p>
-              <p><strong>Id rota:</strong> {{ corrida.rota_id }}</p>
 
-              <!-- Mostrar mensagem se a corrida foi cancelada -->
-              <p v-if="corrida.isCanceled" class="cancelado-msg">
-                  <strong>Status:</strong> Corrida cancelada.
-              </p>
 
-              <!-- Mostrar botão apenas se a corrida não estiver cancelada -->
-              <button
-                  v-else
-                  type="button"
-                  class="cancelar-btn"
-                  @click="showPopupWithType(index, corrida.status_corrida)"
-              >
-                  Cancelar corrida
-              </button>
               <hr />
           </div>
       </div>
@@ -95,7 +74,8 @@ import { ref } from "vue";
 const { VITE_BASE_URL_BACKEND } = import.meta.env;
 
 // Dados reativos
-const email = ref("passageiro1@example.com");
+const email = ref("passageiro2@example.com");
+const user_id = ref(null);
 const corridaInfo = ref(null);
 const error = ref(null);
 const isLoading = ref(false);
@@ -109,7 +89,7 @@ popupType.value = 0; // Define o tipo do pop-up
 async function fetchRaceInfo() {
     isLoading.value = true; // Ativa o carregamento
     try {
-        const response = await fetch(`${VITE_BASE_URL_BACKEND}/getRaceInfo/${email.value}`, {
+        const response = await fetch(`${VITE_BASE_URL_BACKEND}/getDrivers/${email.value}`, {
             method: 'GET',
         });
 
@@ -117,7 +97,7 @@ async function fetchRaceInfo() {
 
         // Verifica se a resposta foi bem-sucedida
         if (!response.ok) {
-            throw new Error(`Erro HTTP ao buscar informações da corrida. Status: ${response.status}`);
+            throw new Error(`Erro HTTP ao buscar informações dos motoristas. Status: ${response.status}`);
         }
 
         // Verifica se o conteúdo retornado é JSON
@@ -139,24 +119,8 @@ async function fetchRaceInfo() {
 
         // Processa as informações da corrida
         corridaInfo.value = data.raceInfo.map((item) => ({
-            motorista_nome: item.motorista_nome,
-            motorista_telefone: item.motorista_telefone,
-            passageiro_nome: item.passageiro_nome,
-            passageiro_telefone: item.passageiro_telefone,
-            destino: item.destino,
-            horario: item.horario,
-            dia_da_semana: item.dia_da_semana,
-            rota_id: item.rota_id,
-            status_corrida: item.status_corrida,
-            passageiro_id: item.passageiro_id,
-            user_id: item.user_id,
-            isCanceled: false, // Define inicialmente como não cancelada
+            motorista_nome: item.motorista_nome
         }));
-
-        // Filtra as corridas com status cancelado
-        corridaInfo.value = corridaInfo.value.filter(
-            (corrida) => corrida.status_corrida !== -1
-        );
 
         error.value = null; // Limpa qualquer erro anterior
     } catch (err) {

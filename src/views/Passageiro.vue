@@ -63,7 +63,12 @@
         return;
       }
   
-      if (data.body.length > 0) {
+      console.log('aaaa');
+      console.log(data);
+      console.log(data.body.length);
+      console.log
+
+      // if (data.body.length > 0) {
         const firstPassenger = data.body[0];
         passengerInfo.value = {
           passageiro_nome: firstPassenger.passageiro_nome,
@@ -74,9 +79,11 @@
             motorista_telefone: item.motorista_telefone,
           })),
         };
-      } else {
-        passengerInfo.value = null;
-      }
+
+        console.log("data.body.length > 0");
+      // } else {
+      //   passengerInfo.value = null;
+      // }
       error.value = null;
     } catch (err) {
       error.value = err.message;
