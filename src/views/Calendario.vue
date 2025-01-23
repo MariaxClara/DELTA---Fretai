@@ -32,7 +32,7 @@
         <li v-for="day in weekDays" :key="day">{{ day }}</li>
       </ul>
       <ul class="days">
-        <button v-for="day in days" :key="day.key" :class="day.color" @click="dayChoice(day, currentMonth, currentYear)">
+        <button v-for="day in days" :key="day.key" :class="[day.color, { 'other-month': day.key.startsWith('prev') || day.key.startsWith('next'), 'inactive': day.isPastDay || day.isWeekend }]" @click="dayChoice(day, currentMonth, currentYear)">
           {{ day.date }}
         </button>
       </ul>
