@@ -78,9 +78,10 @@ export default function maps() {
                 date: i,
                 active: !isPastDay && !isWeekend,
                 key: `current-${i}`,
-                color: (isPastDay || isWeekend) ? 'inactive' : choice,
+                color: isPastDay ? 'inactive' : (isWeekend ? 'weekend' : choice),
                 isToday,
-                isWeekend
+                isWeekend,
+                choice
             });
         }
 
