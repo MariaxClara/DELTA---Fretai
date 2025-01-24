@@ -74,15 +74,42 @@ export default function maps() {
                 console.log(`Found vote for day ${i}: ${choice}`);
             }
 
+            let color;
+            if (isPastDay) {
+                if (savedDay) {
+                    if (savedDay.ida && savedDay.volta) {
+                        color = 'dark-dupla';
+                    } else if (savedDay.ida) {
+                        color = 'dark-ida';
+                    } else if (savedDay.volta) {
+                        color = 'dark-volta';
+                    } else {
+                        color = 'dark-nada';
+                    }
+                } else {
+                    color = 'inactive';
+                }
+            } else {
+                color = isWeekend ? 'weekend' : choice;
+            }
             days.push({
                 date: i,
                 active: !isPastDay && !isWeekend,
                 key: `current-${i}`,
-                color: isPastDay ? 'inactive' : (isWeekend ? 'weekend' : choice),
+                color,
                 isToday,
                 isWeekend,
                 choice
             });
+            // days.push({
+            //     date: i,
+            //     active: !isPastDay && !isWeekend,
+            //     key: `current-${i}`,
+            //     color: isPastDay ? 'inactive' : (isWeekend ? 'weekend' : choice),
+            //     isToday,
+            //     isWeekend,
+            //     choice
+            // });
         }
 
         // Next month days
@@ -92,7 +119,7 @@ export default function maps() {
                 date: i,
                 active: false,
                 key: `next-${i}`,
-                color: 'inactive',
+                color: 'inactive',  
             });
         }
 

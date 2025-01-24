@@ -140,12 +140,15 @@
   margin: 5px;
   border-radius: 5px;
   text-align: center;
-  color: black;
+  color: black; /* Ensure all numbers have black color */
 }
 
 .days button.inactive {
-  color: #fff;
-  background: #b0b0b0; /* Darker gray for past days and weekends */
+  background: #b0b0b0; /* Darker gray for past days */
+}
+
+.days button.weekend {
+  background: #808080; /* Even darker gray for weekends */
 }
 
 .days button.ida {
@@ -170,5 +173,17 @@
 
 .days button.other-month {
   background: #ccc; /* Lighter gray for days of other months */
-  color: #aaa;
+  color: #aaa; /* Lighter color for numbers of other months */
+}
+
+.days button.dark-ida {
+  background: linear-gradient(to bottom, darkgreen 49.9%, darkred 50%) !important;
+}
+
+.days button.dark-volta {
+  background: linear-gradient(to bottom, darkred 49.9%, darkgreen 50%) !important;
+}
+
+.days button.dark-dupla {
+  background: darkgreen !important;
 }

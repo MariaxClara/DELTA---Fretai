@@ -1,9 +1,12 @@
 import { ref } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 import maps from './calendario'; // Importe o maps
-// const VITE_BASE_URL_BACKEND = import.meta.env.VITE_BASE_URL_BACKEND || 'http://localhost:3000'; // Fallback URL
 
-const localData = ref([]); // Local array to store data
+const localData = ref([
+  { dia: 20, mes: 1, ano: 2025, ida: true, volta: false },
+  { dia: 21, mes: 1, ano: 2025, ida: false, volta: true },
+  { dia: 22, mes: 1, ano: 2025, ida: true, volta: true }
+]);
 
 export function useTransportOptions() {
   const route = useRoute();
@@ -69,34 +72,6 @@ export function useTransportOptions() {
       alert('Erro ao salvar a seleção. Por favor, tente novamente.');
     }
   };
-
-  // async function addViagem(dia, mes, ano, rota, user, ida, volta) {
-  //   try {
-  //     const response = await fetch(`${VITE_BASE_URL_BACKEND}/setCalendario`, {
-  //       method: 'POST',
-  //       headers: { "Content-Type": "application/json" },
-  //       body: JSON.stringify({
-  //         user__id: user,
-  //         rotas_id: rota,
-  //         ida: ida,
-  //         volta: volta,
-  //         year: ano,
-  //         month: mes,
-  //         day: dia
-  //       }),
-  //     });
-
-  //     if (!response.ok) {
-  //       throw new Error('Erro ao salvar no servidor');
-  //     }
-
-  //     console.log("Banco atualizado");
-  //     return response;
-  //   } catch (error) {
-  //     console.error(error);
-  //     throw error;
-  //   }
-  // }
 
   return {
     options,
