@@ -32,7 +32,7 @@
         <li v-for="day in weekDays" :key="day">{{ day }}</li>
       </ul>
       <ul class="days">
-        <button v-for="day in days" :key="day.key" :class="[day.color, { 'other-month': day.key.startsWith('prev') || day.key.startsWith('next'), 'inactive': day.isPastDay, 'weekend': day.isWeekend }]" @click="dayChoice(day, currentMonth, currentYear)">
+        <button v-for="day in days" :key="day.key" :class="[day.color, { 'other-month': day.key.startsWith('prev') || day.key.startsWith('next'), 'weekend': day.isWeekend }]" @click="dayChoice(day, currentMonth, currentYear)">
           {{ day.date }}
         </button>
       </ul>
@@ -72,10 +72,18 @@ const currentYear = ref(new Date().getFullYear());
 const weekDays = ['Dom', 'Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sab'];
 const days = ref([]);
 const router = useRouter();
+const route = useRoute();
+
+// Simulate user role (motorista or passageiro)
+const userRole = ref(route.query.role || 'motorista'); // Default to passageiro
 
 // Métodos para manipulação do calendário
 const updateCalendarWrapper = () => {
-  ({ currentDate: currentDate.value, days: days.value } = updateCalendar(currentMonth.value, currentYear.value, localData.value));
+  if (userRole.value === 'motorista') {
+    ({ currentDate: currentDate.value, days: days.value } = updateCalendar(currentMonth.value, currentYear.value, []));
+  } else {
+    ({ currentDate: currentDate.value, days: days.value } = updateCalendar(currentMonth.value, currentYear.value, localData.value));
+  }
   console.log('Updated Calendar Days:', days.value.filter(day => day.color !== 'default' && day.color !== 'inactive')); // Log the updated days array
 };
 
@@ -96,8 +104,10 @@ const goToNextMonthWrapper = () => {
 
 // Observa mudanças no localData
 watch(localData, (newValue) => {
-    console.log('LocalData changed:', newValue);
-    updateCalendarWrapper();
+    if (userRole.value !== 'motorista') {
+        console.log('LocalData changed:', newValue);
+        updateCalendarWrapper();
+    }
 }, { deep: true });
 
 // Atualiza quando o componente é montado
@@ -116,13 +126,24 @@ function dayChoice(day, month, year) {
     const date = new Date(year, month, day.date);
     const isWeekend = date.getDay() === 0 || date.getDay() === 6; // 0 = Domingo, 6 = Sábado
 
+    if (day.key.startsWith('prev') || day.key.startsWith('next')) {
+        alert('Por favor, acesse o mês correto para ver a lista desse dia.');
+        return;
+    }
+
+    if (userRole.value === 'motorista') {
+        router.push({
+            path: '/ListaVotacao',
+            query: { day: day.date, month: month, year: year }
+        });
+        return;
+    }
+
     if (!day.active) {
         if (day.holiday) {
             alert(`O motorista não trabalha em feriados: ${day.holiday}`);
         } else if (day.isWeekend) {
             alert('O motorista não trabalha em finais de semana.');
-        } else if (day.key.startsWith('prev') || day.key.startsWith('next')) {
-            alert('Este dia está bloqueado porque não pertence ao mês atual.');
         } else {
             alert('Você não pode votar em viagens passadas.');
         }

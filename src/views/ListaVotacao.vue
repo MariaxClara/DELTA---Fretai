@@ -18,7 +18,7 @@
             </button>
         </div>
         <div v-if="selectedOption">
-            <h3>Alunos que votaram para {{ selectedOption }}:</h3>
+            <h3>Alunos - {{ selectedOption }}:</h3>
             <ul>
                 <li v-for="student in filteredStudents" :key="student.id">{{ student.name }}</li>
             </ul>

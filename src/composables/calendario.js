@@ -75,7 +75,7 @@ export default function maps() {
             }
 
             let color;
-            if (isPastDay) {
+            if (isPastDay && localData.length > 0) {
                 if (savedDay) {
                     if (savedDay.ida && savedDay.volta) {
                         color = 'dark-dupla';
@@ -101,15 +101,6 @@ export default function maps() {
                 isWeekend,
                 choice
             });
-            // days.push({
-            //     date: i,
-            //     active: !isPastDay && !isWeekend,
-            //     key: `current-${i}`,
-            //     color: isPastDay ? 'inactive' : (isWeekend ? 'weekend' : choice),
-            //     isToday,
-            //     isWeekend,
-            //     choice
-            // });
         }
 
         // Next month days
