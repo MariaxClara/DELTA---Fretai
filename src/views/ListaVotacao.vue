@@ -9,24 +9,24 @@
             Transporte {{ dia }}/{{ mes }}
         </div>
         <div class="options">
-            <button v-for="option in options" 
-                :key="option" 
-                @click="selectOption(option)"
-                :class="{ selected: selectedOption === option }"
-            >
-                {{ option }}
-            </button>
-        </div>
-        <div v-if="selectedOption">
-            <h3>Alunos - {{ selectedOption }}:</h3>
-            <ul>
-                <li v-for="student in filteredStudents" :key="student.id">{{ student.name }}</li>
-            </ul>
-        </div>
-        <div>
-            <button class="confirm-button" @click="goBackToCalendar">
-                <router-link :to="{name: 'Calendario'}" class="mainLink">VOLTAR</router-link>
-            </button>
+            <div v-for="option in options" :key="option.id" class="option-container">
+                <button 
+                    @click="selectOption(option.id)"
+                    :class="{ selected: selectedOption === option.id }"
+                >
+                    {{ option.label }}
+                </button>
+                <div v-if="selectedOption === option.id" class="student-list">
+                    <ul>
+                        <li v-for="student in filteredStudents" :key="student.id">{{ student.name }}</li>
+                    </ul>
+                </div>
+            </div>
+            <div class="confirm-button-container">
+                <button class="confirm-button" @click="goBackToCalendar">
+                    <router-link :to="{name: 'Calendario'}" class="mainLink">VOLTAR</router-link>
+                </button>
+            </div>
         </div>
     </div>
 </template>
@@ -34,6 +34,7 @@
 <script setup>
     import { useRoute, useRouter } from 'vue-router';
     import { ref, computed } from 'vue';
+    import { horarios, alunos, getAlunosPorHorario } from '../composables/votacao.js';
 
     const route = useRoute();
     const router = useRouter();
@@ -41,35 +42,19 @@
     const mes = ref(Number(route.query.month) + 1 || 'uoiea');
     const ano = ref(route.query.year || 'aeiou');
 
-    const options = ['Ida 8h', 'Volta 17h30', 'Não vai em nenhum horário'];
+    const options = horarios;
     const selectedOption = ref('');
 
-    const students = ref([
-        { id: 1, name: 'Aluno 1', ida: 1, volta: 1 },
-        { id: 2, name: 'Aluno 2', ida: 1, volta: 0 },
-        { id: 3, name: 'Aluno 3', ida: 0, volta: 1 },
-        { id: 4, name: 'Aluno 4', ida: 0, volta: 0 },
-        // ... more students
-    ]);
-
-    const selectOption = (option) => {
-        if (selectedOption.value === option) {
+    const selectOption = (optionId) => {
+        if (selectedOption.value === optionId) {
             selectedOption.value = '';
         } else {
-            selectedOption.value = option;
+            selectedOption.value = optionId;
         }
     };
 
     const filteredStudents = computed(() => {
-        if (selectedOption.value === 'Ida 8h') {
-            return students.value.filter(student => student.ida === 1);
-        } else if (selectedOption.value === 'Volta 17h30') {
-            return students.value.filter(student => student.volta === 1);
-        } else if (selectedOption.value === 'Nenhum horário') {
-            return students.value.filter(student => student.ida === 0 && student.volta === 0);
-        } else {
-            return [];
-        }
+        return getAlunosPorHorario(selectedOption.value);
     });
 
     const goBackToCalendar = () => {
