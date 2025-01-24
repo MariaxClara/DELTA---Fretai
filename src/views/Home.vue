@@ -1,136 +1,116 @@
 <template>
-  <div class="tela-inicial">
-    <!-- Cabeçalho -->
-    <header class="header">
-      <img src="/images/iconeImage.png" alt="Logo" class="logo" />
-      <h1>FretAí</h1>
-    </header>
-
-    <!-- Botões -->
-    <div class="participantes">
-      <button class="botao">
-        <i class="icon-user"></i>
-        <img src="/images/van.svg" alt="" />
-        Perfil
-      </button>
-      <button class="botao" @click="fetchRaceInfo">
-        <img src="/images/UserCircle.svg" alt="" />
-        <i class="icon-bus"></i>
-        Motoristas
-      </button>
-    </div>
-  </div>
+    <div class="tela-inicial">
+      <!-- Cabeçalho -->
+      <header class="header">
+        <img src="/images/iconeImage.png" alt="Logo" class="logo" />
+        <h1>FretAí</h1>
+      </header>
   
-  <!-- Informações da Corrida -->
-  <div class="dados-container">
+      <!-- Botões -->
+      <div class="participantes">
+        <button class="botao">
+          <img src="/images/van.svg" alt="" />
+          Perfil
+        </button>
+        <button class="botao" @click="fetchRaceInfo">
+          <img src="/images/UserCircle.svg" alt="" />
+          Motoristas
+        </button>
+      </div>
+    </div>
+  
+    <!-- Informações da Corrida -->
+    <div class="dados-container">
       <!-- Mostrar carregando enquanto busca informações -->
       <p v-if="isLoading">Carregando informações...</p>
-
+  
+      <!-- Lista de corridas -->
       <div v-else-if="corridaInfo && corridaInfo.length > 0" class="dados">
-          <h2>Informações da Corrida:</h2>
-          <div v-for="(corrida, index) in corridaInfo" :key="index" class="corrida-detalhes">
-              <p><strong>Motorista:</strong> {{ corrida.motorista_nome }}</p>
-
-
-              <hr />
-          </div>
+        <h2>Informações da Corrida:</h2>
+        <div v-for="(corrida, index) in corridaInfo" :key="index" class="corrida-detalhes">
+          <button class="botao">
+            <img :src="driverImages[corrida.motorista_email] || '/images/user.png'" alt="Motorista" class="motorista-photo">
+            {{ corrida.motorista_nome }}
+          </button>
+          <hr />
+        </div>
       </div>
-
-      <!-- Caso nenhuma corrida seja encontrada -->
+  
+      <!-- Nenhuma corrida encontrada -->
       <div v-else-if="!isLoading && corridaInfo && corridaInfo.length === 0">
-          <p>Nenhuma corrida encontrada para o passageiro.</p>
+        <p>Nenhuma corrida encontrada para o passageiro.</p>
       </div>
-
-      <!-- Exibição de erros -->
+  
+      <!-- Erro -->
       <p v-else-if="error" class="error">{{ error }}</p>
-  </div>
-
-  <!-- Pop-ups dinâmicos -->
-  <div v-if="showPopup" class="popup-overlay" @click.self="closePopup">
-      <div class="popup">
-          <template v-if="popupType === 0">
-              <h2>Cancelar Corrida</h2>
-              <p>Tem certeza que deseja cancelar a corrida?</p>
-              <button @click="cancelRace" class="confirmar-btn">Sim</button>
-              <button @click="closePopup" class="fechar-btn">Não</button>
-          </template>
-          <template v-else-if="popupType === 1">
-              <h2>Aviso</h2>
-              <p>Não é possível cancelar a corrida. A viagem já foi iniciada pelo motorista.</p>
-          </template>
-          <template v-else-if="popupType === 2">
-              <h2>Aviso</h2>
-              <p>Essa corrida já foi finalizada!</p>
-          </template>
-      </div>
-  </div>
-
-</template>
-
-<script setup>
-import { ref } from "vue";
-// import "../assets/css/cssCorridas.css";
-
-const { VITE_BASE_URL_BACKEND } = import.meta.env;
-
-// Dados reativos
-const email = ref("passageiro2@example.com");
-const user_id = ref(null);
-const corridaInfo = ref(null);
-const error = ref(null);
-const isLoading = ref(false);
-const showPopup = ref(false);
-const popupType = ref(null); 
-const selectedRaceIndex = ref(null); // Para armazenar a corrida selecionada
-
-popupType.value = 0; // Define o tipo do pop-up
-
-// Função para buscar as informações da corrida
-async function fetchRaceInfo() {
-    isLoading.value = true; // Ativa o carregamento
+    </div>
+  </template>
+  
+  <script setup>
+  import { ref } from "vue";
+  
+  const { VITE_BASE_URL_BACKEND } = import.meta.env;
+  
+  // Variáveis reativas
+  const email = ref("passageiro2@example.com"); // Substituir para uso com cookies
+  const corridaInfo = ref([]);
+  const driverImages = ref({});
+  const error = ref(null);
+  const isLoading = ref(false);
+  
+  // Função para buscar informações das corridas
+  async function fetchRaceInfo() {
+    isLoading.value = true;
     try {
-        const response = await fetch(`${VITE_BASE_URL_BACKEND}/getDrivers/${email.value}`, {
-            method: 'GET',
-        });
-
-        console.log("Resposta HTTP completa:", response);
-
-        // Verifica se a resposta foi bem-sucedida
-        if (!response.ok) {
-            throw new Error(`Erro HTTP ao buscar informações dos motoristas. Status: ${response.status}`);
-        }
-
-        // Verifica se o conteúdo retornado é JSON
-        const contentType = response.headers.get("content-type");
-        if (!contentType || !contentType.includes("application/json")) {
-            const textResponse = await response.text();
-            console.error("Resposta inesperada do servidor (não JSON):", textResponse);
-            throw new Error("Resposta inesperada do servidor. Esperado JSON.");
-        }
-
-        // Processa o corpo da resposta como JSON
-        const data = await response.json();
-        console.log("Resposta completa do servidor (JSON):", data);
-
-        // Valida o formato da resposta JSON
-        if (!data || !data.raceInfo || !Array.isArray(data.raceInfo)) {
-            throw new Error(`Resposta do backend em formato inesperado: ${JSON.stringify(data)}`);
-        }
-
-        // Processa as informações da corrida
-        corridaInfo.value = data.raceInfo.map((item) => ({
-            motorista_nome: item.motorista_nome
-        }));
-
-        error.value = null; // Limpa qualquer erro anterior
+      const response = await fetch(`${VITE_BASE_URL_BACKEND}/getDrivers/${email.value}`);
+      if (!response.ok) throw new Error("Erro ao buscar informações dos motoristas.");
+  
+      const data = await response.json();
+      if (!data || !data.raceInfo || !Array.isArray(data.raceInfo)) {
+        throw new Error("Formato inválido de resposta do servidor.");
+      }
+  
+      corridaInfo.value = data.raceInfo.map((item) => ({
+        motorista_nome: item.motorista_nome,
+        motorista_email: item.motorista_email,
+      }));
+  
+      // Busca as imagens dos motoristas após carregar as corridas
+      await fetchAllDriverImages();
     } catch (err) {
-        console.error("Erro capturado ao buscar informações da corrida:", err.message);
-        error.value = err.message;
-        corridaInfo.value = []; // Limpa as informações da corrida caso ocorra um erro
+      error.value = err.message;
+      corridaInfo.value = [];
     } finally {
-        isLoading.value = false; // Desativa o carregamento
+      isLoading.value = false;
     }
-}
+  }
+  
+  // Função para buscar as imagens de todos os motoristas
+  async function fetchAllDriverImages() {
+    driverImages.value = {}; // Reseta as imagens
+    for (const corrida of corridaInfo.value) {
+      await fetchDriverImagePath(corrida.motorista_email);
+    }
+  }
+  
+  // Função para buscar a imagem de um motorista
+  async function fetchDriverImagePath(driverEmail) {
+    try {
+      const response = await fetch(`${VITE_BASE_URL_BACKEND}/imagePath/${driverEmail}`);
+      if (!response.ok) throw new Error("Erro ao buscar imagem do motorista.");
+  
+      const data = await response.json();
+      if (data.statusCode !== 200 || !data.body?.imagePath) {
+        driverImages.value[driverEmail] = "/images/user.png";
+        return;
+      }
+  
+      driverImages.value[driverEmail] = data.body.imagePath;
+    } catch (err) {
+      driverImages.value[driverEmail] = "/images/user.png"; // Imagem padrão em caso de erro
+    }
+  }
+  
 
 // Exibir o pop-up com um tipo específico
 function showPopupWithType(index, type) {
