@@ -12,7 +12,7 @@
           <img src="/images/van.svg" alt="" />
           Perfil
         </button>
-        <button class="botao" @click="fetchRaceInfo">
+        <button class="botao" @click="toggleDriverList">
           <img src="/images/UserCircle.svg" alt="" />
           Motoristas
         </button>
@@ -25,19 +25,17 @@
       <p v-if="isLoading">Carregando informações...</p>
   
       <!-- Lista de corridas -->
-      <div v-else-if="corridaInfo && corridaInfo.length > 0" class="dados">
-        <h2>Informações da Corrida:</h2>
+      <div v-if="showDrivers && corridaInfo && corridaInfo.length > 0">
         <div v-for="(corrida, index) in corridaInfo" :key="index" class="corrida-detalhes">
-          <button class="botao">
-            <img :src="driverImages[corrida.motorista_email] || '/images/user.png'" alt="Motorista" class="motorista-photo">
-            {{ corrida.motorista_nome }}
+          <img :src="driverImages[corrida.motorista_email] || '/images/user.png'" alt="Motorista" class="motorista-photo" />
+          <button class="botaoMotoristas">
+            <p>{{ corrida.motorista_nome }}</p>
           </button>
-          <hr />
         </div>
       </div>
   
       <!-- Nenhuma corrida encontrada -->
-      <div v-else-if="!isLoading && corridaInfo && corridaInfo.length === 0">
+      <div v-else-if="showDrivers && searchInitiated && !isLoading && corridaInfo.length === 0">
         <p>Nenhuma corrida encontrada para o passageiro.</p>
       </div>
   
@@ -57,10 +55,21 @@
   const driverImages = ref({});
   const error = ref(null);
   const isLoading = ref(false);
+  const searchInitiated = ref(false); // Flag para indicar se a busca foi iniciada
+  const showDrivers = ref(false); // Flag para controlar a exibição da lista de motoristas
+  
+  // Função para alternar a exibição da lista de motoristas
+  function toggleDriverList() {
+    if (!showDrivers.value) {
+      fetchRaceInfo(); // Busca informações somente se os motoristas ainda não estão sendo exibidos
+    }
+    showDrivers.value = !showDrivers.value;
+  }
   
   // Função para buscar informações das corridas
   async function fetchRaceInfo() {
     isLoading.value = true;
+    searchInitiated.value = true; // Marca que a busca foi iniciada
     try {
       const response = await fetch(`${VITE_BASE_URL_BACKEND}/getDrivers/${email.value}`);
       if (!response.ok) throw new Error("Erro ao buscar informações dos motoristas.");
@@ -110,66 +119,13 @@
       driverImages.value[driverEmail] = "/images/user.png"; // Imagem padrão em caso de erro
     }
   }
+  </script>
   
-
-// Exibir o pop-up com um tipo específico
-function showPopupWithType(index, type) {
-    console.log("Exibindo pop-up:", index, type);
-    selectedRaceIndex.value = index; // Define o índice da corrida
-    popupType.value = type; // Define o tipo do pop-up
-    showPopup.value = true; // Exibe o pop-up
-}
-
-// Fechar o pop-up
-function closePopup() {
-    showPopup.value = false;
-    popupType.value = null; // Reseta o tipo do pop-up
-    selectedRaceIndex.value = null; // Reseta o índice selecionado
-}
-
-// Cancelar corrida selecionada
-async function cancelRace() {
-    if (selectedRaceIndex.value !== null && corridaInfo.value[selectedRaceIndex.value]) {
-        const selectedRace = corridaInfo.value[selectedRaceIndex.value];
-
-        // Obtendo os dados necessários
-        const { rota_id, passageiro_id } = selectedRace;
-        const status_corrida = -1; // Status cancelado
-
-        try {
-            // Envia a requisição GET com os parâmetros na URL
-            const response = await fetch(`${VITE_BASE_URL_BACKEND}/changeRacePassengerStatus/${rota_id}/${passageiro_id}/${status_corrida}`, {
-                method: 'GET', // Usando GET, como especificado
-            });
-
-            if (!response.ok) {
-                throw new Error("Erro ao atualizar o status da corrida");
-            }
-
-            const result = await response.json();
-            console.log("Corrida cancelada com sucesso:", result);
-
-            // Atualiza o estado local no front-end
-            selectedRace.status_corrida = status_corrida;
-            selectedRace.isCanceled = true;
-
-            // Atualiza a lista de corridas
-            fetchRaceInfo(); // Recarrega as corridas para refletir a alteração
-        } catch (error) {
-            console.error("Erro ao cancelar corrida:", error);
-        }
-    } else {
-        console.error("Nenhuma corrida válida selecionada.");
-    }
-    // Fecha o pop-up
-    closePopup();
-}
-</script>
-
-<style src="../assets/css/home.css"></style>
- 
-<script>
+  <style src="../assets/css/home.css"></style>
+  
+  <script>
   export default {
     name: "Home",
   };
-</script>
+  </script>
+  
