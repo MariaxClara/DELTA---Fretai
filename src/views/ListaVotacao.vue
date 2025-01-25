@@ -34,7 +34,7 @@
 <script setup>
     import { useRoute, useRouter } from 'vue-router';
     import { ref, computed } from 'vue';
-    import { horarios, alunos, getAlunosPorHorario } from '../composables/votacao.js';
+    import { horarios, getAlunosPorHorario } from '../composables/votacao.js';
 
     const route = useRoute();
     const router = useRouter();

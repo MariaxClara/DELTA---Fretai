@@ -4,20 +4,24 @@ const horarios = [
     { id: "naoVai", label: "Nenhum horário" }
 ];
 
-const alunos = [
-    { id: 1, name: "Griffin", ida: true, volta: false },
-    { id: 2, name: "Kimberly", ida: false, volta: true },
-    { id: 3, name: "Alison", ida: true, volta: true },
-    { id: 4, name: "Mercedes", ida: false, volta: false },
-    { id: 5, name: "Jorge", ida: false, volta: false },
-    { id: 1, name: 'Maria Silva', ida: 1, volta: 1 },
-    { id: 2, name: 'João Souza', ida: 1, volta: 0 },
-    { id: 3, name: 'Ana Pereira', ida: 0, volta: 1 },
-    { id: 4, name: 'Carlos Oliveira', ida: 0, volta: 0 },
-];
+function getAlunos() {
+    return [
+        { id: 1, name: "Griffin", ida: true, volta: false },
+        { id: 2, name: "Kimberly", ida: false, volta: true },
+        { id: 3, name: "Alison", ida: true, volta: true },
+        { id: 4, name: "Mercedes", ida: false, volta: false },
+        { id: 5, name: "Jorge", ida: false, volta: false },
+        { id: 1, name: 'Maria Silva', ida: true, volta: true },
+        { id: 2, name: 'João Souza', ida: true, volta: false },
+        { id: 3, name: 'Ana Pereira', ida: false, volta: true },
+        { id: 4, name: 'Carlos Oliveira', ida: false, volta: false },
+    ];
+
+}
 
 // Filtra os alunos de acordo com a opção selecionada
 function getAlunosPorHorario(horarioId) {
+    alunos = getAlunos()
     switch (horarioId) {
         case "ida8h":
             return alunos.filter(aluno => aluno.ida);
@@ -30,4 +34,4 @@ function getAlunosPorHorario(horarioId) {
     }
 }
 
-export { horarios, alunos, getAlunosPorHorario };
+export { horarios, getAlunosPorHorario };
