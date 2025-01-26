@@ -3,7 +3,6 @@
       <!-- Cabeçalho -->
       <header class="header">
         <img src="/images/iconeImage.png" alt="Logo" class="logo" />
-        <h1>FretAí</h1>
       </header>
   
       <!-- Botões -->
@@ -17,31 +16,31 @@
           Motoristas
         </button>
       </div>
-    </div>
-  
-    <!-- Informações da Corrida -->
-    <div class="dados-container">
+      <!-- Informações da Corrida -->
+      <div>
       <!-- Mostrar carregando enquanto busca informações -->
       <p v-if="isLoading">Carregando informações...</p>
   
       <!-- Lista de corridas -->
-      <div v-if="showDrivers && corridaInfo && corridaInfo.length > 0">
-        <div v-for="(corrida, index) in corridaInfo" :key="index" class="corrida-detalhes">
-          <img :src="driverImages[corrida.motorista_email] || '/images/user.png'" alt="Motorista" class="motorista-photo" />
+      <div v-if="showDrivers && corridaInfo && corridaInfo.length > 0" class="lista-motoristas">
+          <div v-for="(corrida, index) in corridaInfo" :key="index" class="corrida-detalhes">
+          <img :src="driverImages[corrida.motorista_email] " alt="Motorista" class="motorista-photo" />
           <button class="botaoMotoristas">
-            <p>{{ corrida.motorista_nome }}</p>
+              <p>{{ corrida.motorista_nome }}</p>
           </button>
-        </div>
+          </div>
       </div>
   
       <!-- Nenhuma corrida encontrada -->
       <div v-else-if="showDrivers && searchInitiated && !isLoading && corridaInfo.length === 0">
-        <p>Nenhuma corrida encontrada para o passageiro.</p>
+          <p>Nenhuma corrida encontrada para o passageiro.</p>
       </div>
   
       <!-- Erro -->
       <p v-else-if="error" class="error">{{ error }}</p>
+      </div>
     </div>
+  
   </template>
   
   <script setup>

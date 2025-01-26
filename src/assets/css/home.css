@@ -93,11 +93,8 @@
     align-items: center;
     padding: 0;
     gap: 16px;
-    position: absolute;
-    width: 359px;
-    height: 167px;
     top: 334px;
-    border: 1px solid #FFFCFC;
+    margin: 10px;
   }
   
   /* Botão genérico */
@@ -191,7 +188,7 @@
   
 
   .botaoMotoristas {
-    width: 256px;
+    width: 290px;
     height: 60px;
     padding: 6px 26px 6px 26px;
     gap: 93px;
@@ -217,6 +214,7 @@
     text-underline-position: from-font;
     text-decoration-skip-ink: none;
     color: black;
+    overflow-wrap: break-word;
   }
 
   .motorista-photo {
@@ -231,10 +229,16 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
-    height: 76px;
     width: 359px;
   }
 
-  .dados-container {
-    margin: 0px;
+  .lista-motoristas {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin: 10px
+  }
+
+  .logo {
+    margin: 0px 0px 10px;
   }
