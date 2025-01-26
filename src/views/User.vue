@@ -1,6 +1,16 @@
 import { NuxtLink } from '../.nuxt/components';
 <template>
     <div class="">
+        <div v-if="exclude" class="modal">
+            <div class="modal-content">
+                <p> Tem certeza que deseja excluir o passageiro?</p>
+                <div class="modal-buttons">
+                <button @click="deleteUser()">Excluir!</button>
+                <button @click="() => { exclude = false }">Cancelar</button>
+                </div>
+            </div>
+        </div>
+
         <div class="divLogo">
             <img src="/images/iconeTexto.png" alt="">
         </div>
@@ -27,7 +37,7 @@ import { NuxtLink } from '../.nuxt/components';
             </div>
         </div>
         <div v-if="!sucessDelete" class="divButton">
-            <button @click="deleteUser" class="mainButton">
+            <button @click="deleteOk" class="mainButton">
                 Excluir Passageiro
             </button>
         </div>
@@ -54,6 +64,7 @@ import { NuxtLink } from '../.nuxt/components';
                          email: 'exemplo@mail.com'})
     let driverId = ref(1)
     let messageError = ref('')
+    const exclude = ref(false);
     const erroDelete = ref(false);
     const sucessDelete = ref(false);
 
@@ -72,7 +83,12 @@ import { NuxtLink } from '../.nuxt/components';
         }
 
     }
+
+    function deleteOk() {
+        exclude.value = true
+    }
     async function deleteUser() {
+        exclude.value = false
         try {
             const response = await fetch(`${VITE_BASE_URL_BACKEND}/deleteUser`, {
                 method: 'POST',
