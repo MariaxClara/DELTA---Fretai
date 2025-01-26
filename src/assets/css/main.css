@@ -37,7 +37,7 @@ body {
     padding: 2%;
     width: 85%;
 
-    border-radius: 8%;
+    border-radius: 0.8rem;
     
 }
 
@@ -139,14 +139,16 @@ body {
     display: flex;
     justify-content: center;
     align-items: center;
+    margin-top: 1rem;
+    font-size: 0.9rem;
 
     background-color: #8CB775;
 
     width: 80%;
-    height: 90%;
+    height: 2rem;
 
-    border: 0.15em solid #000000;
-    border-radius: 8%;
+    border: 0.15em solid #ffffff;
+    border-radius: 0.8rem;
 }
 
 
@@ -154,18 +156,32 @@ body {
     display: flex;
     justify-content: center;
     align-items: center;
+    margin-top: 1rem;
+    font-size: 0.9rem;
     
     background-color: #B77575;
 
     width: 80%;
-    height: 90%;
+    height: 2rem;
 
-    border: 0.15em solid #000000;
-    border-radius: 8%;
+    border: 0.15em solid #ffffff;
+    border-radius: 0.8rem;
 }
 
 .mainDiv{
     display: flex;
     justify-content: center;
     align-items: center;
+}
+
+.divHeader{
+    display: flex;
+    /* justify-content: space-between; */
+    align-items: center;    
+    margin: 2rem;
+}
+
+.divHeader img {
+    margin: 1rem;
+    width: 5rem;
 }
