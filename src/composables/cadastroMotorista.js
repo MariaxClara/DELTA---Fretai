@@ -11,7 +11,8 @@ export function useFormSetup() {
   })
   
   const confirmationMessage = ref(null)
-  
+  const isError = ref(false) 
+
   const handleSubmit = async () => {
     try {
       const response = await fetch('/api/sendEmail', {
@@ -25,15 +26,18 @@ export function useFormSetup() {
       if (response.ok) {
         console.log('E-mail enviado com sucesso!')
         confirmationMessage.value = 'Cadastro solicitado, por favor aguarde receber sua senha temporária no email!'
+        isError.value = false 
       } else {
         console.error('Erro ao enviar o e-mail')
         confirmationMessage.value = 'Houve um erro ao solicitar o cadastro!'
+        isError.value = true
       }
     } catch (error) {
       console.error('Erro ao cadastrar:', error)
-      confirmationMessage.value = 'Erro ao enviar os dados, tente novamente mais tarde.!'
+      confirmationMessage.value = 'Erro ao enviar os dados, tente novamente mais tarde.'
+      isError.value = true 
     }
   }
 
-  return { formData, handleSubmit, confirmationMessage }
+  return { formData, handleSubmit, confirmationMessage, isError }
 }
