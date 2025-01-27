@@ -15,6 +15,7 @@ export function useFormSetup() {
   const confirmationMessage = ref(null);
   const errorMessage = ref(null);
 
+
   const handleSubmit = async () => {
     confirmationMessage.value = null;
     errorMessage.value = null;
@@ -41,4 +42,5 @@ export function useFormSetup() {
   };
 
   return { formData, handleSubmit, confirmationMessage, errorMessage };
+
 }

@@ -63,6 +63,7 @@
     <p v-if="errorMessage" class="confirmation-message error">
       {{ errorMessage }}
     </p>
+
   </div>
 </template>
 
