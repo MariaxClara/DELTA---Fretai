@@ -1,11 +1,11 @@
 <template>
   <div class="modal-overlay" v-if="visible" @click.self="closeModal">
-    <div class="modal-content">
-      <h2>Troca de Senha</h2>
+    <div class="modal-content-forget_password">
+      <h2 class="text_forget_password">Troca de Senha</h2>
       <form @submit.prevent="handlePasswordSubmit">
-        <input type="password" v-model="newPassword" placeholder="Nova senha" required />
-        <input type="password" v-model="confirmPassword" placeholder="Confirmar nova senha" required />
-        <button type="submit">Confirmar</button>
+        <input class="input_forget_password" type="" v-model="newPassword" placeholder="Nova senha" required />
+        <input class="input_forget_password" type="password" v-model="confirmPassword" placeholder="Confirmar nova senha" required />
+        <button class="modal-buttons" type="submit">Confirmar</button>
       </form>
       <p v-if="errorMessage" class="error-message">{{ errorMessage }}</p>
     </div>
