@@ -46,6 +46,7 @@
   import { ref } from 'vue';
   import { useRouter } from 'vue-router';
   import '../assets/css/cssPerfilMotorista.css';
+  const {VITE_BASE_URL_BACKEND} = import.meta.env 
   
   const email = ref('');
   const passengerInfo = ref(null);
@@ -54,7 +55,7 @@
   
   async function fetchPassengerInfo() {
     try {
-      const response = await fetch(`/api/passengerInfo?email=${email.value}`);
+      const response = await fetch(`${VITE_BASE_URL_BACKEND}/driverInfo/${email.value}`);
       const data = await response.json();
   
       if (data.statusCode !== 200) {
@@ -62,7 +63,12 @@
         return;
       }
   
-      if (data.body.length > 0) {
+      console.log('aaaa');
+      console.log(data);
+      console.log(data.body.length);
+      console.log
+
+      // if (data.body.length > 0) {
         const firstPassenger = data.body[0];
         passengerInfo.value = {
           passageiro_nome: firstPassenger.passageiro_nome,
@@ -73,9 +79,11 @@
             motorista_telefone: item.motorista_telefone,
           })),
         };
-      } else {
-        passengerInfo.value = null;
-      }
+
+        console.log("data.body.length > 0");
+      // } else {
+      //   passengerInfo.value = null;
+      // }
       error.value = null;
     } catch (err) {
       error.value = err.message;
