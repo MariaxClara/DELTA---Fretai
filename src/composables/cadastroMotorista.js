@@ -1,6 +1,7 @@
 import { ref } from 'vue';
 
 export function useFormSetup() {
+  // Dados do formulário
   const formData = ref({
     nome: '',
     cpf: '',
@@ -8,13 +9,16 @@ export function useFormSetup() {
     modelo_veiculo: '',
     placa_veiculo: '',
     email: '',
-    senha: ''
+    senha: '',
   });
 
   const confirmationMessage = ref(null);
+  const errorMessage = ref(null);
 
   const handleSubmit = async () => {
-    confirmationMessage.value = null; // Resetar mensagem de confirmação
+    confirmationMessage.value = null;
+    errorMessage.value = null;
+
     try {
       const response = await fetch(`${import.meta.env.VITE_BASE_URL_BACKEND}/cadastroMotorista`, {
         method: 'POST',
@@ -25,16 +29,16 @@ export function useFormSetup() {
       });
 
       if (response.ok) {
-        confirmationMessage.value = 'Cadastro realizado com sucesso!';
+        confirmationMessage.value = 'Cadastro enviado para aprovação com sucesso!';
       } else {
         const errorData = await response.json();
-        confirmationMessage.value = errorData.error || 'Erro ao realizar o cadastro.';
+        errorMessage.value = errorData.error || 'Erro ao enviar o cadastro.';
       }
     } catch (error) {
       console.error('Erro ao conectar ao servidor:', error);
-      confirmationMessage.value = 'Erro ao conectar ao servidor.';
+      errorMessage.value = 'Erro ao conectar ao servidor. Tente novamente mais tarde.';
     }
   };
 
-  return { formData, handleSubmit, confirmationMessage };
+  return { formData, handleSubmit, confirmationMessage, errorMessage };
 }
