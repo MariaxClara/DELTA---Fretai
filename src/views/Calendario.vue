@@ -75,7 +75,7 @@ const router = useRouter();
 const route = useRoute();
 
 // Simulate user role (motorista or passageiro)
-const userRole = ref(route.query.role || 'motorist'); // Default to passageiro
+const userRole = ref(route.query.role || 'motorista'); // Default to passageiro
 
 // Métodos para manipulação do calendário
 const updateCalendarWrapper = () => {
