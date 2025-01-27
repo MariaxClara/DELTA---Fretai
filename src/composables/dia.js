@@ -2,11 +2,42 @@ import { ref } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 import maps from './calendario'; // Importe o maps
 
-const localData = ref([
-  { dia: 20, mes: 1, ano: 2025, ida: true, volta: false },
-  { dia: 21, mes: 1, ano: 2025, ida: false, volta: true },
-  { dia: 22, mes: 1, ano: 2025, ida: true, volta: true }
-]);
+
+const updates = {}
+
+const updateData = async () =>  {
+  const month = new Date().getMonth() + 1;
+  const year = new Date().getFullYear();
+  const user_id = 1; // exemplo
+  const route = 1; // exemplo
+  const message = `http://localhost:3000/getCalendario/${user_id}/${route}/${year}/${month}/0`;
+
+  try {
+    const response = await fetch(message, {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    });
+    const data = await response.json();
+    for (let i = 0; i < data.message.length; i ++){
+      data.message[i]["mes"] = month;
+      data.message[i]["ano"] = year;
+      data.message[i]["user"] = user_id;
+      data.message[i]["rota"] = route;
+    }
+    console.log(data.message);
+    updates[year] = [month];
+    return data.message;
+  }
+  catch (error) {
+    console.error('Erro ao buscar viagens:', error);
+    return [];
+  }
+}
+
+const localData = ref(await updateData());
+
 
 export function useTransportOptions() {
   const route = useRoute();
@@ -56,6 +87,29 @@ export function useTransportOptions() {
       } else {
         localData.value.push({ dia, mes, ano, rota, user, ida, volta });
       }
+
+      const response = await fetch('http://localhost:3000/setCalendario', {
+        method: 'POST', // Método POST para login
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          "user__id": user,
+          "rotas_id": rota,
+          "ida": ida,
+          "volta": volta,
+          "year": ano,
+          "month": mes,
+          "day": dia
+        }),
+      });
+
+      const status = await response.json();
+      if (status.message != "success"){
+        console.error('Erro ao confirmar seleção:', error);
+        alert('Erro ao salvar a seleção. Por favor, tente novamente.');
+        return;
+      }
       
       // Força atualização do calendário com os novos dados
       calendar.updateCalendar(mes - 1, ano, localData.value);
@@ -73,11 +127,55 @@ export function useTransportOptions() {
     }
   };
 
+  const updateMonth = async (month, year) => {
+    console.log(updates);
+    if (year in updates) {
+      if (month in updates[year]) {
+        console.log("Já atualizado");
+        return [];
+      }
+      else {
+        updates[year].push(month);
+      }
+    }
+    else {
+      updates[year] = [month];
+    }
+    
+    const user_id = 1; // exemplo
+    const route = 1; // exemplo
+    const message = `http://localhost:3000/getCalendario/${user_id}/${route}/${year}/${month}/0`;
+
+    try {
+      const response = await fetch(message, {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      });
+      const data = await response.json();
+      for (let i = 0; i < data.message.length; i ++){
+        data.message[i]["mes"] = month;
+        data.message[i]["ano"] = year;
+        data.message[i]["user"] = user_id;
+        data.message[i]["rota"] = route;
+      }
+      console.log(data.message);
+      return data.message;
+    }
+    catch (error) {
+      console.error('Erro ao buscar viagens:', error);
+      return [];
+    }
+  }
+
+
   return {
     options,
     selectedOption,
     selectOption,
     confirmSelection,
-    localData // Expose localData for debugging or further use
+    localData, // Expose localData for debugging or further use
+    updateMonth
   };
 }

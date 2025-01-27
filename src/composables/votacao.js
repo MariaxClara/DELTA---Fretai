@@ -4,7 +4,7 @@ const horarios = [
     { id: "naoVai", label: "Nenhum horário" }
 ];
 
-function getAlunos() {
+async function getAlunos() {
     return [
         { id: 1, name: "Griffin", ida: true, volta: false },
         { id: 2, name: "Kimberly", ida: false, volta: true },
@@ -21,7 +21,8 @@ function getAlunos() {
 
 // Filtra os alunos de acordo com a opção selecionada
 function getAlunosPorHorario(horarioId) {
-    alunos = getAlunos()
+    const alunos_promise = getAlunos();
+    const alunos = alunos_promise.then(data => {return data});
     switch (horarioId) {
         case "ida8h":
             return alunos.filter(aluno => aluno.ida);

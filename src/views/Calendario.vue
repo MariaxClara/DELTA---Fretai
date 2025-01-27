@@ -61,7 +61,7 @@ import { useTransportOptions } from '../composables/dia';
 
 // Importa as funções do composable
 const { updateCalendar, goToPreviousMonth, goToNextMonth, isMonthAllowed } = maps();
-const { localData } = useTransportOptions();
+const { localData, updateMonth } = useTransportOptions();
 
 // Variáveis reativas
 import { ref, onMounted, watch } from 'vue';
@@ -75,7 +75,7 @@ const router = useRouter();
 const route = useRoute();
 
 // Simulate user role (motorista or passageiro)
-const userRole = ref(route.query.role || 'motorista'); // Default to passageiro
+const userRole = ref(route.query.role || 'motorist'); // Default to passageiro
 
 // Métodos para manipulação do calendário
 const updateCalendarWrapper = () => {
@@ -89,6 +89,8 @@ const updateCalendarWrapper = () => {
 
 const goToPreviousMonthWrapper = () => {
   ({currentMonthW: currentMonth.value, currentYearW: currentYear.value} = goToPreviousMonth(currentMonth.value, currentYear.value));
+  const new_data = updateMonth(currentMonth.value + 1, currentYear.value)
+  new_data.then(data => {if (data != []) localData.value = localData.value.concat(data)});
   updateCalendarWrapper();
 };
 
@@ -99,6 +101,8 @@ const goToNextMonthWrapper = () => {
     }
     currentMonth.value = result.currentMonthW;
     currentYear.value = result.currentYearW;
+    const new_data = updateMonth(currentMonth.value + 1, currentYear.value);
+    new_data.then(data => {if (data != []) localData.value = localData.value.concat(data)});
     updateCalendarWrapper();
 };
 
