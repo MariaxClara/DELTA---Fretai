@@ -62,7 +62,6 @@ const routes = [
     name: 'PerfilMotorista',
     component: PerfilMotorista
   },
-
   {
     path: '/RegisterUserDriver',
     name: 'RegisterUserDriver',

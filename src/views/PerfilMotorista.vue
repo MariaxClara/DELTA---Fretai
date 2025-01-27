@@ -9,7 +9,7 @@
     <div class="corrida-detalhes" style="margin: 12px">
       <img :src="driverImagePath || '/images/user.png'" alt="Motorista" class="motorista-photo" />
       <button class="botaoMotoristas">
-        <p>{{ driver.nome }}</p>
+        <p>{{ driver?.nome || 'Nome não disponível' }}</p>
       </button>
     </div>
 
@@ -30,6 +30,7 @@
     </div>
   </div>
 </template>
+
 
 <script setup>
 import { ref, onMounted } from "vue";
