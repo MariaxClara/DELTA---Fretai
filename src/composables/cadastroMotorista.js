@@ -1,43 +1,46 @@
-import { ref } from 'vue'
+import { ref } from 'vue';
 
 export function useFormSetup() {
-  const formData = ref<FormData>({
+  // Dados do formulário
+  const formData = ref({
     nome: '',
-    sobrenome: '',
     cpf: '',
-    placa: '',
+    telefone: '',
+    modelo_veiculo: '',
+    placa_veiculo: '',
     email: '',
-    senha: ''
-  })
-  
-  const confirmationMessage = ref(null)
-  const isError = ref(false) 
+    senha: '',
+  });
+
+  const confirmationMessage = ref(null);
+  const errorMessage = ref(null);
+
 
   const handleSubmit = async () => {
+    confirmationMessage.value = null;
+    errorMessage.value = null;
+
     try {
-      const response = await fetch('/api/sendEmail', {
+      const response = await fetch(`${import.meta.env.VITE_BASE_URL_BACKEND}/cadastroMotorista`, {
         method: 'POST',
         headers: {
-          'Content-Type': 'application/json'
+          'Content-Type': 'application/json',
         },
-        body: JSON.stringify(formData.value)
-      })
+        body: JSON.stringify(formData.value),
+      });
 
       if (response.ok) {
-        console.log('E-mail enviado com sucesso!')
-        confirmationMessage.value = 'Cadastro solicitado, por favor aguarde receber sua senha temporária no email!'
-        isError.value = false 
+        confirmationMessage.value = 'Cadastro enviado para aprovação com sucesso!';
       } else {
-        console.error('Erro ao enviar o e-mail')
-        confirmationMessage.value = 'Houve um erro ao solicitar o cadastro!'
-        isError.value = true
+        const errorData = await response.json();
+        errorMessage.value = errorData.error || 'Erro ao enviar o cadastro.';
       }
     } catch (error) {
-      console.error('Erro ao cadastrar:', error)
-      confirmationMessage.value = 'Erro ao enviar os dados, tente novamente mais tarde.'
-      isError.value = true 
+      console.error('Erro ao conectar ao servidor:', error);
+      errorMessage.value = 'Erro ao conectar ao servidor. Tente novamente mais tarde.';
     }
-  }
+  };
 
-  return { formData, handleSubmit, confirmationMessage, isError }
+  return { formData, handleSubmit, confirmationMessage, errorMessage };
+
 }
