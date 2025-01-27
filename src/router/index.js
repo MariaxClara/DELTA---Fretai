@@ -19,6 +19,7 @@ import Calendario from '../views/Calendario.vue'
 import Dia from '../views/Dia.vue'
 import AddVanGroup from '../views/AddVanGroup.vue'
 import CadastroPassageiro from '../views/CadastroPassageiro.vue'
+import ListaVotacao from '../views/listaVotacao.vue'
 import User from '../views/User.vue'
 
 const routes = [
@@ -116,6 +117,11 @@ const routes = [
     path: '/CadastroPassageiro',
     name: 'CadastroPassageiro',
     component: CadastroPassageiro
+  },
+  {
+    path: '/ListaVotacao',
+    name: 'ListaVotacao',
+    component: ListaVotacao
   },
   {
     path: '/User',
