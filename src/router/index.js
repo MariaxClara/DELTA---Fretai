@@ -17,6 +17,7 @@ import Dia from '../views/Dia.vue'
 import AddVanGroup from '../views/AddVanGroup.vue'
 import CadastroPassageiro from '../views/CadastroPassageiro.vue'
 import chatbot from '../views/chatbot.vue'
+import PerfilMotorista from '../views/PerfilMotorista.vue'
 
 
 const routes = [
@@ -40,6 +41,7 @@ const routes = [
     name: 'CadastroMotorista',
     component: CadastroMotorista
   },
+
   {
     path: '/Login',
     name: 'Login',
@@ -55,6 +57,12 @@ const routes = [
     name: 'MyUsers',
     component: MyUsers
   },
+  {
+    path: '/PerfilMotorista',
+    name: 'PerfilMotorista',
+    component: PerfilMotorista
+  },
+
   {
     path: '/RegisterUserDriver',
     name: 'RegisterUserDriver',
