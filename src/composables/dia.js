@@ -26,7 +26,7 @@ const updateData = async () =>  {
       data.message[i]["user"] = user_id;
       data.message[i]["rota"] = route;
     }
-    console.log(data.message);
+    console.log("Entrada :",data.message);
     updates[year] = [month];
     return data.message;
   }

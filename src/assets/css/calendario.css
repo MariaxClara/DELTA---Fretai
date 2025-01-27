@@ -187,3 +187,7 @@
 .days button.dark-dupla {
   background: darkgreen !important;
 }
+
+.days button.dark-nada {
+  background: darkred !important;
+}
