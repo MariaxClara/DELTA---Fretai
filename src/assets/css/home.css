@@ -93,8 +93,11 @@
     align-items: center;
     padding: 0;
     gap: 16px;
+    position: absolute;
+    width: 359px;
+    height: 167px;
     top: 334px;
-    margin: 10px;
+    border: 1px solid #FFFCFC;
   }
   
   /* Botão genérico */
@@ -186,130 +189,3 @@
     border: 1px solid #FFFCFC;
   }
   
-
-  .botaoMotoristas {
-    width: 290px;
-    height: 60px;
-    padding: 6px 26px 6px 26px;
-    gap: 93px;
-    border-radius: 15px ;
-    border: 2px;
-    opacity: 0px;
-  
-    background: #F4F4F4;
-    border: 2px solid #000000;
-  }
-
-  .botaoMotoristas:hover {
-    background: #ddd;
-  }
-
-  .botaoMotoristas p {
-    font-family: 'Grandstander', sans-serif;
-    font-size: 24px;
-    font-weight: 400;
-    line-height: 23.94px;
-    letter-spacing: -0.30000001192092896px;
-    text-align: center;
-    text-underline-position: from-font;
-    text-decoration-skip-ink: none;
-    color: black;
-    overflow-wrap: break-word;
-  }
-
-  .motorista-photo {
-    width: 60px;
-    height: 60px;
-    gap: 0px;
-    opacity: 0px;
-
-  }
-
-  .corrida-detalhes {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    width: 359px;
-  }
-
-  .lista-motoristas {
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-    margin: 10px
-  }
-
-  .logo {
-    margin: 0px 0px 10px;
-  }
-
-
-  /* Pop-up do Chat */
-.chat-popup {
-  position: fixed;
-  bottom: 20px;
-  right: 20px;
-  background-color: #3498DB;
-  color: white;
-  padding: 15px 20px;
-  border-radius: 8px;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-  cursor: pointer;
-  font-family: 'Grandstander', sans-serif;
-  font-size: 16px;
-  font-weight: 600;
-  transition: background-color 0.3s ease, transform 0.2s ease;
-}
-
-.chat-popup:hover {
-  background-color: #2874A6;
-  transform: scale(1.05);
-}
-
-.chat-popup p {
-  margin: 0;
-  text-align: center;
-}
-
-.botaoMotoristas {
-  width: 256px;
-  height: 60px;
-  padding: 6px 26px 6px 26px;
-  gap: 93px;
-  border-radius: 15px ;
-  border: 2px;
-  opacity: 0px;
-
-  background: #F4F4F4;
-  border: 2px solid #000000;
-}
-.botaoMotoristas:hover {
-  background: #ddd;
-}
-.botaoMotoristas p {
-  font-family: 'Grandstander', sans-serif;
-  font-size: 24px;
-  font-weight: 400;
-  line-height: 23.94px;
-  letter-spacing: -0.30000001192092896px;
-  text-align: center;
-  text-underline-position: from-font;
-  text-decoration-skip-ink: none;
-  color: black;
-}
-.motorista-photo {
-  width: 60px;
-  height: 60px;
-  gap: 0px;
-  opacity: 0px;
-}
-.corrida-detalhes {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  height: 76px;
-  width: 359px;
-}
-.dados-container {
-  margin: 0px;
-}

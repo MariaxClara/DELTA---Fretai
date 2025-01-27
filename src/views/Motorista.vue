@@ -38,7 +38,6 @@
   import { ref } from 'vue';
   import { useRouter } from 'vue-router';
   import '../assets/css/cssPerfilMotorista.css';
-  const {VITE_BASE_URL_BACKEND} = import.meta.env 
 
   const email = ref('');
   const driver = ref(null);
@@ -49,7 +48,7 @@
 
   async function fetchDriverInfo() {
     try {
-      const response = await fetch(`${VITE_BASE_URL_BACKEND}/driverInfo/${email.value}`);
+      const response = await fetch(`/api/driverInfo?email=${email.value}`);
       const data = await response.json();
       
       if (data.statusCode !== 200) {
@@ -73,7 +72,7 @@
 
   async function fetchDriverImagePath() {
     try {
-      const response = await fetch(`${VITE_BASE_URL_BACKEND}/imagePath/${email.value}`);
+      const response = await fetch(`/api/getImagePath?email=${email.value}`);
       const data = await response.json();
       console.log(email.value);
       if (data.statusCode !== 200) {

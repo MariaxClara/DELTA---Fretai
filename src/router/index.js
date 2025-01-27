@@ -6,8 +6,11 @@ import Index from '../views/Index.vue'
 import Login from '../views/Login.vue'
 import MyRouters from '../views/MyRouters.vue'
 import MyUsers from '../views/MyUsers.vue'
+import PerfilMotorista from '../views/PerfilMotorista.vue'
+import PerfilUsuario from '../views/PerfilUsuario.vue'
 import RegisterUserDriver from '../views/RegisterUserDriver.vue'
 import TrocaSenha from '../views/TrocaSenha.vue'
+
 import ChatMotorista from '../views/ChatMotorista.vue';
 import ChatPassageiro from '../views/ChatPassageiro.vue';
 import Corridas from '../views/Corridas.vue'
@@ -18,9 +21,6 @@ import AddVanGroup from '../views/AddVanGroup.vue'
 import CadastroPassageiro from '../views/CadastroPassageiro.vue'
 import ListaVotacao from '../views/listaVotacao.vue'
 import User from '../views/User.vue'
-import chatbot from '../views/chatbot.vue'
-import PerfilMotorista from '../views/PerfilMotorista.vue'
-
 
 const routes = [
   {
@@ -43,7 +43,6 @@ const routes = [
     name: 'CadastroMotorista',
     component: CadastroMotorista
   },
-
   {
     path: '/Login',
     name: 'Login',
@@ -63,6 +62,11 @@ const routes = [
     path: '/PerfilMotorista',
     name: 'PerfilMotorista',
     component: PerfilMotorista
+  },
+  {
+    path: '/PerfilUsuario',
+    name: 'PerfilUsuario',
+    component: PerfilUsuario
   },
   {
     path: '/RegisterUserDriver',
@@ -123,12 +127,7 @@ const routes = [
     path: '/User',
     name: 'User',
     component: User
-  },
-  {
-    path: '/chatbot',
-    name: 'chatbot',
-    component: chatbot
-  },
+  }
 ]
 
 const router = createRouter({
