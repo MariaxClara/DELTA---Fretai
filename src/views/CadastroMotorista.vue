@@ -1,11 +1,9 @@
 <template>
   <div class="login-container">
-    <!-- Logo e título -->
     <div class="logo-container">
       <img src="/images/iconeImage.png" alt="Van Logo" class="van-icon">
     </div>
 
-    <!-- Formulário -->
     <form class="login-form" @submit.prevent="handleSubmit">
       <input 
         type="text"
@@ -74,6 +72,5 @@ export default {
 <script setup>
 import { useFormSetup } from '../composables/cadastroMotorista';
 
-// Importação de dados do composable
 const { formData, handleSubmit, confirmationMessage } = useFormSetup();
 </script>
