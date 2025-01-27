@@ -2,7 +2,7 @@
   <div class="login-container">
     <!-- Logo e título -->
     <div class="logo-container">
-     <img src="/images/iconeImage.png" alt="Van Logo" class="van-icon">
+      <img src="/images/iconeImage.png" alt="Van Logo" class="van-icon">
     </div>
 
     <!-- Formulário -->
@@ -16,13 +16,6 @@
 
       <input 
         type="text"
-        v-model="formData.sobrenome"
-        placeholder="Sobrenome"
-        required
-      >
-
-      <input 
-        type="text"
         v-model="formData.cpf"
         placeholder="CPF"
         required
@@ -30,7 +23,21 @@
 
       <input 
         type="text"
-        v-model="formData.placa"
+        v-model="formData.telefone"
+        placeholder="Telefone"
+        required
+      >
+
+      <input 
+        type="text"
+        v-model="formData.modelo_veiculo"
+        placeholder="Modelo do veículo"
+        required
+      >
+
+      <input 
+        type="text"
+        v-model="formData.placa_veiculo"
         placeholder="Placa do veículo"
         required
       >
@@ -39,6 +46,13 @@
         type="email"
         v-model="formData.email"
         placeholder="E-mail"
+        required
+      >
+
+      <input 
+        type="password"
+        v-model="formData.senha"
+        placeholder="Senha"
         required
       >
 
@@ -52,15 +66,14 @@
 </template>
 
 <script>
-  export default{
-    name: 'CadastroMotorista',
-  }
+export default {
+  name: 'CadastroMotorista',
+};
 </script>
 
+<script setup>
+import { useFormSetup } from '../composables/cadastroMotorista';
 
-<script setup >
-  import { useFormSetup } from '../composables/cadastroMotorista'
-  // import '@/assets/css/cssCadastroMotorista.css'
-
-  const { formData, handleSubmit, confirmationMessage } = useFormSetup()
+// Importação de dados do composable
+const { formData, handleSubmit, confirmationMessage } = useFormSetup();
 </script>

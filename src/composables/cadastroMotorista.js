@@ -1,39 +1,40 @@
-import { ref } from 'vue'
+import { ref } from 'vue';
 
 export function useFormSetup() {
-  const formData = ref<FormData>({
+  const formData = ref({
     nome: '',
-    sobrenome: '',
     cpf: '',
-    placa: '',
+    telefone: '',
+    modelo_veiculo: '',
+    placa_veiculo: '',
     email: '',
     senha: ''
-  })
-  
-  const confirmationMessage = ref(null)
-  
+  });
+
+  const confirmationMessage = ref(null);
+
   const handleSubmit = async () => {
+    confirmationMessage.value = null; // Resetar mensagem de confirmação
     try {
-      const response = await fetch('/api/sendEmail', {
+      const response = await fetch(`${import.meta.env.VITE_BASE_URL_BACKEND}/cadastroMotorista`, {
         method: 'POST',
         headers: {
-          'Content-Type': 'application/json'
+          'Content-Type': 'application/json',
         },
-        body: JSON.stringify(formData.value)
-      })
+        body: JSON.stringify(formData.value),
+      });
 
       if (response.ok) {
-        console.log('E-mail enviado com sucesso!')
-        confirmationMessage.value = 'Cadastro solicitado, por favor aguarde receber sua senha temporária no email!'
+        confirmationMessage.value = 'Cadastro realizado com sucesso!';
       } else {
-        console.error('Erro ao enviar o e-mail')
-        confirmationMessage.value = 'Houve um erro ao solicitar o cadastro!'
+        const errorData = await response.json();
+        confirmationMessage.value = errorData.error || 'Erro ao realizar o cadastro.';
       }
     } catch (error) {
-      console.error('Erro ao cadastrar:', error)
-      confirmationMessage.value = 'Erro ao enviar os dados, tente novamente mais tarde.!'
+      console.error('Erro ao conectar ao servidor:', error);
+      confirmationMessage.value = 'Erro ao conectar ao servidor.';
     }
-  }
+  };
 
-  return { formData, handleSubmit, confirmationMessage }
+  return { formData, handleSubmit, confirmationMessage };
 }
