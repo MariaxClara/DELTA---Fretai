@@ -45,9 +45,8 @@
       <button type="submit" class="cadastrar-btn">CADASTRAR</button>
     </form>
 
-    <p v-if="confirmationMessage" class="confirmation-message">
-      {{ confirmationMessage }}
-    </p>
+    <p :style="{ color: isError ? 'red' : 'green' }">{{ confirmationMessage }}</p>
+
   </div>
 </template>
 
