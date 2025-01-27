@@ -209,6 +209,29 @@ body {
   max-width: 300px;
 }
 
+.modal-content-forget_password {
+  background: white;
+  padding: 30px;
+  border-radius: 10px;
+  text-align: center;
+  color: #333; 
+  max-width: 300px;
+  display: flex; 
+  flex-direction: column; 
+  justify-content: center; 
+  align-items: center; 
+  }
+
+.text_forget_password {
+    color: #007bff;
+}
+
+.input_forget_password {
+    margin-top: 10px;
+    padding: 10px;
+}
+
+
 .modal-buttons {
   display: flex;
   justify-content: space-around;
