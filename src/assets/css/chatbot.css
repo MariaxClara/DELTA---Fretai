@@ -1,0 +1,109 @@
+/* Estilo do chatbot */
+#chatbot {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    padding: 20px;
+    background-color: #BAE6FD; /* Fundo azul claro para o restante da página */
+    height: 100vh;
+    box-sizing: border-box;
+}
+
+/* Janela de chat */
+.chat-window {
+    width: 100%;
+    max-width: 600px;
+    height: 400px;
+    background-color: white; /* Fundo branco para a janela de chat */
+    border-radius: 10px;
+    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+    padding: 20px;
+    overflow-y: auto;
+    margin-bottom: 20px;
+    border: 1px solid #ddd;
+}
+
+/* Estilo das mensagens no histórico de conversa */
+.chat-message {
+    margin-bottom: 10px;
+    font-size: 16px;
+    line-height: 1.4;
+    background-color: white; /* Fundo branco para mensagens */
+    padding: 10px;
+    border-radius: 5px;
+    box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.1); /* Sombra para mensagens */
+}
+
+/* Estilo do remetente 'Você' */
+.chat-message.user {
+    color: #3498db; /* Azul para 'Você' */
+    font-weight: bold;
+}
+
+/* Estilo do remetente 'Chatbot' */
+.chat-message.assistant {
+    color: #2C3E50; /* Preto para 'Chatbot' */
+}
+
+/* Estilo do nome do remetente */
+.chat-message strong {
+    color: inherit; /* Para garantir que a cor do remetente seja a mesma que a do texto */
+    font-weight: bold;
+}
+
+/* Estilo do cabeçalho do chatbot */
+.header-chatbot {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+.logo-chatbot {
+    width:200px; /* Aumenta a largura do logo */
+    height: auto; /* A altura será ajustada automaticamente para manter a proporção */
+    margin-bottom: 10px;
+}
+
+.header-chatbot h1 {
+    font-size: 24px;
+    color: #3498db;
+    font-family: 'Arial', sans-serif;
+}
+
+.chat-input {
+    display: flex;
+    justify-content: center;  /* Centraliza o conteúdo horizontalmente */
+    align-items: center;      /* Centraliza o conteúdo verticalmente */
+    width: 100%;
+    max-width: 600px;
+    margin-top: 20px;         /* Margem superior para afastar o campo de entrada */
+}
+
+.chat-input input {
+    width: 80%; /* Texto da mensagem ocupa 80% da largura */
+    padding: 10px;
+    font-size: 16px;
+    border-radius: 5px;
+    border: 1px solid #ddd;
+    margin-right: 10px; /* Distância entre o campo de texto e o botão */
+}
+
+.chat-input button {
+    padding: 10px 15px;
+    background-color: #3498db;
+    color: white;
+    font-size: 16px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+    width: auto; /* Largura do botão ajustada automaticamente */
+    margin-left: 10px; /* Distância do campo de texto para o botão */
+}
+
+.chat-input button:hover {
+    background-color: #2874a6;
+}

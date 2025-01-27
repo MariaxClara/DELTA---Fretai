@@ -6,11 +6,8 @@ import Index from '../views/Index.vue'
 import Login from '../views/Login.vue'
 import MyRouters from '../views/MyRouters.vue'
 import MyUsers from '../views/MyUsers.vue'
-import PerfilMotorista from '../views/PerfilMotorista.vue'
-import PerfilUsuario from '../views/PerfilUsuario.vue'
 import RegisterUserDriver from '../views/RegisterUserDriver.vue'
 import TrocaSenha from '../views/TrocaSenha.vue'
-
 import ChatMotorista from '../views/ChatMotorista.vue';
 import ChatPassageiro from '../views/ChatPassageiro.vue';
 import Corridas from '../views/Corridas.vue'
@@ -19,6 +16,7 @@ import Calendario from '../views/Calendario.vue'
 import Dia from '../views/Dia.vue'
 import AddVanGroup from '../views/AddVanGroup.vue'
 import CadastroPassageiro from '../views/CadastroPassageiro.vue'
+import chatbot from '../views/chatbot.vue'
 
 
 const routes = [
@@ -56,16 +54,6 @@ const routes = [
     path: '/MyUsers',
     name: 'MyUsers',
     component: MyUsers
-  },
-  {
-    path: '/PerfilMotorista',
-    name: 'PerfilMotorista',
-    component: PerfilMotorista
-  },
-  {
-    path: '/PerfilUsuario',
-    name: 'PerfilUsuario',
-    component: PerfilUsuario
   },
   {
     path: '/RegisterUserDriver',
@@ -116,7 +104,12 @@ const routes = [
     path: '/CadastroPassageiro',
     name: 'CadastroPassageiro',
     component: CadastroPassageiro
-  }
+  },
+  {
+    path: '/chatbot',
+    name: 'chatbot',
+    component: chatbot
+  },
 ]
 
 const router = createRouter({

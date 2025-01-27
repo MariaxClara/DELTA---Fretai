@@ -188,4 +188,30 @@
     background: #FFFCFC;
     border: 1px solid #FFFCFC;
   }
-  
+
+/* Pop-up do Chat */
+.chat-popup {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  background-color: #3498DB;
+  color: white;
+  padding: 15px 20px;
+  border-radius: 8px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  cursor: pointer;
+  font-family: 'Grandstander', sans-serif;
+  font-size: 16px;
+  font-weight: 600;
+  transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+.chat-popup:hover {
+  background-color: #2874A6;
+  transform: scale(1.05);
+}
+
+.chat-popup p {
+  margin: 0;
+  text-align: center;
+}
