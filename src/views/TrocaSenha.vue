@@ -1,11 +1,11 @@
 <template>
   <div class="troca-senha-container">
-    <h1>Trocar Senha</h1>
-    <p>Email do usuário: {{ email }}</p>
+    <h1 class="black-text">Trocar Senha</h1>
+    <p class="black-text">Email do usuário: {{ email }}</p>
 
     <form @submit.prevent="submitForm">
       <div>
-        <label for="nova-senha">Nova Senha:</label>
+        <label for="nova-senha" class="black-text">Nova Senha:</label>
         <input
           type="password"
           id="nova-senha"
@@ -35,6 +35,7 @@
   </div>
 </template>
 
+
 <!-- <script>
   export default{
     name: 'TrocaSenha',
@@ -52,7 +53,7 @@ const novaSenha = ref('');
 const confirmaSenha = ref('');
 const erro = ref('');
 const successMessage = ref('');
-
+const userEmail = 'passageiro1@example.com'
 async function submitForm() {
   if (novaSenha.value !== confirmaSenha.value) {
     erro.value = 'As senhas não coincidem. Tente novamente.';
@@ -64,7 +65,7 @@ async function submitForm() {
     const response = await fetch('http://localhost:3000/changePassword', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ email: email.value, newPassword: novaSenha.value }), // Corrigido aqui
+    body: JSON.stringify({ email: userEmail, newPassword: novaSenha.value, confirmPassword: confirmaSenha.value,  }), // Corrigido aqui
     });
 
     const data = await response.json();
@@ -94,11 +95,18 @@ async function submitForm() {
   border: 1px solid #ddd;
   border-radius: 5px;
   background-color: #f9f9f9;
+  color: #000; /* Garante que todo o texto dentro do container seja preto */
 }
+
+h1, p, label {
+  color: #000; /* Define a cor preta para "Trocar Senha", "Email do usuário:" e "Nova Senha:" */
+}
+
 label {
   display: block;
   margin-bottom: 0.5em;
 }
+
 input {
   width: 100%;
   padding: 0.5em;
@@ -106,6 +114,7 @@ input {
   border: 1px solid #ccc;
   border-radius: 5px;
 }
+
 button {
   width: 100%;
   padding: 0.5em;
@@ -115,15 +124,19 @@ button {
   border-radius: 5px;
   cursor: pointer;
 }
+
 button:hover {
   background-color: #0056b3;
 }
+
 .erro {
   color: red;
   margin-bottom: 1em;
 }
+
 .success {
   color: green;
   margin-bottom: 1em;
 }
 </style>
+
