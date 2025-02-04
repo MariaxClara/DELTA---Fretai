@@ -1,6 +1,53 @@
 import createAndAnimateMarker from './live.js';
 import RouteOptimizer from './optmize.js';
 
+// Dictionary to store voting data
+const votingData = {
+  '2025-02-05': {
+    ida: {
+      'Student A': 'Shopping Vale Sul, São José dos Campos',
+      'Student B': 'Embraer, São José dos Campos',
+      'Student C': 'Praça Afonso Pena, São José dos Campos',
+      'Student D': 'Praça Ulisses Guimarães, São José dos Campos',
+      'Student E': 'Praça Cônego Lima, São José dos Campos',
+      'Student F': 'Praça da Bandeira, São José dos Campos',
+      'Student G': 'Praça da Independência, São José dos Campos',
+    },
+    volta: {
+      'Student C': 'Praça Afonso Pena, São José dos Campos',
+      'Student H': 'Shopping Jacarei, Jacareí, Sao Paulo',
+      'Student I': 'Jardim Santa Maria, Jacareí, Sao Paulo',
+      'Student J': 'Praça dos Três Poderes, Jacareí, Sao Paulo',
+      'Student K': 'Praça Raul Chaves, Jacareí, Sao Paulo',
+      'Student L': "Altos de Santana, Jacareí, Sao Paulo",
+    }
+  },
+  '2025-02-04': {
+    ida: {
+      'Student H': 'Shopping Jacarei, Jacareí, Sao Paulo',
+      'Student I': 'Jardim Santa Maria, Jacareí, Sao Paulo',
+      'Student J': 'Praça dos Três Poderes, Jacareí, Sao Paulo',
+      'Student K': 'Praça Raul Chaves, Jacareí, Sao Paulo',
+      'Student L': "Altos de Santana, Jacareí, Sao Paulo",
+    },
+    volta: {
+      'Student H': 'Shopping Jacarei, Jacareí, Sao Paulo',
+      'Student I': 'Jardim Santa Maria, Jacareí, Sao Paulo',
+      'Student J': 'Praça dos Três Poderes, Jacareí, Sao Paulo',
+      'Student K': 'Praça Raul Chaves, Jacareí, Sao Paulo',
+      'Student L': "Altos de Santana, Jacareí, Sao Paulo",
+    }
+  },
+  // ...other dates...
+};
+
+// Default destinations
+const defaultDestinations = {
+  'Unifesp ICT - São José dos Campos': 'Av. Cesare Mansueto Giulio Lattes, 1201 - Eugênio de Melo, São José dos Campos - SP, 12247-014',
+  'Fatec': 'Av. Cesare Mansueto Giulio Lattes, 1350 - Eugênio de Melo, São José dos Campos - SP, 12247-014',
+  'Instituto Federal': 'R. Pedro Rachid, 3 - Jardim Diamante, São José dos Campos - SP, 12230-000'
+};
+
 export default function maps() {
 
   function initMapPlatform() {
@@ -32,6 +79,8 @@ export default function maps() {
     document.head.appendChild(style);
 
     this.van = createAndAnimateMarker(this.map);
+    this.destinationAddress = defaultDestinations['Unifesp ICT - São José dos Campos']; // Set default destination
+    this.waypoints = [];
   }
     
 
@@ -134,7 +183,16 @@ export default function maps() {
       }
   
       const destination = await this.geocodeAddress(this.destinationAddress);
-      const waypoints = await Promise.all(this.waypoints.map(wp => this.geocodeAddress(wp.address)));
+      
+      // Use current date for voting data
+      const today = new Date().toISOString().split('T')[0];
+      const students = votingData[today]?.[this.selectedTurn];
+      if (!students) {
+        this.errorMessage = `Nenhuma votação encontrada para a data: ${today} e turno: ${this.selectedTurn}`;
+        return;
+      }
+
+      const waypoints = await Promise.all(Object.values(students).map(address => this.geocodeAddress(address)));
   
       const routingParameters = {
         routingMode: "fast",
@@ -177,7 +235,7 @@ export default function maps() {
           return this.destinationAddress;
         } else {
           const waypointIndex = parseInt(stop.name.split(' ')[1]) - 1;
-          return this.waypoints[waypointIndex].address;
+          return Object.values(students)[waypointIndex];
         }
       });
   

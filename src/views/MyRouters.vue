@@ -5,9 +5,8 @@
       <div class="modal-content">
         <p>Selecione o turno:</p>
         <div class="modal-buttons">
-          <button @click="selectTurn('morning')">Manhã</button>
-          <button @click="selectTurn('afternoon')">Tarde</button>
-          <button @click="selectTurn('night')">Noite</button>
+          <button @click="selectTurn('ida')">Ida 8h</button>
+          <button @click="selectTurn('volta')">Volta 17h30</button>
         </div>
       </div>
     </div>
@@ -46,12 +45,16 @@
     </template>
     
     <label class="infos">Destino:
-      <input type="text" v-model="destinationAddress" placeholder="Endereço de destino" />
+      <select v-model="destinationAddress" class="infos">
+        <option v-for="(address, name) in defaultDestinations" :key="name" :value="address">{{ name }}</option>
+      </select>
     </label>
     
     <div v-for="(waypoint, index) in waypoints" :key="index" class="infos">
       <label class="infos">Parada {{ index + 1 }}:
-        <input type="text" v-model="waypoint.address" placeholder="Endereço de parada" />
+        <select v-model="waypoint.address" class="infos">
+          <option v-for="(address, name) in availableWaypoints" :key="name" :value="address">{{ name }}</option>
+        </select>
       </label>
       <button @click="removeWaypoint(index)">Remover</button>
     </div>
@@ -121,7 +124,20 @@ export default {
       isAutoZoom: false,
       turnInstructions: [],
       locationCheckInterval: null, // Add this to track the interval
+      defaultDestinations: {
+        'Unifesp ICT - São José dos Campos': 'Av. Cesare Mansueto Giulio Lattes, 1201 - Eugênio de Melo, São José dos Campos - SP, 12247-014',
+        'Fatec': 'Av. Cesare Mansueto Giulio Lattes, 1350 - Eugênio de Melo, São José dos Campos - SP, 12247-014',
+        'Instituto Federal': 'R. Pedro Rachid, 3 - Jardim Diamante, São José dos Campos - SP, 12230-000'
+      }
     };
+  },
+  computed: {
+    availableWaypoints() {
+      const selectedDestination = this.destinationAddress;
+      return Object.fromEntries(
+        Object.entries(this.defaultDestinations).filter(([name, address]) => address !== selectedDestination)
+      );
+    }
   },
   async mounted() {
     await loadHereMaps();
@@ -277,109 +293,6 @@ export default {
     }, 1000); 
   },
 
-// async handlePositionUpdate(position) {
-//   const { latitude, longitude } = position.coords;
-//   const currentLocation = { lat: latitude, lng: longitude };
-
-//   // Update van marker position
-//   if (this.van) {
-//     this.van.setGeometry(currentLocation);
-//     this.map.setCenter(currentLocation);
-//   }
-//   try {
-//     // Check if we've deviated from the route
-//     if (await this.hasDeviatedFromRoute(currentLocation)) {
-//       await this.recalculateRouteWithCurrentLocation(currentLocation);
-//     }
-
-//     // Check if destination is reached
-//     if (this.isDestinationReached(currentLocation)) {
-//       this.finalizeTrip();
-//     }
-//   } catch (error) {
-//     console.error('Erro durante atualização de posição:', error);
-//   }
-// },
-
-// handlePositionError(error) {
-//   console.error('Erro de geolocalização:', error);
-//   this.errorMessage = "Não foi possível obter a localização atual.";
-//   this.tripStarted = false;
-// },
-
-// hasDeviatedFromRoute(currentLocation, toleranceInKm = 0.5) {
-//   // Basic deviation check - you'll want to implement a more sophisticated method
-//   if (!this.routeLineString) return false;
-
-//   // Calculate distance from the current route
-//   // This is a placeholder - you'll need to implement actual route deviation detection
-//   const routePoints = this.routeLineString.getGeometry().getLatLngAltArray();
-  
-//   // Find the closest point on the route to the current location
-//   let minDistance = Infinity;
-//   for (let i = 0; i < routePoints.length; i += 3) {
-//     const routePoint = {
-//       lat: routePoints[i],
-//       lng: routePoints[i + 1]
-//     };
-    
-//     const distance = this.calculateDistance(currentLocation, routePoint);
-//     minDistance = Math.min(minDistance, distance);
-//   }
-
-//   return minDistance > toleranceInKm;
-// },
-
-// isDestinationReached(currentLocation, toleranceInKm = 0.1) {
-//   // Get the last waypoint (destination)
-//   if (this.waypoints && this.waypoints.length > 0) {
-//     const destination = this.waypoints[this.waypoints.length - 1];
-    
-//     if (destination) {
-//       const distance = this.calculateDistance(
-//         currentLocation, 
-//         { lat: destination.lat, lng: destination.lng }
-//       );
-      
-//       return distance <= toleranceInKm;
-//     }
-//   }
-  
-//   return false;
-// },
-
-// async recalculateRouteWithCurrentLocation(currentLocation) {
-//   try {
-//     // Find the closest point in the current route
-//     const closestWaypoint = this.findClosestWaypoint(currentLocation);
-
-//     // Update the route starting from the current location
-//     const updatedRoute = await this.updateRoute({
-//       startingPoint: currentLocation,
-//       skipWaypoints: closestWaypoint.skippedWaypoints
-//     });
-
-//     // Update map with the new route
-//     this.updateMapWithNewRoute(updatedRoute);
-//   } catch (error) {
-//     console.error('Erro ao recalcular rota:', error);
-//   }
-// },
-
-// findClosestWaypoint(currentLocation) {
-//   // Find the closest waypoint to the current location
-//   const distances = this.waypoints.map(wp => 
-//     this.calculateDistance(currentLocation, wp)
-//   );
-  
-//   const closestIndex = distances.indexOf(Math.min(...distances));
-  
-//   return {
-//     closestIndex,
-//     skippedWaypoints: this.waypoints.slice(0, closestIndex)
-//   };
-// },
-
     finalizeTrip(action) {
       //alerta: tem certeza que deseja finalizar a corrida?
       this.alertEndTrip = true;
@@ -434,7 +347,7 @@ export default {
   background-color: #BAE6FD;
 }
 
-#app input {
+#app input, #app select {
   margin: 5px;
   padding: 5px;
   color: #000000;
@@ -459,6 +372,15 @@ export default {
 
 #app ::placeholder {
   color: #000000;
+}
+
+#app select option {
+  color: #000000; /* Black text for better readability */
+  background-color: #f0f0f0; /* Light gray background */
+}
+
+#app select option:hover {
+  background-color: #d3d3d3; /* Darker gray on hover */
 }
 
 /* Modal Styles */
@@ -522,4 +444,4 @@ export default {
   padding: 2px; /* Adicionar padding */
 }
 
-</style>  
+</style>
