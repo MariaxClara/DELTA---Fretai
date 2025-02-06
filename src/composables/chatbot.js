@@ -6,7 +6,10 @@ const apiUrl = "https://api.openai.com/v1/chat/completions";
 const { VITE_BASE_URL_BACKEND } = import.meta.env;
 
 const response = await fetch(`${VITE_BASE_URL_BACKEND}/driverInfoChatBot`);
-const travelData = await response.json(); // Obtém os dados das viagens
+const travelData = await response.json();
+
+// Log da resposta para ver a estrutura
+console.log("Dados recebidos no front-end:", travelData);
 
 /**
  * Envia uma pergunta para a API do ChatGPT e retorna a resposta.
@@ -18,6 +21,7 @@ export async function getChatResponse(userQuestion, chatHistory) {
   // Filtra as viagens pelo dia solicitado
   const userDay = userQuestion.toLowerCase().match(/segunda|terça|quarta|quinta|sexta|sábado|domingo/);
   const filteredTravelData = userDay ? travelData.body.filter(travel => travel.dia_da_semana.toLowerCase() === userDay[0]) : travelData.body;
+  console.log("filteredTravelData", filteredTravelData);
 
   // Formata os dados das viagens
   const formattedTravelData = filteredTravelData.length > 0 ? filteredTravelData.map(travel => (
