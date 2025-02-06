@@ -49,6 +49,10 @@
   
     <script setup>
   import { ref } from "vue";
+  import { useRouter } from 'vue-router';
+  const router = useRouter();
+
+
   
   const { VITE_BASE_URL_BACKEND } = import.meta.env;
 
@@ -117,6 +121,10 @@ const userID = getCookie('userID');
         console.log(corrida.motorista_email);
       await fetchDriverImagePath(corrida.motorista_email);
     }
+  }
+
+  async function PerfilPassageiro(){
+    router.push('/PerfilUsuario');
   }
   
   // Função para buscar a imagem de um motorista
