@@ -20,7 +20,7 @@ import ListaVotacao from '../views/ListaVotacao.vue'
 import User from '../views/User.vue'
 import chatbot from '../views/chatbot.vue'
 import PerfilMotorista from '../views/PerfilMotorista.vue'
-
+import MotoristaHome from '../views/MotoristaHome.vue'; 
 
 const routes = [
   {
@@ -93,6 +93,11 @@ const routes = [
     path: '/Home',
     name: 'Home',
     component: Home
+  },
+  {
+    path: '/MotoristaHome',
+    name: 'MotoristaHome',
+    component: MotoristaHome
   },
   {
     path: '/Calendario',

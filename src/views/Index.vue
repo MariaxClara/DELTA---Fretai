@@ -5,8 +5,10 @@
     </div>
 
     <div class="button-group">
+      <!-- Botão Motorista -->
       <button @click="toggleModal" class="btn-motorista">Sou Motorista</button>
-      <button @click="toggleModal" class="btn-passageiro">Sou Passageiro</button>
+      <!-- Botão Passageiro com o mesmo estilo -->
+      <button @click="goToPassageiro" class="btn-motorista">Login</button>
     </div>
 
     <Modal v-if="showModal" :visible="showModal" @close="toggleModal" />
@@ -14,15 +16,22 @@
 </template>
 
 <script>
-  export default{
-    name: 'Index',
-  }
+export default {
+  name: 'Index',
+};
 </script>
 
 <script setup>
-import { useIndex } from '../composables/index'
-import Modal from '../components/Modal.vue'
-import '../assets/css/cssInicial.css'
+import { useRouter } from 'vue-router';
+import { useIndex } from '../composables/index';
+import Modal from '../components/Modal.vue';
+import '../assets/css/cssInicial.css';
 
-const { showModal, toggleModal } = useIndex()
+const router = useRouter();
+const { showModal, toggleModal } = useIndex();
+
+// Função para redirecionar o passageiro
+const goToPassageiro = () => {
+  router.push('/Login'); // Certifique-se de que a rota '/passageiro' esteja configurada
+};
 </script>

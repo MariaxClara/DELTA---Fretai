@@ -7,7 +7,7 @@
   
       <!-- Botões -->
       <div class="participantes">
-        <button class="botao">
+        <button class="botao" @click="PerfilPassageiro">
           <img src="/images/van.svg" alt="" />
           Perfil
         </button>
@@ -51,9 +51,22 @@
   import { ref } from "vue";
   
   const { VITE_BASE_URL_BACKEND } = import.meta.env;
-  
+
+  function getCookie(name) {
+  const value = `; ${document.cookie}`;
+  const parts = value.split(`; ${name}=`);
+  if (parts.length === 2) {
+    return decodeURIComponent(parts.pop().split(';').shift());
+  }
+  return null;
+}
+
+
+const email1 = getCookie('userEmail');
+const userID = getCookie('userID');
+
+
   // Variáveis reativas
-  const email = ref("passageiro2@example.com"); // Substituir para uso com cookies
   const corridaInfo = ref([]);
   const driverImages = ref({});
   const error = ref(null);
@@ -74,7 +87,7 @@
     isLoading.value = true;
     searchInitiated.value = true; // Marca que a busca foi iniciada
     try {
-      const response = await fetch(`${VITE_BASE_URL_BACKEND}/getDrivers/${email.value}`);
+      const response = await fetch(`${VITE_BASE_URL_BACKEND}/getDrivers/${email1}`);
       if (!response.ok) throw new Error("Erro ao buscar informações dos motoristas.");
   
       const data = await response.json();

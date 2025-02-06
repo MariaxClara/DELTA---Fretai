@@ -73,7 +73,7 @@ const handleLoginSubmit = async () => {
       switch (userTypeResult) {
         case 'motorista':
           console.log('Logged in as driver');
-          await router.push({ name: 'PerfilMotorista' });
+          await router.push({ name: 'MotoristaHome' });
           break;
         case 'passageiro':
           console.log('Logged in as passenger');

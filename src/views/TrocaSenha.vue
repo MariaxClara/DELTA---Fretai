@@ -1,62 +1,77 @@
 <template>
-  <div class="troca-senha-container">
-    <h1 class="black-text">Trocar Senha</h1>
-    <p class="black-text">Email do usuário: {{ email }}</p>
+  <div class="tela-inicial">
+    <!-- Logo -->
+    <div class="logo-container">
+      <img src="/images/iconeImage.png" alt="Logo" class="logo" />
+    </div>
 
-    <form @submit.prevent="submitForm">
-      <div>
-        <label for="nova-senha" class="black-text">Nova Senha:</label>
-        <input
-          type="password"
-          id="nova-senha"
-          v-model="novaSenha"
-          placeholder="Digite a nova senha"
-          required
-        />
-      </div>
-      <div>
-        <label for="confirma-senha">Confirme a Nova Senha:</label>
-        <input
-          type="password"
-          id="confirma-senha"
-          v-model="confirmaSenha"
-          placeholder="Confirme a nova senha"
-          required
-        />
-      </div>
-      <div v-if="erro" class="erro">
-        {{ erro }}
-      </div>
-      <div v-if="successMessage" class="success">
-        {{ successMessage }}
-      </div>
-      <button type="submit">Alterar Senha</button>
-    </form>
+
+    <h1 class="header">Trocar Senha</h1>
+    <p class="descricao">Email do usuário: <span class="black-text">{{ userEmail }}</span></p>
+    <div class="form-container">
+      <form @submit.prevent="submitForm">
+        <div>
+          <label for="nova-senha">Nova Senha:</label>
+          <input
+            type="password"
+            id="nova-senha"
+            v-model="novaSenha"
+            placeholder="Digite a nova senha"
+            required
+          />
+        </div>
+        <div>
+          <label for="confirma-senha">Confirme a Nova Senha:</label>
+          <input
+            type="password"
+            id="confirma-senha"
+            v-model="confirmaSenha"
+            placeholder="Confirme a nova senha"
+            required
+          />
+        </div>
+        <div v-if="erro" class="erro">
+          {{ erro }}
+        </div>
+        <div v-if="successMessage" class="success">
+          {{ successMessage }}
+        </div>
+        <button type="submit" class="botao" @click = "submitForm" >
+          Alterar Senha
+        </button>
+      </form>
+    </div>
   </div>
 </template>
 
-
-<!-- <script>
-  export default{
-    name: 'TrocaSenha',
-  }
-</script> -->
-
 <script setup>
 import { ref } from 'vue';
-import { useRoute, useRouter } from 'vue-router';
+import { useRouter } from 'vue-router';
 
-const route = useRoute();
+// Inicializa o Vue Router
 const router = useRouter();
-const email = ref(route.query.email || ''); // Obtém o email enviado via query parameters
+
+// Função para obter cookies
+function getCookie(name) {
+  const value = `; ${document.cookie}`;
+  const parts = value.split(`; ${name}=`);
+  if (parts.length === 2) {
+    return decodeURIComponent(parts.pop().split(';').shift());
+  }
+  return null;
+}
+
+// Obtém o email do usuário salvo no cookie
+const userEmail = getCookie('userEmail');
 const novaSenha = ref('');
 const confirmaSenha = ref('');
 const erro = ref('');
 const successMessage = ref('');
-const userEmail = 'passageiro1@example.com'
+
 async function submitForm() {
+  console.log(" AsdasdasdasD");
   if (novaSenha.value !== confirmaSenha.value) {
-    erro.value = 'As senhas não coincidem. Tente novamente.';
+    erro.value = 'As senhas não coincidem. Tente novamente.'; 
     successMessage.value = '';
     return;
   }
@@ -65,7 +80,7 @@ async function submitForm() {
     const response = await fetch('http://localhost:3000/changePassword', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ email: userEmail, newPassword: novaSenha.value, confirmPassword: confirmaSenha.value,  }), // Corrigido aqui
+      body: JSON.stringify({ email: userEmail, newPassword: novaSenha.value, confirmPassword:confirmaSenha.value }),
     });
 
     const data = await response.json();
@@ -78,7 +93,12 @@ async function submitForm() {
 
     erro.value = '';
     successMessage.value = 'Senha atualizada com sucesso!';
+    console.log(userEmail);
     
+    setTimeout(() => {
+      router.push("/Login");
+    }, 2000);
+
   } catch (err) {
     erro.value = 'Erro de conexão com o servidor.';
     successMessage.value = '';
@@ -88,55 +108,114 @@ async function submitForm() {
 </script>
 
 <style scoped>
-.troca-senha-container {
-  max-width: 400px;
-  margin: 0 auto;
-  padding: 1em;
-  border: 1px solid #ddd;
-  border-radius: 5px;
-  background-color: #f9f9f9;
-  color: #000; /* Garante que todo o texto dentro do container seja preto */
+/* Estrutura Base da Página */
+.tela-inicial {
+  position: relative;
+  background: #BAE6FD;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  padding-bottom: 100px;
 }
 
-h1, p, label {
-  color: #000; /* Define a cor preta para "Trocar Senha", "Email do usuário:" e "Nova Senha:" */
+/* Logo */
+.logo-container {
+  margin-bottom: 20px;
+}
+
+.logo {
+  width: 300px; /* Tamanho maior para o logo */
+  margin-bottom: 10px;
+}
+.black-text {
+  color: #000;
+  font-weight: bold;
+}
+
+/* Título */
+.header {
+  font-family: 'Grandstander', sans-serif;
+  font-size: 32px;
+  font-weight: 700;
+  color: #000;
+  margin-bottom: 10px;
+}
+
+/* Descrição */
+.descricao {
+  font-size: 18px;
+  color: #000;
+  margin-bottom: 20px;
+}
+
+/* Formulário */
+.form-container {
+  background: #ffffff;
+  padding: 20px;
+  border-radius: 10px;
+  box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+  width: 350px;
+  display: flex;
+  color: #000;
+
+  flex-direction: column;
 }
 
 label {
+  font-size: 16px;
+  font-weight: 600;
+  color: #000;
   display: block;
-  margin-bottom: 0.5em;
+  margin-bottom: 5px;
 }
 
 input {
   width: 100%;
-  padding: 0.5em;
-  margin-bottom: 1em;
+  padding: 10px;
   border: 1px solid #ccc;
   border-radius: 5px;
+  font-size: 16px;
+  margin-bottom: 15px;
 }
 
-button {
+/* Botão */
+.botao {
   width: 100%;
-  padding: 0.5em;
-  background-color: #007bff;
-  color: white;
+  height: 50px;
+  background: #3498DB;
   border: none;
-  border-radius: 5px;
+  border-radius: 10px;
+  color: white;
+  font-size: 18px;
+  font-weight: 700;
   cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  transition: background 0.3s ease;
 }
 
-button:hover {
-  background-color: #0056b3;
+.botao img {
+  width: 24px;
+  height: 24px;
 }
 
+.botao:hover {
+  background: #2874A6;
+}
+
+/* Mensagens de erro e sucesso */
 .erro {
   color: red;
-  margin-bottom: 1em;
+  font-size: 14px;
+  margin-bottom: 10px;
 }
 
 .success {
   color: green;
-  margin-bottom: 1em;
+  font-size: 14px;
+  margin-bottom: 10px;
 }
 </style>
-

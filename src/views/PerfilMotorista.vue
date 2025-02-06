@@ -27,6 +27,9 @@
         <img src="/images/ArrowUUpLeft.svg" alt="" />
         Voltar
       </button>
+      <button @click="trocaDeSenha" class="botao">
+        Troca de Senha
+      </button>
     </div>
   </div>
 </template>
@@ -34,18 +37,33 @@
 
 <script setup>
 import { ref, onMounted } from "vue";
+import { useRouter } from 'vue-router';
 
+const router = useRouter(); // Inicializa o Vue Router
 const { VITE_BASE_URL_BACKEND } = import.meta.env;
 
 // Variáveis reativas
+function getCookie(name) {
+  const value = `; ${document.cookie}`;
+  const parts = value.split(`; ${name}=`);
+  if (parts.length === 2) {
+    return decodeURIComponent(parts.pop().split(';').shift());
+  }
+  return null;
+}
+
+
+const email_motorista = getCookie('userEmail');
+const userID = getCookie('userID');
+
 const email_passageiro = ref("passageiro2@example.com"); // Substituir para uso com cookies
-const email_motorista = ref("motorista1@example.com"); // Substituir para uso com cookies
+// const email_motorista = ref("motorista1@example.com"); // Substituir para uso com cookies
 const driverImagePath = ref(null);
 const driver = ref(null);
 
 async function fetchDriverInfo() {
     try {
-      const response = await fetch(`${VITE_BASE_URL_BACKEND}/driverInfo/${email_motorista.value}`);
+      const response = await fetch(`${VITE_BASE_URL_BACKEND}/driverInfo/${email_motorista}`);
       const data = await response.json();
       
       if (data.statusCode !== 200) {
@@ -66,7 +84,7 @@ async function fetchDriverInfo() {
 
 async function fetchDriverImagePath() {
   try {
-    const response = await fetch(`${VITE_BASE_URL_BACKEND}/imagePath/${email_motorista.value}`);
+    const response = await fetch(`${VITE_BASE_URL_BACKEND}/imagePath/${email_motorista}`);
     const data = await response.json();
 
     if (data.statusCode === 200 && data.body.imagePath) {
@@ -79,6 +97,10 @@ async function fetchDriverImagePath() {
     console.error("Erro ao buscar o caminho da imagem:", err.message);
     driverImagePath.value = "/images/user.png"; // Fallback padrão em caso de erro
   }
+}
+
+async function trocaDeSenha() {
+  router.push("/TrocaSenha");
 }
 
 // Buscar a imagem ao montar o componente
