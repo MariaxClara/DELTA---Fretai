@@ -21,6 +21,7 @@ import User from '../views/User.vue'
 import chatbot from '../views/chatbot.vue'
 import PerfilMotorista from '../views/PerfilMotorista.vue'
 import MotoristaHome from '../views/MotoristaHome.vue'; 
+import PerfilUsuario from '../views/PerfilUsuario.vue'; 
 
 const routes = [
   {
@@ -63,6 +64,11 @@ const routes = [
     path: '/PerfilMotorista',
     name: 'PerfilMotorista',
     component: PerfilMotorista
+  },
+  {
+    path: '/PerfilUsuario',
+    name: 'PerfilUsuario',
+    component: PerfilUsuario
   },
   {
     path: '/RegisterUserDriver',
