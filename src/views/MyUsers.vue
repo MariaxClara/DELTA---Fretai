@@ -7,7 +7,7 @@ import { NuxtLink } from '../.nuxt/components';
         <div class="divList">
             <div class="divListTop">
                 <img class="listTop" src="/images/PeopleIcon.svg" alt="">
-                <h1 class="listTop">Participantes</h1>
+                <h1 class="listTop">Participantes {{ numPassageiros }} / {{ maxPassageiros }}</h1>
             </div>
             
             <div class="divListItens">
@@ -64,11 +64,13 @@ import { NuxtLink } from '../.nuxt/components';
     let users = ref([])
     let driverId = ref(1)
     let messageError = ref('')
+    let maxPassageiros = ref(0)
+    let numPassageiros = ref(0)
 
     const takeUsers = async () => {
         try {
             console.log("Estou indo pegar meus users")
-            const response = await fetch(`${VITE_BASE_URL_BACKEND}/driverUsers/${driverId.value}`, {
+            const response = await fetch(`${VITE_BASE_URL_BACKEND}/driverUsers2/${driverId.value}`, {
                 method: 'GET',
             })
             const data = await response.json();
@@ -84,6 +86,7 @@ import { NuxtLink } from '../.nuxt/components';
                 })
             }
             users.value = passageiros
+            numPassageiros = passageiros.length
         } catch (error) {
             console.log('Não consegui pegar os passageiros:')
             console.log(error)
@@ -115,9 +118,23 @@ import { NuxtLink } from '../.nuxt/components';
             console.log(messageError)
         }
     }
+    async function fetchMaxPassageiros() {
+        try {
+            const response = await fetch(`${VITE_BASE_URL_BACKEND}/maxPassageiros/${driverId.value}`);
+            const data = await response.json();
+            if (Number.isInteger(data[0].max_passageiros)) {
+                maxPassageiros.value = data[0].max_passageiros;
+            } else {
+                console.error("Erro ao buscar quantidade máxima de passageiros: ", data.body.error || "Erro desconhecido");
+            }
+        } catch (err) {
+            console.error("Erro ao buscar quantidade máxima de passageiros: ", err.message);
+        }
+    }
 
     onMounted(() => {
         takeUsers()
+        fetchMaxPassageiros()
     })
 
 </script>
