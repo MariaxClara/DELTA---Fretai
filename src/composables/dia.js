@@ -10,6 +10,8 @@ const updateData = async () =>  {
   const year = new Date().getFullYear();
   const user_id = 4; // exemplo
   const route = 1; // exemplo
+  const driver_email = "motorista@mail.com" //Exemplo
+  const user_name = "José" //Exemplo
   const message = `http://localhost:3000/getCalendario/${user_id}/${route}/${year}/${month}/0`;
 
   try {
@@ -88,7 +90,7 @@ export function useTransportOptions() {
         localData.value.push({ dia, mes, ano, rota, user, ida, volta });
       }
 
-      const response = await fetch('http://localhost:3000/setCalendario', {
+      const response = await fetch(`${VITE_BASE_URL_BACKEND}/setCalendario`, {
         method: 'POST', // Método POST para login
         headers: {
           'Content-Type': 'application/json',
@@ -109,6 +111,22 @@ export function useTransportOptions() {
         console.error('Erro ao confirmar seleção:', error);
         alert('Erro ao salvar a seleção. Por favor, tente novamente.');
         return;
+      }
+      //Notitifica o Motorista
+      let textValue = "O usuário "+user_name+" atualizou confirmação de ida para o dia"+dia+"/"+mes+"/"+ano
+      try {           
+          const response = await fetch(`${VITE_BASE_URL_BACKEND}/sendEmail`, {
+              method: 'POST',
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify({
+                  to: driver_email,
+                  from: "fretaiunifesp@gmail.com",
+                  subject: "Atualização de ida!",
+                  text: textValue
+              })
+          })                    
+      } catch (error) {
+          console.log("Não foi possível avisar o motirista!: "+error)
       }
       
       // Força atualização do calendário com os novos dados
