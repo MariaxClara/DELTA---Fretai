@@ -27,6 +27,12 @@ import { NuxtLink } from '../.nuxt/components';
             <h3 v-else="passageiro.paid" style="margin-bottom: 0.2rem; color: #ea6161"> Pagamento pendente!</h3>
         </div>
 
+        <div class="divButton">
+            <button class="mainButton">
+                <router-link :to="{name: 'ChatMotrorista'}" class="mainLink">Conversar com Passageiro</router-link>
+            </button>
+        </div>
+
         <div class="mainDiv">
             <div v-if="sucessDelete" class="divSucces">
                 <p class="textSucces">passageiro excluido!</p>
