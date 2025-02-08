@@ -10,6 +10,7 @@
       <button @click="goToCalendario" class="botao">Calendário</button>
       <button @click="goToPerfilMotorista" class="botao">Perfil Motorista</button>
       <button @click="goToCadastroPassageiro" class="botao">Cadastro Passageiro</button>
+      <button @click="goToMyUsers" class="botao">Lista Passageiros</button>
     </div>
   </div>
 </template>
@@ -29,6 +30,10 @@ const goToPerfilMotorista = () => {
 
 const goToCadastroPassageiro = () => {
   router.push('/cadastroPassageiro');
+};
+
+const goToMyUsers = () => {
+  router.push('/myUsers');
 };
 </script>
 
