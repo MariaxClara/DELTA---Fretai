@@ -65,10 +65,23 @@ import { NuxtLink } from '../.nuxt/components';
     let driverId = ref(1)
     let messageError = ref('')
 
+    function getCookie(name) {
+    const value = `; ${document.cookie}`;
+    const parts = value.split(`; ${name}=`);
+    if (parts.length === 2) {
+        return decodeURIComponent(parts.pop().split(';').shift());
+    }
+    return null;
+    }
+
+    // Obtém o email do usuário salvo no cookie
+    const id = getCookie('userID');
+    console.log('id motorista',id);
+
     const takeUsers = async () => {
         try {
             console.log("Estou indo pegar meus users")
-            const response = await fetch(`${VITE_BASE_URL_BACKEND}/driverUsers/${driverId.value}`, {
+            const response = await fetch(`${VITE_BASE_URL_BACKEND}/driverUsers/${id}`, {
                 method: 'GET',
             })
             const data = await response.json();
