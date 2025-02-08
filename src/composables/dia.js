@@ -10,8 +10,6 @@ const updateData = async () =>  {
   const year = new Date().getFullYear();
   const user_id = 4; // exemplo
   const route = 1; // exemplo
-  const driver_email = "motorista@mail.com" //Exemplo
-  const user_name = "José" //Exemplo
   const message = `http://localhost:3000/getCalendario/${user_id}/${route}/${year}/${month}/0`;
 
   try {
@@ -53,6 +51,8 @@ export function useTransportOptions() {
   };
 
   const confirmSelection = async (dia, mes, ano, rota, user) => {
+    let driver_email = "motorista@mail.com" //Exemplo
+    let user_name = "José" //Exemplo
     if (!selectedOption.value) {
       alert('Por favor, selecione uma opção!');
       return;
