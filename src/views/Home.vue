@@ -15,6 +15,9 @@
         <img src="/images/UserCircle.svg" alt="" />
         Motoristas
       </button>
+      <button class="botao" @click="goToCalendar">
+        Calendário
+      </button>
     </div>
 
     <!-- Informações da Corrida -->
@@ -130,6 +133,11 @@ async function fetchAllDriverImages() {
 // Redireciona para o perfil do passageiro
 async function PerfilPassageiro() {
   router.push("/PerfilUsuario");
+}
+
+// Redireciona para o calendário
+function goToCalendar() {
+  router.push("/calendario");
 }
 
 // Redireciona para o chat com o motorista selecionado

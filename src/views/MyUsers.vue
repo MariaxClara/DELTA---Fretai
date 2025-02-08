@@ -40,6 +40,9 @@
             <button @click="edit = !edit" class="mainButton">
                 Editar Participantes
             </button>
+            <button @click="goToCalendar" class="mainButton">
+                Calendário
+            </button>
         </div>
 
         <div v-else class="divButton">
@@ -128,6 +131,11 @@ const updateUsers = async () => {
 // Função para ir para a página de chat com o passageiro escolhido
 const goToChat = (passageiroId) => {
     router.push(`/chat/${driverId.value}/${passageiroId}`);
+};
+
+// Função para ir para a página de calendário
+const goToCalendar = () => {
+    router.push('/calendario');
 };
 
 // Função para alternar o pagamento sem clicar no usuário
