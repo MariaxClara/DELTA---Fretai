@@ -16,11 +16,12 @@ import Calendario from '../views/Calendario.vue'
 import Dia from '../views/Dia.vue'
 import AddVanGroup from '../views/AddVanGroup.vue'
 import CadastroPassageiro from '../views/CadastroPassageiro.vue'
-import ListaVotacao from '../views/listaVotacao.vue'
+import ListaVotacao from '../views/ListaVotacao.vue'
 import User from '../views/User.vue'
 import chatbot from '../views/chatbot.vue'
 import PerfilMotorista from '../views/PerfilMotorista.vue'
-
+import MotoristaHome from '../views/MotoristaHome.vue'; 
+import PerfilUsuario from '../views/PerfilUsuario.vue'; 
 
 const routes = [
   {
@@ -65,6 +66,11 @@ const routes = [
     component: PerfilMotorista
   },
   {
+    path: '/PerfilUsuario',
+    name: 'PerfilUsuario',
+    component: PerfilUsuario
+  },
+  {
     path: '/RegisterUserDriver',
     name: 'RegisterUserDriver',
     component: RegisterUserDriver
@@ -93,6 +99,11 @@ const routes = [
     path: '/Home',
     name: 'Home',
     component: Home
+  },
+  {
+    path: '/MotoristaHome',
+    name: 'MotoristaHome',
+    component: MotoristaHome
   },
   {
     path: '/Calendario',

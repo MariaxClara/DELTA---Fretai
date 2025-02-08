@@ -57,8 +57,6 @@ import '../assets/css/cssCadastroMotorista.css';
 
 const router = useRouter();
 
-// const userType = ref(''); // Declara userType como reativo
-
 const {
   formData,
   showPasswordReset,
@@ -67,38 +65,56 @@ const {
   errorMessage,
 } = useLogin();
 
+// Função para definir um cookie
+function setCookie(name, value, days) {
+  const expires = new Date();
+  expires.setTime(expires.getTime() + days * 24 * 60 * 60 * 1000);
+  document.cookie = `${name}=${value};expires=${expires.toUTCString()};path=/`;
+}
+
+// Função para obter um cookie
+function getCookie(name) {
+  const value = `; ${document.cookie}`;
+  const parts = value.split(`; ${name}=`);
+  if (parts.length === 2) return parts.pop().split(';').shift();
+  return null;
+}
+
 const handleLoginSubmit = async () => {
-    const userTypeResult = await loginAndDetermineUserType();
-    if (userTypeResult) {
-      switch (userTypeResult) {
-        case 'motorista':
-          console.log('Logged in as driver');
-          await router.push({ name: 'PerfilMotorista' });
-          break;
-        case 'passageiro':
-          console.log('Logged in as passenger');
-          await router.push({ name: 'PerfilUsuario' });
-          break;
-        case 'desconhecido':
-          console.log('Tipo de usuário desconhecido.');
-          errorMessage.value = 'Tipo de usuário inválido.';
-          break;
-        default:
-          console.log('Unknown user type');
-          errorMessage.value = 'Falha no login. Verifique suas credenciais.';
-      }
-    } else {
-      errorMessage.value = 'Falha no login. Verifique suas credenciais.';
+  const userTypeResult = await loginAndDetermineUserType();
+
+  if (userTypeResult) {
+    // Salva o userType no cookie com validade de 7 dias
+    setCookie('userType', userTypeResult, 7);
+
+    switch (userTypeResult) {
+      case 'motorista':
+        console.log('Logged in as driver');
+        await router.push({ name: 'MotoristaHome' });
+        break;
+      case 'passageiro':
+        console.log('Logged in as passenger');
+        await router.push({ name: 'Home' });
+        break;
+      case 'desconhecido':
+        console.log('Tipo de usuário desconhecido.');
+        errorMessage.value = 'Tipo de usuário inválido.';
+        break;
+      default:
+        console.log('Unknown user type');
+        errorMessage.value = 'Falha no login. Verifique suas credenciais.';
     }
-  };
+  } else {
+    errorMessage.value = 'Falha no login. Verifique suas credenciais.';
+  }
+};
 
-
-
+// Função para executar ao mudar a senha
 const onPasswordChanged = () => {
   showPasswordReset.value = false;
-  // Add any additional logic needed after password change
 };
 </script>
+
 
 <style scoped>
 .error-message {

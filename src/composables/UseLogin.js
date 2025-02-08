@@ -5,11 +5,22 @@ export default function useLogin() {
     email: '',
     password: '',
   });
-  const {VITE_BASE_URL_BACKEND} = import.meta.env 
+  const { VITE_BASE_URL_BACKEND } = import.meta.env;
 
   const showPasswordReset = ref(false);
   const userType = ref('');
   const errorMessage = ref('');
+
+  // Função auxiliar para definir um cookie com expiração em dias
+  const setCookie = (name, value, days) => {
+    let expires = "";
+    if (days) {
+      const date = new Date();
+      date.setTime(date.getTime() + days * 24 * 60 * 60 * 1000);
+      expires = "; expires=" + date.toUTCString();
+    }
+    document.cookie = name + "=" + encodeURIComponent(value) + expires + "; path=/";
+  };
 
   const handleSubmit = async () => {
     try {
@@ -28,6 +39,10 @@ export default function useLogin() {
   
       if (data.status === 'success') {
         console.log('Login bem-sucedido:', data.user);
+  
+        // Armazena o e-mail e o id do usuário em cookies com validade de 7 dias
+        setCookie('userEmail', data.user.email, 7);
+        setCookie('userID', data.user.user_id, 7);
   
         // Verifica se é o primeiro login
         if (data.user.primeiro_login) {
@@ -66,7 +81,7 @@ export default function useLogin() {
         const data = await response.json();
   
         // Ajuste para lidar com 0 e 1 retornados pelo backend
-        userType.value = data.userType
+        userType.value = data.userType;
   
         return userType.value;
       } catch (error) {
@@ -78,10 +93,6 @@ export default function useLogin() {
       return 'desconhecido';
     }
   };
-  
-
-  
-
   
   const handlePasswordReset = async () => {
     alert('Senha alterada com sucesso');

@@ -74,8 +74,21 @@ const days = ref([]);
 const router = useRouter();
 const route = useRoute();
 
+
+function getCookie(name) {
+  const value = `; ${document.cookie}`;
+  const parts = value.split(`; ${name}=`);
+  if (parts.length === 2) {
+    return decodeURIComponent(parts.pop().split(';').shift());
+  }
+  return null;
+}
+
+const userType = getCookie('userType');
+console.log('Tipo de usuário salvo no cookie:', userType);
+
 // Simulate user role (motorista or passageiro)
-const userRole = ref(route.query.role || 'motorista'); // Default to passageiro
+const userRole = userType // Default to passageiro
 
 // Métodos para manipulação do calendário
 const updateCalendarWrapper = () => {

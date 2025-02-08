@@ -1,4 +1,5 @@
 import { ref } from 'vue';
+import { useRouter } from 'vue-router';
 
 export function useFormSetup() {
   // Dados do formulário
@@ -31,6 +32,7 @@ export function useFormSetup() {
 
       if (response.ok) {
         confirmationMessage.value = 'Cadastro enviado para aprovação com sucesso!';
+        router.push("/Login");
       } else {
         const errorData = await response.json();
         errorMessage.value = errorData.error || 'Erro ao enviar o cadastro.';

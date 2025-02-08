@@ -1,7 +1,6 @@
 <template>
     <div class="modal-overlay" v-if="visible" @click.self="closeModal">
       <div class="modal-content">
-        <button @click="goToLogin" class="modal-button">Login</button>
         <button @click="goToCadastro" class="modal-button">Cadastro</button>
       </div>
     </div>
@@ -21,10 +20,6 @@
   
   function closeModal() {
     emit('close')
-  }
-  
-  function goToLogin() {
-    router.push('/login')
   }
   
   function goToCadastro() {
