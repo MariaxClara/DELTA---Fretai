@@ -41,6 +41,13 @@
       />
 
       <input 
+        type="number"
+        v-model="formData.capacidade_do_veiculo"
+        placeholder="Capacidade do veículo"
+        required
+      />
+
+      <input 
         type="email"
         v-model="formData.email"
         placeholder="E-mail"
@@ -66,6 +73,7 @@
 
   </div>
 </template>
+
 
 <script>
 import { useFormSetup } from '../composables/cadastroMotorista';

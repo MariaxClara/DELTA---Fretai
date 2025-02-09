@@ -6,7 +6,7 @@
         <div class="divList">
             <div class="divListTop">
                 <img class="listTop" src="/images/PeopleIcon.svg" alt="">
-                <h1 class="listTop">Participantes</h1>
+                <h1 class="listTop">Participantes {{ numPassageiros }} / {{ maxPassageiros }}</h1>
             </div>
             
             <div class="divListItens">
@@ -33,9 +33,17 @@
             </div>
         </div>
         
+        <!-- Pop-up de erro -->
+        <div v-if="showError" class="errorPopup">
+            <div class="errorMessage">
+                <p>{{ errorMessage }}</p>
+                <button @click="closeErrorPopup">Fechar</button>
+            </div>
+        </div>
+        
         <div v-if="!edit" class="divButton">
-            <button @click="edit = !edit" class="mainButton">
-                <router-link :to="{name: 'RegisterUserDriver'}" class="mainLink">Adicionar Participante</router-link>
+            <button @click="checkMaxPassageiros" class="mainButton">
+                Adicionar Participante
             </button>
             <button @click="edit = !edit" class="mainButton">
                 Editar Participantes
@@ -64,7 +72,12 @@ const { VITE_BASE_URL_BACKEND } = import.meta.env;
 
 let edit = ref(false);
 let users = ref([]);
-let messageError = ref('');
+let messageError = ref(''); 
+const numPassageiros = ref(0);
+const maxPassageiros = ref(0);
+
+const showError = ref(false);  // Controle do pop-up
+const errorMessage = ref('');
 
 // Função para obter o cookie do userID
 function getCookie(name) {
@@ -76,13 +89,31 @@ function getCookie(name) {
     return null;
 }
 
+const driverId = ref(getCookie('userID')); 
+
+const getMaxPassageiros = async () => {
+    try {
+        const response = await fetch(`${VITE_BASE_URL_BACKEND}/maxPassageiros/${driverId.value}`, {
+            method: 'GET',
+        });
+        const data = await response.json();
+        
+        if (data && data[0] && data[0].max_passageiros !== undefined) {
+            maxPassageiros.value = data[0].max_passageiros;
+        } else {
+            console.log('Valor max_passageiros não encontrado na resposta');
+        }
+    } catch (error) {
+        console.log('Erro ao buscar a quantidade máxima de passageiros:', error);
+    }
+};
+
 const driverId = ref(getCookie('userID')); // Obtém o ID do motorista salvo no cookie
 // console.log('id motorista:', driverId.value)
 
 // Função para buscar usuários
 const takeUsers = async () => {
     try {
-        console.log("Estou indo pegar meus users");
         const response = await fetch(`${VITE_BASE_URL_BACKEND}/driverUsers/${driverId.value}`, {
             method: 'GET',
         });
@@ -99,11 +130,23 @@ const takeUsers = async () => {
             });
         }
         users.value = passageiros;
+        numPassageiros.value = passageiros.length; // Atualiza o número de passageiros
     } catch (error) {
         console.log('Não consegui pegar os passageiros:', error);
     }
 };
 
+const checkMaxPassageiros = () => {
+    if (numPassageiros.value >= maxPassageiros.value) {
+        showError.value = true;
+        errorMessage.value = "Não é possível cadastrar, pois atingiu o limite máximo de passageiros.";
+    } else {
+        router.push({ name: 'RegisterUserDriver' });
+    }
+};
+
+const closeErrorPopup = () => {
+    showError.value = false;
 // Função para atualizar usuários
 const updateUsers = async () => {
     edit.value = !edit.value;
@@ -148,5 +191,6 @@ const togglePayment = (user) => {
 
 onMounted(() => {
     takeUsers();
+    getMaxPassageiros();
 });
 </script>
