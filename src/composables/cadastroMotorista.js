@@ -2,6 +2,8 @@ import { ref } from 'vue';
 import { useRouter } from 'vue-router';
 
 export function useFormSetup() {
+  const router = useRouter(); // ✅ Definindo o router corretamente
+
   // Dados do formulário
   const formData = ref({
     nome: '',
@@ -9,13 +11,14 @@ export function useFormSetup() {
     telefone: '',
     modelo_veiculo: '',
     placa_veiculo: '',
+    capacidade_do_veiculo: '',
     email: '',
     senha: '',
+
   });
 
   const confirmationMessage = ref(null);
   const errorMessage = ref(null);
-
 
   const handleSubmit = async () => {
     confirmationMessage.value = null;
@@ -32,7 +35,7 @@ export function useFormSetup() {
 
       if (response.ok) {
         confirmationMessage.value = 'Cadastro enviado para aprovação com sucesso!';
-        router.push("/Login");
+        router.push("/Login"); // ✅ Agora router está definido
       } else {
         const errorData = await response.json();
         errorMessage.value = errorData.error || 'Erro ao enviar o cadastro.';
@@ -44,5 +47,4 @@ export function useFormSetup() {
   };
 
   return { formData, handleSubmit, confirmationMessage, errorMessage };
-
 }

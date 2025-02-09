@@ -45,7 +45,16 @@
 
     const {VITE_BASE_URL_BACKEND} = import.meta.env 
 
-    const driverId = ref(1);
+    function getCookie(name) {
+        const value = `; ${document.cookie}`;
+        const parts = value.split(`; ${name}=`);
+        if (parts.length === 2) {
+        return decodeURIComponent(parts.pop().split(';').shift());
+        }
+        return null;
+    }
+    const driverId = getCookie('ID');
+
     const driverName = ref('João') 
     const driverCode = ref('111-111')
     const errorInvite = ref(false);
@@ -83,7 +92,7 @@
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({
                             email: email,
-                            id: Number(driverId.value)
+                            id: Number(driverId)
                 })
             })                    
         } catch (error) {
@@ -94,7 +103,7 @@
 
     const takeUsers = async () => {
         try {
-            const response = await fetch(`${VITE_BASE_URL_BACKEND}/driverInvites/${driverId.value}`, {
+            const response = await fetch(`${VITE_BASE_URL_BACKEND}/driverInvites/${driverId}`, {
                 method: 'GET'
             })
             const data = await response.json();

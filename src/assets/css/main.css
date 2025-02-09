@@ -247,3 +247,35 @@ body {
   background-color: #3498DB;
   color: white;
 }
+
+/* Pop-up de erro */
+.errorPopup {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+}
+
+.errorMessage {
+    background-color: #000000;
+    padding: 20px;
+    border-radius: 8px;
+    text-align: center;
+    color: #000000;  /* Alterando a cor do texto para preto */
+}
+
+.errorMessage button {
+    margin-top: 10px;
+    padding: 10px 20px;
+    background-color: #3498DB; /* Cor do botão */
+    color: #FFFFFF;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}

@@ -29,7 +29,7 @@ import { NuxtLink } from '../.nuxt/components';
 
         <div class="divButton">
             <button class="mainButton">
-                <router-link :to="{name: 'ChatMotrorista'}" class="mainLink">Conversar com Passageiro</router-link>
+                <router-link :to="{name: 'chatMotorista'}" class="mainLink">Conversar com Passageiro</router-link>
             </button>
         </div>
 
