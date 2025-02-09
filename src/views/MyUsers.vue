@@ -79,7 +79,6 @@ const maxPassageiros = ref(0);
 const showError = ref(false);  // Controle do pop-up
 const errorMessage = ref('');
 
-// Função para obter o cookie do userID
 function getCookie(name) {
     const value = `; ${document.cookie}`;
     const parts = value.split(`; ${name}=`);
@@ -90,6 +89,20 @@ function getCookie(name) {
 }
 
 const driverId = ref(getCookie('userID')); 
+
+const goToChat = (passageiroId) => {
+    if (!driverId.value || !passageiroId) {
+        console.error("Erro: driverId ou passageiroId não definidos.");
+        return;
+    }
+    console.log(`Redirecionando para: /chat/${driverId.value}/${passageiroId}`);
+    router.push(`/chat/${driverId.value}/${passageiroId}`);
+};
+
+const goToCalendar = () => {
+    console.log("Redirecionando para o calendário...");
+    router.push('/calendario');
+};
 
 const getMaxPassageiros = async () => {
     try {
@@ -143,6 +156,11 @@ const checkMaxPassageiros = () => {
 
 const closeErrorPopup = () => {
     showError.value = false;
+};
+
+
+const togglePayment = (user) => {
+    user.paid = !user.paid; // Alterna o status de pagamento
 };
 
 onMounted(() => {
