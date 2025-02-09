@@ -108,8 +108,6 @@ const getMaxPassageiros = async () => {
     }
 };
 
-const driverId = ref(getCookie('userID')); // Obtém o ID do motorista salvo no cookie
-// console.log('id motorista:', driverId.value)
 
 // Função para buscar usuários
 const takeUsers = async () => {
