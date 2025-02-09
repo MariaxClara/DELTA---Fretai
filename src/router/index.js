@@ -131,7 +131,7 @@ const routes = [
     component: ListaVotacao
   },
   {
-    path: '/User',
+    path: '/user/:id',
     name: 'User',
     component: User
   },

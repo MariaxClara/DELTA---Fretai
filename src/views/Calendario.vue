@@ -44,11 +44,6 @@
         <img src="/images/van.svg" alt="">
         Perfil
       </button> -->
-      <button class="button">
-        <img src="/images/van.svg" alt="">
-        <i class="icon-bus"></i>
-        Voltar
-      </button>
     </div>
 
   </div>
@@ -85,14 +80,15 @@ function getCookie(name) {
 }
 
 const userType = getCookie('userType');
-console.log('Tipo de usuário salvo no cookie:', userType);
 
 // Simulate user role (motorista or passageiro)
 const userRole = userType // Default to passageiro
+console.log('USER ROLE:', userRole);
+
 
 // Métodos para manipulação do calendário
 const updateCalendarWrapper = () => {
-  if (userRole.value === 'motorista') {
+  if (userRole === 'motorista') {
     ({ currentDate: currentDate.value, days: days.value } = updateCalendar(currentMonth.value, currentYear.value, []));
   } else {
     ({ currentDate: currentDate.value, days: days.value } = updateCalendar(currentMonth.value, currentYear.value, localData.value));
@@ -121,7 +117,7 @@ const goToNextMonthWrapper = () => {
 
 // Observa mudanças no localData
 watch(localData, (newValue) => {
-    if (userRole.value !== 'motorista') {
+    if (userRole !== 'motorista') {
         console.log('LocalData changed:', newValue);
         updateCalendarWrapper();
     }
@@ -148,7 +144,7 @@ function dayChoice(day, month, year) {
         return;
     }
 
-    if (userRole.value === 'motorista') {
+    if (userRole === 'motorista') {
         router.push({
             path: '/ListaVotacao',
             query: { day: day.date, month: month, year: year }

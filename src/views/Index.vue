@@ -6,7 +6,7 @@
 
     <div class="button-group">
       <!-- Botão Motorista -->
-      <button @click="toggleModal" class="btn-motorista">Sou Motorista</button>
+      <button @click="toggleModal" class="btn-motorista"> Cadastro </button>
       <!-- Botão Passageiro com o mesmo estilo -->
       <button @click="goToPassageiro" class="btn-motorista">Login</button>
     </div>

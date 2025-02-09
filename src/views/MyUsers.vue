@@ -14,7 +14,7 @@
                     v-for="user in users" 
                     :key="user.idShort" 
                     class="listItens"
-                    @click="goToChat(user.idShort)" 
+                    @click="goToUser(user.idShort)" 
                     style="cursor: pointer;" 
                 >
                     <img class="listImage" src="/images/PeopleExample.svg" alt="">
@@ -77,7 +77,7 @@ function getCookie(name) {
 }
 
 const driverId = ref(getCookie('userID')); // Obtém o ID do motorista salvo no cookie
-console.log('id motorista:', driverId.value);
+// console.log('id motorista:', driverId.value)
 
 // Função para buscar usuários
 const takeUsers = async () => {
@@ -129,9 +129,11 @@ const updateUsers = async () => {
 };
 
 // Função para ir para a página de chat com o passageiro escolhido
-const goToChat = (passageiroId) => {
-    router.push(`/chat/${driverId.value}/${passageiroId}`);
+const goToUser = (passageiroId) => {
+    console.log("aaaaa",passageiroId);
+    router.push({ name: "User", params: { id: passageiroId } });
 };
+
 
 // Função para ir para a página de calendário
 const goToCalendar = () => {

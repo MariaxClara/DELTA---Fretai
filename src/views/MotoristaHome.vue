@@ -29,7 +29,7 @@ const goToPerfilMotorista = () => {
 };
 
 const goToCadastroPassageiro = () => {
-  router.push('/cadastroPassageiro');
+  router.push('/RegisterUserDriver');
 };
 
 const goToMyUsers = () => {
