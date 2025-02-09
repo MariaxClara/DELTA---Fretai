@@ -79,7 +79,6 @@ const maxPassageiros = ref(0);
 const showError = ref(false);  // Controle do pop-up
 const errorMessage = ref('');
 
-// ✅ Obter `driverId` do cookie corretamente
 function getCookie(name) {
     const value = `; ${document.cookie}`;
     const parts = value.split(`; ${name}=`);
@@ -91,7 +90,6 @@ function getCookie(name) {
 
 const driverId = ref(getCookie('userID')); 
 
-// ✅ Função para navegar até o chat do passageiro
 const goToChat = (passageiroId) => {
     if (!driverId.value || !passageiroId) {
         console.error("Erro: driverId ou passageiroId não definidos.");
@@ -101,13 +99,11 @@ const goToChat = (passageiroId) => {
     router.push(`/chat/${driverId.value}/${passageiroId}`);
 };
 
-// ✅ Função para navegar até o calendário
 const goToCalendar = () => {
     console.log("Redirecionando para o calendário...");
     router.push('/calendario');
 };
 
-// ✅ Função para buscar número máximo de passageiros
 const getMaxPassageiros = async () => {
     try {
         const response = await fetch(`${VITE_BASE_URL_BACKEND}/maxPassageiros/${driverId.value}`, {
@@ -125,7 +121,6 @@ const getMaxPassageiros = async () => {
     }
 };
 
-// ✅ Função para buscar lista de passageiros
 const takeUsers = async () => {
     try {
         const response = await fetch(`${VITE_BASE_URL_BACKEND}/driverUsers/${driverId.value}`, {
@@ -150,7 +145,6 @@ const takeUsers = async () => {
     }
 };
 
-// ✅ Verificar se atingiu o limite antes de cadastrar novo passageiro
 const checkMaxPassageiros = () => {
     if (numPassageiros.value >= maxPassageiros.value) {
         showError.value = true;
@@ -160,7 +154,6 @@ const checkMaxPassageiros = () => {
     }
 };
 
-// ✅ Fechar pop-up de erro
 const closeErrorPopup = () => {
     showError.value = false;
 };
