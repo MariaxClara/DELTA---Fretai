@@ -14,7 +14,7 @@
                     v-for="user in users" 
                     :key="user.idShort" 
                     class="listItens"
-                    @click="goToUser(user.idShort)" 
+                    @click="goToChat(user.idShort)" 
                     style="cursor: pointer;" 
                 >
                     <img class="listImage" src="/images/PeopleExample.svg" alt="">
@@ -79,7 +79,7 @@ const maxPassageiros = ref(0);
 const showError = ref(false);  // Controle do pop-up
 const errorMessage = ref('');
 
-// Função para obter o cookie do userID
+// ✅ Obter `driverId` do cookie corretamente
 function getCookie(name) {
     const value = `; ${document.cookie}`;
     const parts = value.split(`; ${name}=`);
@@ -91,6 +91,23 @@ function getCookie(name) {
 
 const driverId = ref(getCookie('userID')); 
 
+// ✅ Função para navegar até o chat do passageiro
+const goToChat = (passageiroId) => {
+    if (!driverId.value || !passageiroId) {
+        console.error("Erro: driverId ou passageiroId não definidos.");
+        return;
+    }
+    console.log(`Redirecionando para: /chat/${driverId.value}/${passageiroId}`);
+    router.push(`/chat/${driverId.value}/${passageiroId}`);
+};
+
+// ✅ Função para navegar até o calendário
+const goToCalendar = () => {
+    console.log("Redirecionando para o calendário...");
+    router.push('/calendario');
+};
+
+// ✅ Função para buscar número máximo de passageiros
 const getMaxPassageiros = async () => {
     try {
         const response = await fetch(`${VITE_BASE_URL_BACKEND}/maxPassageiros/${driverId.value}`, {
@@ -108,8 +125,7 @@ const getMaxPassageiros = async () => {
     }
 };
 
-
-// Função para buscar usuários
+// ✅ Função para buscar lista de passageiros
 const takeUsers = async () => {
     try {
         const response = await fetch(`${VITE_BASE_URL_BACKEND}/driverUsers/${driverId.value}`, {
@@ -134,6 +150,7 @@ const takeUsers = async () => {
     }
 };
 
+// ✅ Verificar se atingiu o limite antes de cadastrar novo passageiro
 const checkMaxPassageiros = () => {
     if (numPassageiros.value >= maxPassageiros.value) {
         showError.value = true;
@@ -143,48 +160,14 @@ const checkMaxPassageiros = () => {
     }
 };
 
+// ✅ Fechar pop-up de erro
 const closeErrorPopup = () => {
     showError.value = false;
-// Função para atualizar usuários
-const updateUsers = async () => {
-    edit.value = !edit.value;
-    try {
-        for (let user of users.value) {
-            try {
-                await fetch(`${VITE_BASE_URL_BACKEND}/updateUserPay`, {
-                    method: 'POST',
-                    headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify({
-                        email: user.email,
-                        paid: Number(user.paid)
-                    })
-                });
-            } catch (error) {
-                messageError.value = 'Erro ao salvar as modificações. O servidor pode estar fora do ar.';
-            }
-        }
-    } catch (error) {
-        messageError.value = 'Erro ao salvar as modificações.';
-        console.log(error);
-    }
-};
-
-// Função para ir para a página de chat com o passageiro escolhido
-const goToUser = (passageiroId) => {
-    console.log("aaaaa",passageiroId);
-    router.push({ name: "User", params: { id: passageiroId } });
 };
 
 
-// Função para ir para a página de calendário
-const goToCalendar = () => {
-    router.push('/calendario');
-};
-
-// Função para alternar o pagamento sem clicar no usuário
 const togglePayment = (user) => {
-    user.paid = !user.paid;
-    user.update = 1;
+    user.paid = !user.paid; // Alterna o status de pagamento
 };
 
 onMounted(() => {

@@ -55,20 +55,24 @@
   // Função para buscar as informações do usuário pelo ID
   async function getPassengerInfoById(id) {
     try {
-      const response = await fetch(`${VITE_BASE_URL_BACKEND}/passengerInfoId/${id}`);
-      const data = await response.json();
-  
-      if (data.statusCode !== 200) {
-        console.error("Erro na resposta da API:", data.body.error || 'Erro desconhecido');
-        return;
-      }
-  
-      usuario.value = data.body[0]; // Pega o primeiro resultado da lista
-      console.log("Dados do usuário recebidos:", usuario.value);
+        console.log("Buscando informações do passageiro para ID:", id);
+        const response = await fetch(`${VITE_BASE_URL_BACKEND}/passengerInfoId/${id}`);
+        const data = await response.json();
+
+        console.log("Resposta da API:", data); // 📌 Verificar a resposta da API
+
+        if (data.statusCode !== 200 || !data.body || data.body.length === 0) {
+            console.error("Erro na resposta da API ou dados vazios:", data.body?.error || 'Nenhum dado retornado');
+            return;
+        }
+
+        usuario.value = data.body[0]; // Armazena o primeiro resultado na variável
+        console.log("Dados do usuário armazenados:", usuario.value);
     } catch (err) {
-      console.error("Erro ao buscar informações do usuário:", err.message);
+        console.error("Erro ao buscar informações do usuário:", err.message);
     }
-  }
+}
+
   
   // Função para buscar a imagem do usuário
   async function fetchUserImagePath(id) {
@@ -97,6 +101,7 @@
   onMounted(() => {
     if (userID) {
       getPassengerInfoById(userID);
+      console.log('asdasdasd',userID)
       fetchUserImagePath(userID);
     } else {
       console.error("ID do usuário não encontrado nos cookies.");
