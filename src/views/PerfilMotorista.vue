@@ -169,7 +169,7 @@ onMounted(() => {
   background: white;
   padding: 15px;
   border-radius: 10px;
-  margin-top: 15px;
+  margin-top: 30px;
   width: 100%;
   max-width: 400px;
   box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
@@ -205,6 +205,7 @@ onMounted(() => {
   font-size: 18px;
   font-weight: bold;
   cursor: pointer;
+  margin-top: 30px;
   transition: background 0.3s ease;
 }
 
