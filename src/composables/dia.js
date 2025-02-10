@@ -169,6 +169,18 @@ export function useTransportOptions() {
     }
   }
 
+  function getCookie(name) {
+    const value = document.cookie; // Captura todos os cookies como string
+    const parts = value.split(`; `); // Divide os cookies em pares chave=valor
+    for (const part of parts) {
+      const [key, val] = part.split('='); // Separa chave e valor
+      if (key === name) {
+        return decodeURIComponent(val);
+      }
+    }
+    return null;
+  }
+
 
   return {
     options,
@@ -176,6 +188,7 @@ export function useTransportOptions() {
     selectOption,
     confirmSelection,
     localData, // Expose localData for debugging or further use
-    updateMonth
+    updateMonth,
+    getCookie
   };
 }
