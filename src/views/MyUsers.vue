@@ -14,19 +14,32 @@
                     v-for="user in users" 
                     :key="user.idShort" 
                     class="listItens"
-                    @click="goToChat(user.idShort)" 
-                    style="cursor: pointer;" 
+                    :style="{ cursor: edit ? 'pointer' : 'default' }"
                 >
                     <img class="listImage" src="/images/PeopleExample.svg" alt="">
                     <div class="listUser">
                         <p class="listUserName">{{ user.name }}</p>
                         <div v-if="!edit">
-                            <img v-if="user.paid" class="listUserName" src="/images/HandCoinsGreen.svg" alt="">
-                            <img v-else class="listUserName" src="/images/HandCoinsRed.svg" alt="">    
+                            <img v-if="user.paid" class="listUserName" src="/images/HandCoinsGreen.svg" alt="Pago">
+                            <img v-else class="listUserName" src="/images/HandCoinsRed.svg" alt="Não pago">    
                         </div>
                         <div v-else>
-                            <img v-if="user.paid" @click.stop="togglePayment(user)" src="/images/CheckFat.svg" alt="">
-                            <img v-else @click.stop="togglePayment(user)" src="/images/Selection.svg" alt="">
+                            <img 
+                                v-if="user.paid" 
+                                @click.stop="togglePayment(user)" 
+                                class="listUserName" 
+                                src="/images/CheckFat.svg" 
+                                alt="Pago" 
+                                style="cursor: pointer;"
+                            />
+                            <img 
+                                v-else 
+                                @click.stop="togglePayment(user)" 
+                                class="listUserName" 
+                                src="/images/Selection.svg" 
+                                alt="Não pago" 
+                                style="cursor: pointer;"
+                            />
                         </div>
                     </div>
                 </div>
@@ -54,7 +67,7 @@
         </div>
 
         <div v-else class="divButton">
-            <button @click="updateUsers" class="mainButton">
+            <button @click="edit = !edit" class="mainButton">
                 Salvar
             </button>
         </div>
@@ -89,15 +102,6 @@ function getCookie(name) {
 }
 
 const driverId = ref(getCookie('userID')); 
-
-const goToChat = (passageiroId) => {
-    if (!driverId.value || !passageiroId) {
-        console.error("Erro: driverId ou passageiroId não definidos.");
-        return;
-    }
-    console.log(`Redirecionando para: /chat/${driverId.value}/${passageiroId}`);
-    router.push(`/chat/${driverId.value}/${passageiroId}`);
-};
 
 const goToCalendar = () => {
     console.log("Redirecionando para o calendário...");
@@ -145,24 +149,29 @@ const takeUsers = async () => {
     }
 };
 
-const checkMaxPassageiros = () => {
-    if (numPassageiros.value >= maxPassageiros.value) {
-        showError.value = true;
-        errorMessage.value = "Não é possível cadastrar, pois atingiu o limite máximo de passageiros.";
-    } else {
-        router.push({ name: 'RegisterUserDriver' });
-    }
-};
-
 const closeErrorPopup = () => {
     showError.value = false;
 };
 
+const togglePayment = async (user) => {
+    try {
+        const response = await fetch(`${VITE_BASE_URL_BACKEND}/toggle-payment`, {
+            method: "PUT",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ passageiro_id: user.idShort }),
+        });
 
-const togglePayment = (user) => {
-    user.paid = !user.paid; // Alterna o status de pagamento
+        if (!response.ok) {
+            throw new Error("Erro ao atualizar pagamento");
+        }
+
+        const data = await response.json();
+        user.paid = data.passageiro_pagamento; // Atualiza o frontend
+        console.log("Pagamento atualizado:", data);
+    } catch (error) {
+        console.error("Erro ao atualizar pagamento:", error);
+    }
 };
-
 onMounted(() => {
     takeUsers();
     getMaxPassageiros();

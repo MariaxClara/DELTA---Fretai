@@ -131,7 +131,7 @@
         userEmail.value = '';
 
         try {
-            let response = await fetch(`${VITE_BASE_URL_BACKEND}/addPassengerUser`, {
+            let response = await fetch(`${VITE_BASE_URL_BACKEND}/addNewUser`, {
                 method: 'POST',
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({
