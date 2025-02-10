@@ -2,51 +2,129 @@ import createAndAnimateMarker from './live.js';
 import RouteOptimizer from './optmize.js';
 
 // Dictionary to store voting data
-const votingData = {
-  '2025-02-05': {
-    ida: {
-      'Student A': 'Shopping Vale Sul, São José dos Campos',
-      'Student B': 'Embraer, São José dos Campos',
-      'Student C': 'Praça Afonso Pena, São José dos Campos',
-      'Student D': 'Praça Ulisses Guimarães, São José dos Campos',
-      'Student E': 'Praça Cônego Lima, São José dos Campos',
-      'Student F': 'Praça da Bandeira, São José dos Campos',
-      'Student G': 'Praça da Independência, São José dos Campos',
-    },
-    volta: {
-      'Student C': 'Praça Afonso Pena, São José dos Campos',
-      'Student H': 'Shopping Jacarei, Jacareí, Sao Paulo',
-      'Student I': 'Jardim Santa Maria, Jacareí, Sao Paulo',
-      'Student J': 'Praça dos Três Poderes, Jacareí, Sao Paulo',
-      'Student K': 'Praça Raul Chaves, Jacareí, Sao Paulo',
-      'Student L': "Altos de Santana, Jacareí, Sao Paulo",
+// const votingData = {
+//   '2025-02-05': {
+//     ida: {
+//       'Student A': 'Shopping Vale Sul, São José dos Campos',
+//       'Student B': 'Embraer, São José dos Campos',
+//       'Student C': 'Praça Afonso Pena, São José dos Campos',
+//       'Student D': 'Praça Ulisses Guimarães, São José dos Campos',
+//       'Student E': 'Praça Cônego Lima, São José dos Campos',
+//       'Student F': 'Praça da Bandeira, São José dos Campos',
+//       'Student G': 'Praça da Independência, São José dos Campos',
+//     },
+//     volta: {
+//       'Student C': 'Praça Afonso Pena, São José dos Campos',
+//       'Student H': 'Shopping Jacarei, Jacareí, Sao Paulo',
+//       'Student I': 'Jardim Santa Maria, Jacareí, Sao Paulo',
+//       'Student J': 'Praça dos Três Poderes, Jacareí, Sao Paulo',
+//       'Student K': 'Praça Raul Chaves, Jacareí, Sao Paulo',
+//       'Student L': "Altos de Santana, Jacareí, Sao Paulo",
+//     }
+//   },
+//   '2025-02-04': {
+//     ida: {
+//       'Student H': 'Shopping Jacarei, Jacareí, Sao Paulo',
+//       'Student I': 'Jardim Santa Maria, Jacareí, Sao Paulo',
+//       'Student J': 'Praça dos Três Poderes, Jacareí, Sao Paulo',
+//       'Student K': 'Praça Raul Chaves, Jacareí, Sao Paulo',
+//       'Student L': "Altos de Santana, Jacareí, Sao Paulo",
+//     },
+//     volta: {
+//       'Student H': 'Shopping Jacarei, Jacareí, Sao Paulo',
+//       'Student I': 'Jardim Santa Maria, Jacareí, Sao Paulo',
+//       'Student J': 'Praça dos Três Poderes, Jacareí, Sao Paulo',
+//       'Student K': 'Praça Raul Chaves, Jacareí, Sao Paulo',
+//       'Student L': "Altos de Santana, Jacareí, Sao Paulo",
+//     }
+//   },
+//   // ...other dates...
+// };
+
+
+const updateData = async () =>  {
+  const driver_id = 1;
+  const voting = {"ida": {}, "volta": {}};
+  const users_id = [];
+  const message_users = `http://localhost:3000/driverUsers/${driver_id}`;
+
+  try {
+    const response = await fetch(message_users, {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    });
+    const data = await response.json();
+    for (let i = 0; i < data.message.length; i ++) {
+      users_id.push([data.message[i]["passageiro_id"], data.message[i]["passageiro_email"]]);
     }
-  },
-  '2025-02-04': {
-    ida: {
-      'Student H': 'Shopping Jacarei, Jacareí, Sao Paulo',
-      'Student I': 'Jardim Santa Maria, Jacareí, Sao Paulo',
-      'Student J': 'Praça dos Três Poderes, Jacareí, Sao Paulo',
-      'Student K': 'Praça Raul Chaves, Jacareí, Sao Paulo',
-      'Student L': "Altos de Santana, Jacareí, Sao Paulo",
-    },
-    volta: {
-      'Student H': 'Shopping Jacarei, Jacareí, Sao Paulo',
-      'Student I': 'Jardim Santa Maria, Jacareí, Sao Paulo',
-      'Student J': 'Praça dos Três Poderes, Jacareí, Sao Paulo',
-      'Student K': 'Praça Raul Chaves, Jacareí, Sao Paulo',
-      'Student L': "Altos de Santana, Jacareí, Sao Paulo",
+    //console.log("Entrada :",data.message);
+  }
+  catch (error) {
+    console.error('Erro ao buscar passageiros:', error);
+    return {};
+  }
+
+  const day = new Date().getDate();
+  const month = new Date().getMonth() + 1;
+  const year = new Date().getFullYear();
+  const route = 1; // exemplo
+  let destino = "";
+  users_id.forEach(async (user_data) => {
+    const message_calendario = `http://localhost:3000/getCalendario/${user_data[0]}/${route}/${year}/${month}/${day}`;
+    try {
+      const response = await fetch(message_calendario, {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      });
+      const data = await response.json();
+      if (data.message[0]["ida"] != 0) {
+        const message_dest = `http://localhost:3000/getRaceInfo/${user_data[1]}`;
+        const reply = await fetch(message_dest, {
+          method: 'GET',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+        });
+        const data_dest = await reply.json();
+        voting["volta"][data_dest.message[0]["nome"]] = data_dest.message[0]["destino"];
+        destino = data_dest.message[0]["destino"];
+      }
+
+      if (data.message[0]["volta"] != 0) {
+        const message_dest = `http://localhost:3000/getRaceInfo/${user_data[1]}`;
+        const reply = await fetch(message_dest, {
+          method: 'GET',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+        });
+        const data_dest = await reply.json();
+        voting["volta"][data_dest.message[0]["nome"]] = data_dest.message[0]["origem"];
+      }
+      
     }
-  },
-  // ...other dates...
-};
+    catch (error) {
+      console.error('Erro ao buscar viagens:', error);
+      return {};
+    }
+  })
+  
+  return voting, destino;
+
+}
+
+const {votingData, defaultDestinations} = await updateData();
 
 // Default destinations
-const defaultDestinations = {
-  'Unifesp ICT - São José dos Campos': 'Av. Cesare Mansueto Giulio Lattes, 1201 - Eugênio de Melo, São José dos Campos - SP, 12247-014',
-  'Fatec': 'Av. Cesare Mansueto Giulio Lattes, 1350 - Eugênio de Melo, São José dos Campos - SP, 12247-014',
-  'Instituto Federal': 'R. Pedro Rachid, 3 - Jardim Diamante, São José dos Campos - SP, 12230-000'
-};
+// const defaultDestinations = {
+//   'Unifesp ICT - São José dos Campos': 'Av. Cesare Mansueto Giulio Lattes, 1201 - Eugênio de Melo, São José dos Campos - SP, 12247-014',
+//   'Fatec': 'Av. Cesare Mansueto Giulio Lattes, 1350 - Eugênio de Melo, São José dos Campos - SP, 12247-014',
+//   'Instituto Federal': 'R. Pedro Rachid, 3 - Jardim Diamante, São José dos Campos - SP, 12230-000'
+// };
 
 export default function maps() {
 
@@ -79,7 +157,7 @@ export default function maps() {
     document.head.appendChild(style);
 
     this.van = createAndAnimateMarker(this.map);
-    this.destinationAddress = defaultDestinations['Unifesp ICT - São José dos Campos']; // Set default destination
+    this.destinationAddress = defaultDestinations; // Set default destination
     this.waypoints = [];
   }
     
@@ -186,7 +264,7 @@ export default function maps() {
       
       // Use current date for voting data
       const today = new Date().toISOString().split('T')[0];
-      const students = votingData[today]?.[this.selectedTurn];
+      const students = votingData[this.selectedTurn];
       if (!students) {
         this.errorMessage = `Nenhuma votação encontrada para a data: ${today} e turno: ${this.selectedTurn}`;
         return;

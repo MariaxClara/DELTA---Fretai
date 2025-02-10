@@ -36,9 +36,9 @@
     const mes = ref(Number(route.query.month) + 1 || 'uoiea');
     const ano = ref(route.query.year || 'aeiou');
     const rota =  ref(1); //valor exemplo
-    const user = ref(4); //valor exemplo
+    const user = ref(getCookie("userID")); //valor exemplo
 
-    const { options, selectedOption, selectOption, confirmSelection } = useTransportOptions();
+    const { options, selectedOption, selectOption, confirmSelection, getCookie } = useTransportOptions();
 
     
 </script>
