@@ -1,15 +1,27 @@
 import axios from "axios";
 
 // Acessa a variável de ambiente diretamente
-const apiKey = import.meta.env.VITE_CHATBOT_API_KEY; 
+const apiKey = import.meta.env.VITE_CHATBOT_API_KEY;
 const apiUrl = "https://api.openai.com/v1/chat/completions";
 const { VITE_BASE_URL_BACKEND } = import.meta.env;
 
-const response = await fetch(`${VITE_BASE_URL_BACKEND}/driverInfoChatBot`);
-const travelData = await response.json();
+// Variável para armazenar os dados de viagens
+let travelData = null;
 
-// Log da resposta para ver a estrutura
-console.log("Dados recebidos no front-end:", travelData);
+/**
+ * Função que faz a busca dos dados no backend.
+ * Ela não é chamada no escopo global para evitar o top-level await.
+ */
+async function fetchTravelData() {
+  try {
+    const response = await fetch(`${VITE_BASE_URL_BACKEND}/driverInfoChatBot`);
+    travelData = await response.json();
+    console.log("Dados recebidos no front-end:", travelData);
+  } catch (error) {
+    console.error("Erro ao buscar dados de viagem:", error);
+    travelData = { body: [] }; // Garante que não quebre o código caso falhe
+  }
+}
 
 /**
  * Envia uma pergunta para a API do ChatGPT e retorna a resposta.
@@ -18,15 +30,39 @@ console.log("Dados recebidos no front-end:", travelData);
  * @returns {Promise<string>} - Resposta da API.
  */
 export async function getChatResponse(userQuestion, chatHistory) {
+  // Caso ainda não tenha travelData, fazemos a busca
+  if (!travelData) {
+    await fetchTravelData();
+  }
+
+  // Se ainda assim não tivermos body, evitar erro de acesso a undefined
+  const travelBody = travelData?.body || [];
+
   // Filtra as viagens pelo dia solicitado
-  const userDay = userQuestion.toLowerCase().match(/segunda|terça|quarta|quinta|sexta|sábado|domingo/);
-  const filteredTravelData = userDay ? travelData.body.filter(travel => travel.dia_da_semana.toLowerCase() === userDay[0]) : travelData.body;
-  console.log("filteredTravelData", filteredTravelData);
+  const userDay = userQuestion
+    .toLowerCase()
+    .match(/segunda|terça|quarta|quinta|sexta|sábado|domingo/);
+
+  const filteredTravelData = userDay
+    ? travelBody.filter((travel) => travel.dia_da_semana.toLowerCase() === userDay[0])
+    : travelBody;
 
   // Formata os dados das viagens
-  const formattedTravelData = filteredTravelData.length > 0 ? filteredTravelData.map(travel => (
-    `\n**Viagem Disponível:**\n- **Motorista:** ${travel.motorista_nome}\n- **Telefone:** ${travel.motorista_telefone}\n- **Destino:** ${travel.destino}\n- **Horário:** ${travel.horario}\n- **Dia:** ${travel.dia_da_semana}\n`
-  )).join("\n") : "Não há viagens disponíveis para o dia solicitado.";
+  const formattedTravelData =
+    filteredTravelData.length > 0
+      ? filteredTravelData
+          .map(
+            (travel) => `
+**Viagem Disponível:**
+- **Motorista:** ${travel.motorista_nome}
+- **Telefone:** ${travel.motorista_telefone}
+- **Destino:** ${travel.destino}
+- **Horário:** ${travel.horario}
+- **Dia:** ${travel.dia_da_semana}
+`
+          )
+          .join("\n")
+      : "Não há viagens disponíveis para o dia solicitado.";
 
   // Define o contexto inicial para o chatbot
   const initialContext = `Bem-vindo ao Fretai!
@@ -94,7 +130,6 @@ Se quiser saber qual corrida melhor atende sua necessidade, me diga o dia e o ho
     // Retorna a resposta da API (o conteúdo gerado)
     return response.data.choices[0].message.content.trim();
   } catch (error) {
-    // Exibe o erro detalhado no console
     console.error("Erro ao chamar a API:", error.response?.data || error.message);
     throw new Error("Não foi possível gerar a resposta.");
   }

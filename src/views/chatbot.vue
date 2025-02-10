@@ -11,13 +11,15 @@
       <div
         v-for="(message, index) in chatHistory"
         :key="index"
-        :class="['chat-message', message.sender === 'Você' ? 'user' : 'assistant']"
+        :class="[
+          'chat-message',
+          message.sender === 'Você' ? 'user' : 'assistant'
+        ]"
       >
         <strong>{{ message.sender }}:</strong> {{ message.text }}
       </div>
     </div>
 
-    <!-- Input de mensagem -->
     <div class="chat-input">
       <input
         v-model="userInput"
@@ -37,38 +39,41 @@ export default {
   data() {
     return {
       userInput: "",
-      chatHistory: [], // Inicializa o histórico vazio
+      chatHistory: [],
     };
   },
   mounted() {
-    // Adiciona a mensagem inicial ao histórico quando o componente é carregado
+    // Mensagem inicial quando o componente carrega
     this.chatHistory.push({
       sender: "Chatbot",
       text: "Eu sou o chatbot do Fretai, como posso ajudar?",
     });
   },
   methods: {
-    async sendMessage() {
+    sendMessage() {
       if (!this.userInput.trim()) return;
 
-      // Adiciona a mensagem do usuário ao histórico
+      // Adiciona a mensagem do usuário no histórico
       this.chatHistory.push({ sender: "Você", text: this.userInput });
 
-      try {
-        // Envia a pergunta para o Chatbot e recebe a resposta
-        const response = await getChatResponse(this.userInput, this.chatHistory);
-        this.chatHistory.push({ sender: "Chatbot", text: response });
-      } catch (error) {
-        console.error("Erro ao gerar resposta:", error);
-        this.chatHistory.push({ sender: "Chatbot", text: "Desculpe, algo deu errado. Tente novamente." });
-      }
+      // Chama a função do chatbot usando .then() e .catch() em vez de await
+      getChatResponse(this.userInput, this.chatHistory)
+        .then((response) => {
+          this.chatHistory.push({ sender: "Chatbot", text: response });
+        })
+        .catch((error) => {
+          console.error("Erro ao gerar resposta:", error);
+          this.chatHistory.push({
+            sender: "Chatbot",
+            text: "Desculpe, algo deu errado. Tente novamente.",
+          });
+        });
 
-      // Limpa o campo de entrada após o envio
+      // Limpa o campo de texto
       this.userInput = "";
     },
   },
 };
 </script>
 
-<!-- Estilo externo -->
 <style src="../assets/css/chatbot.css"></style>
