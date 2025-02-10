@@ -3,7 +3,7 @@
     <!-- Cabeçalho com a imagem do logo -->
     <header class="header-chatbot">
       <img src="/images/iconeImage.png" alt="Logo" class="logo-chatbot" />
-      <h1>Chat de Suporte </h1>
+      <h1 style="color: #007bff;">Chat de Suporte </h1>
     </header>
 
     <!-- Janela de chat -->
@@ -27,7 +27,7 @@
         placeholder="Digite sua pergunta..."
         @keypress.enter="sendMessage"
       />
-      <button @click="sendMessage">Enviar</button>
+      <button style="background-color: #007bff;" @click="sendMessage">Enviar</button>
     </div>
   </div>
 </template>
