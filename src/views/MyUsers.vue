@@ -46,7 +46,6 @@
             </div>
         </div>
         
-        <!-- Pop-up de erro -->
         <div v-if="showError" class="errorPopup">
             <div class="errorMessage">
                 <p>{{ errorMessage }}</p>
@@ -143,7 +142,7 @@ const takeUsers = async () => {
             });
         }
         users.value = passageiros;
-        numPassageiros.value = passageiros.length; // Atualiza o número de passageiros
+        numPassageiros.value = passageiros.length; 
     } catch (error) {
         console.log('Não consegui pegar os passageiros:', error);
     }
@@ -166,7 +165,7 @@ const togglePayment = async (user) => {
         }
 
         const data = await response.json();
-        user.paid = data.passageiro_pagamento; // Atualiza o frontend
+        user.paid = data.passageiro_pagamento;
         console.log("Pagamento atualizado:", data);
     } catch (error) {
         console.error("Erro ao atualizar pagamento:", error);
