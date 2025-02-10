@@ -35,16 +35,15 @@
   .botoes-container {
     display: flex;
     flex-direction: column;
-    gap: 20px; /* Espaçamento entre botões */
+    gap: 10px; /* Espaçamento entre botões */
     margin-top: -30px; /* Ajuste esse valor para subir mais */
     width: 300px;
-    height: 300px;
   }
   
   /* Botão Genérico */
   .botao {
     width: 300px;
-    height: 80px;
+    height: 300px;
     background: #3498DB;
     border: 2px solid #FFFCFC;
     border-radius: 5px;
