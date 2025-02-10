@@ -6,17 +6,21 @@
     </div>
 
     <!-- Botões de Navegação -->
-    <div class="participantes">
+    <div class="conteudo">
+      <div class="botoes-container">
       <button @click="goToCalendario" class="botao">Calendário</button>
       <button @click="goToPerfilMotorista" class="botao">Perfil Motorista</button>
       <button @click="goToCadastroPassageiro" class="botao">Cadastro Passageiro</button>
       <button @click="goToMyUsers" class="botao">Lista Passageiros</button>
+      <button @click="goToChatBot" class="botao">Chat Bot</button>
     </div>
+  </div>
   </div>
 </template>
 
 <script setup>
 import { useRouter } from 'vue-router';
+import '../assets/css/cssMotoristaHome.css';
 
 const router = useRouter();
 
@@ -35,48 +39,8 @@ const goToCadastroPassageiro = () => {
 const goToMyUsers = () => {
   router.push('/myUsers');
 };
+
+const goToChatBot = () => {
+  router.push('/chatbot');
+};
 </script>
-
-<style scoped>
-/* Tela Inicial */
-.tela-inicial {
-  position: relative;
-  background: #BAE6FD;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  padding-bottom: 100px;
-}
-
-/* Logo */
-.logo-container {
-  margin-bottom: 20px;
-}
-
-.logo {
-  width: 300px; /* Logo aumentado */
-  margin-bottom: 10px;
-}
-
-/* Botão Genérico */
-.botao {
-  width: 359px;
-  height: 75px;
-  background: #3498DB;
-  border: 2px solid #FFFCFC;
-  border-radius: 5px;
-  color: #FFFCFC;
-  font-family: 'Grandstander', sans-serif;
-  font-size: 32px;
-  font-weight: 700;
-  text-align: center;
-  letter-spacing: -0.3px;
-  cursor: pointer;
-  transition: background 0.3s ease;
-}
-
-.botao:hover {
-  background: #2874A6;
-}
-</style>

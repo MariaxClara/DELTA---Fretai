@@ -42,7 +42,7 @@
   padding-right: 8rem;
   width: 26rem;
   height: 75px;
-  background: #3498DB;
+  background: #007bff;
   border: 2px solid #FFFCFC;
   border-radius: 5px;
   color: #FFFCFC;
@@ -53,6 +53,7 @@
   letter-spacing: -0.3px;
   /* cursor: pointer; */
   transition: background 0.3s ease;
+  margin-top: 70px;
 }
 
 .button {
