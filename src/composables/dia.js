@@ -1,6 +1,8 @@
 import { ref, onMounted } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 import maps from './calendario'; // Importe o maps
+const {VITE_BASE_URL_BACKEND} = import.meta.env 
+
 
 // Objeto usado para controlar quais meses já foram "atualizados"
 const updates = {};

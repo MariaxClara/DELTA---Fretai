@@ -38,6 +38,7 @@ async function getAlunos(dia, mes, ano) {
                 },
             });
             const data = await response.json();
+            if (data.message == null) continue;
             alunos.push({
                 id: user_id,
                 name: user_name,

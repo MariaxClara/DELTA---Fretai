@@ -13,6 +13,8 @@
       <button @click="goToCadastroPassageiro" class="botao">Cadastro Passageiro</button>
       <button @click="goToMyUsers" class="botao">Lista Passageiros</button>
       <button @click="goToChatBot" class="botao">Chat Bot</button>
+      <button @click="goToRotas" class="botao">Rotas</button>
+
     </div>
   </div>
   </div>
@@ -43,4 +45,10 @@ const goToMyUsers = () => {
 const goToChatBot = () => {
   router.push('/chatbot');
 };
+
+const goToRotas = () => {
+  router.push('/myRouter');
+
+};
+
 </script>
