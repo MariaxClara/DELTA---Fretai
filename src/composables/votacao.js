@@ -5,8 +5,9 @@ const horarios = [
 ];
 
 async function getAlunos(dia, mes, ano) {
+    const { VITE_BASE_URL_BACKEND } = import.meta.env;
     const motorista_id = 1; //exemplo
-    const message_1 =  `http://localhost:3000/driverUsers/${motorista_id}`
+    const message_1 =  `${VITE_BASE_URL_BACKEND}/driverUsers/${motorista_id}`
     let usuarios;
     try {
         const response = await fetch(message_1, {
@@ -30,7 +31,7 @@ async function getAlunos(dia, mes, ano) {
         for (let i = 0; i < usuarios.length; i ++){
             const user_id = usuarios[i]["passageiro_id"];
             const user_name = usuarios[i]["passageiro_nome"];
-            const message_2 = `http://localhost:3000/getCalendario/${user_id}/${route}/${ano}/${mes}/${dia}`;
+            const message_2 = `${VITE_BASE_URL_BACKEND}/getCalendario/${user_id}/${route}/${ano}/${mes}/${dia}`;
             const response = await fetch(message_2, {
                 method: 'GET',
                 headers: {
