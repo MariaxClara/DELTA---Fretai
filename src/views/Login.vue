@@ -23,7 +23,6 @@
         required
       >
       <button type="submit" class="cadastrar-btn">ENTRAR</button>
-    </form>
 
     <button 
       class="forgot-password-btn" 
@@ -31,6 +30,8 @@
     >
       Esqueci minha senha
     </button>
+  </form>
+
 
     <PasswordResetModal
       v-if="showPasswordReset"

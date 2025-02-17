@@ -1,94 +1,77 @@
+/* Reset básico */
+*,
+*::before,
+*::after {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  background-color: #BAE6FD;
+  font-family: sans-serif;
+}
+
 .login-container {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    min-height: 100vh;
-    background-color: #BAE6FD;
-    padding: 20px;
-    gap: 2rem;
-  }
+  display: flex;
+  flex-direction: column;
+  align-items: center;     
+  justify-content: center; 
+  min-height: 100vh;
+  padding: 20px;
+  gap: 1rem;                
+}
 
-  * {
-    margin: 0;
-  }
-  
-  .logo-container {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 0.5rem;
-    padding-top: 35px;
-  }
-  
-  .bus-icon {
-    color: #1a1a1a;
-  }
-  
-  .title {
-    font-size: 2.5rem;
-    color: #1a1a1a;
-    font-weight: bold;
-  }
-  
-  .login-form {
-    display: flex;
-    flex-direction: column;
-    width: 100%;
-    max-width: 320px;
-    gap: 1rem;
-  }
-  
-  input {
-    width: 100%;
-    padding: 15px;
-    border: none;
-    border-radius: 25px;
-    background-color: white;
-    color: #000;
-    font-size: 1rem;
-    outline: none;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-  }
 
-  .confirmation-message {
-    margin-top: 15px;
-    color: green;
-    font-weight: bold;
-  }
-  
-  input::placeholder {
-    color: #666;
-  }
-  
-  .cadastrar-btn {
-    margin-top: 1rem;
-    padding: 15px 30px; 
-    border: none;
-    border-radius: 25px;
-    background-color: white; 
-    color: #007bff; 
-    font-size: 18px; 
-    font-weight: 600;
-    cursor: pointer;
-    transition: all 0.3s ease; 
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-    width: 100%; 
-  }
+.van-icon {
+  width: 350px; 
+  height: auto;
+  margin-bottom: -200px;
+}
 
-  .cadastrar-btn:hover {
-    transform: translateY(-2px); 
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-    background-color: #007bff;
-    color: white;
-  }
-  
-  .cadastrar-btn:active {
-    transform: translateY(1px);
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 
-  }
-  .van-icon {
-        width: 350px; 
-        height: auto;
-    margin-bottom: 10px;
-  }
+.login-form {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  max-width: 320px;
+  gap: 1rem;               
+}
+
+.login-form input {
+  width: 100%;
+  padding: 15px;
+  border: none;
+  border-radius: 25px;
+  background-color: white;
+  color: #000;
+  font-size: 1rem;
+  outline: none;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.cadastrar-btn {
+  padding: 15px 30px; 
+  border: none;
+  border-radius: 25px;
+  background-color: white; 
+  color: #007bff; 
+  font-size: 18px; 
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease; 
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  width: 100%; 
+}
+
+.cadastrar-btn:hover {
+  transform: translateY(-2px); 
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  background-color: #007bff;
+  color: white;
+}
+
+.cadastrar-btn:active {
+  transform: translateY(1px);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
