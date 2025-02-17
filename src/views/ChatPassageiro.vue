@@ -39,7 +39,8 @@ export default {
       console.log('SenderId:', this.senderId);
       console.log('ReceiverId:', this.receiverId);
       try {
-        const response = await fetch(`http://localhost:3000/chat/${this.senderId}/${this.receiverId}`);
+        const { VITE_BASE_URL_BACKEND } = import.meta.env;
+        const response = await fetch(`${VITE_BASE_URL_BACKEND}/chat/${this.senderId}/${this.receiverId}`);
         if (response.ok) {
           const data = await response.json();
           this.messages = data; // Atualiza o histórico de mensagens
