@@ -24,6 +24,7 @@ const emit = defineEmits(['close', 'passwordChanged']);
 const newPassword = ref('');
 const confirmPassword = ref('');
 const errorMessage = ref('');
+const { VITE_BASE_URL_BACKEND } = import.meta.env;
 
 async function handlePasswordSubmit() {
   if (newPassword.value !== confirmPassword.value) {
@@ -34,7 +35,7 @@ async function handlePasswordSubmit() {
   
   try {
     console.log("Enviando requisição para atualizar a senha - Front");
-    const response = await fetch('http://localhost:3000/changePassword', {
+    const response = await fetch(`${VITE_BASE_URL_BACKEND}\changePassword`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
