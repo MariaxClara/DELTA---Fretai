@@ -61,7 +61,8 @@ export default {
       };
 
       try {
-        const response = await fetch('http://localhost:3000/chat', {
+        const { VITE_BASE_URL_BACKEND } = import.meta.env;
+        const response = await fetch(`${VITE_BASE_URL_BACKEND}/chat`, {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
