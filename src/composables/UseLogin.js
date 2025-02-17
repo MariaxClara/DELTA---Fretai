@@ -67,7 +67,7 @@ export default function useLogin() {
     const user = await handleSubmit();
     if (user && user.user_id) {
       try {
-        const response = await fetch(`http://localhost:3000/user-type?user_id=${encodeURIComponent(user.user_id)}`, {
+        const response = await fetch(`${import.meta.env.VITE_BASE_URL_BACKEND}/user-type?user_id=${encodeURIComponent(user.user_id)}`, {
           method: 'GET',
           headers: {
             'Content-Type': 'application/json',
