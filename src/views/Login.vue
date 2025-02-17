@@ -53,7 +53,7 @@ import { ref } from 'vue';
 import { useRouter } from 'vue-router';
 import useLogin from '../composables/UseLogin';
 import PasswordResetModal from '../components/ResetarSenha.vue';
-import '../assets/css/cssCadastroMotorista.css';
+import '../assets/css/login.css';
 
 const router = useRouter();
 
