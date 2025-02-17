@@ -120,6 +120,31 @@ const getMaxPassageiros = async () => {
         console.log('Erro ao buscar a quantidade máxima de passageiros:', error);
     }
 };
+const updateUsers = async () => {
+        edit.value=!edit.value
+        try {
+            for (let i in users.value) {
+                let user = users.value[i]
+                try {
+                    const response = await fetch(`${VITE_BASE_URL_BACKEND}/updateUserPay`, {
+                        method: 'POST',
+                        headers: { "Content-Type": "application/json" },
+                        body: JSON.stringify({
+                            email: user.email,
+                            paid: Number(user.paid)
+                        })
+                    })
+                    const data = await response.json();
+                } catch (error) {
+                    messageError.value = 'Parece que nosso servidor está em manutenção, não foi possível salvar as modificações!'
+                }
+            }
+        } catch (error) {
+            messageError.value = 'Parece que nosso servidor está em manutenção, não foi possível salvar as modificações!'
+            console.log(error)
+            console.log(messageError)
+        }
+    }
 
 const takeUsers = async () => {
     try {
