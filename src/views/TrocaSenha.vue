@@ -77,7 +77,8 @@ async function submitForm() {
   }
 
   try {
-    const response = await fetch('http://localhost:3000/changePassword', {
+    const { VITE_BASE_URL_BACKEND } = import.meta.env;
+    const response = await fetch(`${VITE_BASE_URL_BACKEND}/changePassword`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ email: userEmail, newPassword: novaSenha.value, confirmPassword:confirmaSenha.value }),
